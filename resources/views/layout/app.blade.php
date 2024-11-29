@@ -119,15 +119,15 @@
                     <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Pengaduan &
                         Pengajuan</h6>
                 </li>
-                <a class="nav-link text-dark" data-bs-toggle="collapse" href="#pengaduanPengajuan" role="button"
-                    aria-expanded="false" aria-controls="masterDataMenu">
+                <a class="nav-link  {{ Request::is('pengaduan') ? 'active bg-gradient-dark text-white' : 'text-dark' }} text-dark" data-bs-toggle="collapse" href="#pengaduanPengadaan" role="button"
+                    aria-expanded="false" aria-controls="pengadaanPengaduan">
                     <i class="material-symbols-rounded opacity-5">category</i>
-                    <span class="nav-link-text ms-1">Pengaduan & Pengajuan</span>
+                    <span class="nav-link-text ms-1">Pengaduan & Pengadaan</span>
                 </a>
-                <div class="collapse ps-4" id="pengaduanPengajuan">
+                <div class="collapse ps-4" id="pengaduanPengadaan">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="../pages/rtl.html">
+                            <a class="nav-link text-dark" href="{{ route('index.pengaduan') }}">
                                 <i class="material-symbols-rounded opacity-5">person</i>
                                 <span class="nav-link-text ms-1">Pengaduan</span>
                             </a>
@@ -135,7 +135,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="../pages/rtl.html">
                                 <i class="material-symbols-rounded opacity-5">person</i>
-                                <span class="nav-link-text ms-1">Pengajuan</span>
+                                <span class="nav-link-text ms-1">Pengadaan</span>
                             </a>
                         </li>
                     </ul>
