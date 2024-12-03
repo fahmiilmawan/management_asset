@@ -23,7 +23,7 @@
     <!-- Tabel Data Asset -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary">
-            <h5 class="mb-0 text-white">Daftar Asset</h5>
+            <h5 class="mb-0 text-white">Daftar Pengaduan</h5>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">

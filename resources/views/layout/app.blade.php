@@ -133,29 +133,9 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="../pages/rtl.html">
+                            <a class="nav-link text-dark" href="{{ route('index.pengadaan') }}">
                                 <i class="material-symbols-rounded opacity-5">person</i>
                                 <span class="nav-link-text ms-1">Pengadaan</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                {{-- End Side Laporan Pengaduan --}}
-                {{-- Side Laporan --}}
-                <li class="nav-item mt-3">
-                    <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Laporan</h6>
-                </li>
-                <a class="nav-link text-dark" data-bs-toggle="collapse" href="#laporan" role="button"
-                    aria-expanded="false" aria-controls="masterDataMenu">
-                    <i class="material-symbols-rounded opacity-5">category</i>
-                    <span class="nav-link-text ms-1">Laporan</span>
-                </a>
-                <div class="collapse ps-4" id="laporan">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="../pages/rtl.html">
-                                <i class="material-symbols-rounded opacity-5">person</i>
-                                <span class="nav-link-text ms-1">Laporan Barang Rusak</span>
                             </a>
                         </li>
                     </ul>

@@ -67,7 +67,7 @@ class IndexRuangan extends Component
             Ruangan::create([
                 'nama_ruangan' => $this->nama_ruangan,
             ]);
-            session()->flash('message', 'Barang berhasil ditambahkan.');
+            session()->flash('message', 'Ruangan berhasil ditambahkan.');
         }
 
         $this->closeModal();

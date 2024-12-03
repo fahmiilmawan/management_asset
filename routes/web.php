@@ -3,6 +3,7 @@
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PengadaanController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\UnitController;
@@ -22,6 +23,7 @@ Route::get('/unit',[UnitController::class,'index'])->name('index.unit');
 Route::get('/user',[UserController::class,'index'])->name('index.user');
 Route::get('/asset',[AssetController::class,'index'])->name('index.asset');
 Route::get('/pengaduan',[PengaduanController::class,'index'])->name('index.pengaduan');
+Route::get('/pengadaan',[PengadaanController::class,'index'])->name('index.pengadaan');
 
 
 Route::get('/user/send-wa/{id}',[UserController::class,'sendWhatsappMessage'])->name('sendWhatsapp');
