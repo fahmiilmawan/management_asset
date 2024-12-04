@@ -51,7 +51,7 @@ class IndexPengaduan extends Component
     // Upload bukti fisik jika ada
     $buktiPath = null;
     if ($this->bukti_fisik) {
-        $buktiPath = $this->bukti_fisik->storeAs('bukti-fisik', 'ogut');
+        $buktiPath = $this->bukti_fisik->storeAs('bukti-fisik', 'gambar-1');
     }
 
     // Simpan data pengaduan

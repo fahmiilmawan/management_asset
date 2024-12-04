@@ -92,7 +92,7 @@ class IndexUser extends Component
                 'email' => $this->email,
                 'role' => $this->role,
                 'no_hp' => $this->no_hp,
-                'password' => Hash::make($this->password),
+                'password' =>$this->password,
             ]);
             session()->flash('message', 'User berhasil ditambahkan.');
         }
