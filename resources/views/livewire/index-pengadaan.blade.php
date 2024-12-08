@@ -86,14 +86,14 @@
 
                         <div class="mb-3">
                             <label for="nama_barang_pengadaan" class="form-label">Nama Barang</label>
-                            <input type="text" class="form-control" id="nama_barang_pengadaan" wire:model="nama_barang_pengadaan">
+                            <input type="text" class="form-control border p-2" id="nama_barang_pengadaan" wire:model="nama_barang_pengadaan">
                             @error('nama_barang_pengadaan') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="ruangan_id" class="form-label">Untuk Ruangan</label>
-                            <select class="form-select" id="ruangan_id" wire:model="ruangan_id">
-                                <option value="">-- Pilih Ruangan --</option>
+                            <select class="form-select p-2" id="ruangan_id" wire:model="ruangan_id">
+                                <option value=""> Pilih Ruangan </option>
                                 @foreach ($ruangans as $ruangan)
                                 <option value="{{ $ruangan->id }}">{{ $ruangan->nama_ruangan }}</option>
                                 @endforeach
@@ -103,36 +103,36 @@
 
                         <div class="mb-3">
                             <label for="satuan_pengadaan" class="form-label">Satuan</label>
-                            <input type="text" class="form-control" id="satuan_pengadaan" wire:model="satuan_pengadaan">
+                            <input type="text" class="form-control border p-2" id="satuan_pengadaan" wire:model="satuan_pengadaan">
                             @error('satuan_pengadaan') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="jumlah_pengadaan" class="form-label">Jumlah</label>
-                            <input type="number" class="form-control" id="jumlah_pengadaan" wire:model="jumlah_pengadaan">
+                            <input type="number" class="form-control border p-2" id="jumlah_pengadaan" wire:model="jumlah_pengadaan">
                             @error('jumlah_pengadaan') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="harga_satuan" class="form-label">Harga Satuan</label>
-                            <input type="number" class="form-control" id="harga_satuan" wire:model="harga_satuan" wire:keyup="calculateTotal">
+                            <input type="number" class="form-control border p-2" id="harga_satuan" wire:model="harga_satuan" wire:keyup="calculateTotal">
                             @error('harga_satuan') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="total_harga" class="form-label">Total Harga</label>
-                            <input type="number" class="form-control" id="total_harga" wire:model="total_harga" readonly>
+                            <input type="number" class="form-control border p-2" id="total_harga" wire:model="total_harga" readonly>
                         </div>
 
                         <div class="mb-3">
                             <label for="tahun_pengadaan" class="form-label">Tahun Pengadaan</label>
-                            <input type="number" class="form-control" id="tahun_pengadaan" wire:model="tahun_pengadaan">
+                            <input type="number" class="form-control border p-2" id="tahun_pengadaan" wire:model="tahun_pengadaan">
                             @error('tahun_pengadaan') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="tanggal_pengadaan" class="form-label">Tanggal Pengadaan</label>
-                            <input type="date" class="form-control" id="tanggal_pengadaan" wire:model="tanggal_pengadaan">
+                            <input type="date" class="form-control border p-2" id="tanggal_pengadaan" wire:model="tanggal_pengadaan">
                             @error('tanggal_pengadaan') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
