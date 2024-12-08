@@ -8,19 +8,30 @@ use Livewire\WithPagination;
 
 class IndexRuangan extends Component
 {
+    // Pagination
     use WithPagination;
 
+    // Pagination Theme Bootstrap
     protected $paginationTheme = 'bootstrap';
 
-    protected $listeners = ['delete'];
-    public $nama_ruangan, $ruangan_id;
+    // Property Ruangan
+    public $ruangan_id, $nama_ruangan;
+
+    // Property Modal
     public $isModalOpen = false;
     public $isDeleteModalOpen = false;
 
+    // Validation Rules
     protected $rules = [
-        'nama_ruangan' => 'required|string|max:255',
+        'nama_ruangan' => 'required',
     ];
 
+    // Validation Messages
+    protected $messages = [
+        'nama_ruangan.required' => 'Nama ruangan harus diisi.',
+    ];
+
+    // Render Component
     public function render()
     {
         return view('livewire.index-ruangan', [
@@ -28,65 +39,78 @@ class IndexRuangan extends Component
         ]);
     }
 
-    // Menampilkan modal untuk form tambah
+    // Function Store Ruangan
+    public function store()
+    {
+        $this->validate();
+
+        Ruangan::create([
+            'nama_ruangan' => $this->nama_ruangan,
+        ]);
+
+        session()->flash('message', 'Ruangan berhasil ditambahkan.');
+
+        $this->closeModal();
+        $this->resetForm();
+    }
+
+    // Function Edit Ruangan
+    public function edit($id)
+    {
+        $ruangan = Ruangan::findOrFail($id);
+        $this->ruangan_id = $ruangan->id;
+        $this->nama_ruangan = $ruangan->nama_ruangan;
+        $this->isModalOpen = false;
+    }
+
+    // Function Update Ruangan
+    public function update()
+    {
+        $this->validate();
+
+        Ruangan::find($this->ruangan_id)->update([
+            'nama_ruangan' => $this->nama_ruangan,
+        ]);
+
+        session()->flash('message', 'Ruangan berhasil diperbarui.');
+
+        $this->closeModal();
+    }
+
+    // Function Open Modal
     public function openModal()
     {
         $this->resetForm();
         $this->isModalOpen = true;
     }
 
-    // Menutup modal
+    // Function Close Modal
     public function closeModal()
     {
         $this->isModalOpen = false;
     }
 
-    // Menampilkan modal untuk form edit
-    public function edit($id)
+    // Function Reset Form
+    public function resetForm()
     {
-        $ruangan = Ruangan::findOrFail($id);
-        $this->ruangan_id = $ruangan->id;
-        $this->nama_ruangan = $ruangan->nama_ruangan;
-        $this->isModalOpen = true;
-    }
-
-    // Menyimpan data barang baru atau mengupdate data
-    public function store()
-    {
-        $this->validate();
-
-        if ($this->ruangan_id) {
-            // Update ruangan
-            $ruangan = Ruangan::find($this->ruangan_id);
-            $ruangan->update([
-                'nama_ruangan' => $this->nama_ruangan,
-            ]);
-            session()->flash('message', 'Ruangan berhasil diperbarui.');
-        } else {
-            // Simpan barang baru
-            Ruangan::create([
-                'nama_ruangan' => $this->nama_ruangan,
-            ]);
-            session()->flash('message', 'Ruangan berhasil ditambahkan.');
-        }
-
-        $this->closeModal();
-    }
-
-    // Menghapus ruangan
-    public function delete($id)
-    {
-    $ruangan = Ruangan::find($id);
-    if ($ruangan) {
-        $ruangan->delete();
-        session()->flash('message', 'Data berhasil dihapus.');
-    }
-    }
-
-    // Reset form input
-    private function resetForm()
-    {
-        $this->nama_ruangan = '';
         $this->ruangan_id = null;
+        $this->nama_ruangan = '';
+    }
+
+    // Function Confirm Delete
+    public function confirmDelete($id)
+    {
+        $this->ruangan_id = $id;
+        $this->isDeleteModalOpen = true;
+    }
+
+    // Function Delete Ruangan
+    public function delete()
+    {
+        $ruangan = Ruangan::findOrFail($this->ruangan_id);
+        $ruangan->delete();
+
+        session()->flash('message', 'Ruangan berhasil dihapus.');
+        $this->isDeleteModalOpen = false;
     }
 }

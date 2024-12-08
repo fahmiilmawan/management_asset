@@ -8,90 +8,118 @@ use Livewire\WithPagination;
 
 class IndexBarang extends Component
 {
+    //Pagination
     use WithPagination;
 
-    protected $paginationTheme = 'bootstrap';
+    //Property Barang
+    public $barang_id,$kode_barang, $nama_barang;
 
-   
-    public $kode_barang, $nama_barang, $barang_id;
+    //Property Modal
     public $isModalOpen = false;
     public $isDeleteModalOpen = false;
 
+    //Pagination Theme
+    protected $paginationTheme = 'bootstrap';
+
+    //Form Rules
     protected $rules = [
-        'kode_barang' => 'required|string|max:255',
-        'nama_barang' => 'required|string|max:255',
+        'kode_barang' => 'required',
+        'nama_barang' => 'required'
     ];
 
+    //Form Validation Messages
+    protected $messages = [
+        'kode_barang.required' => 'Kode Barang Wajib Diisi',
+        'nama_barang.required' => 'Nama Barang Wajib Diisi',
+    ];
+
+
+    //Render Component
     public function render()
     {
-        return view('livewire.index-barang', [
+        return view('livewire.index-barang',[
             'barangs' => Barang::paginate(5),
         ]);
     }
 
-    // Menampilkan modal untuk form tambah
-    public function openModal()
+    // Function Store Barang
+    public function store()
     {
+        $this->validate();
+
+        Barang::create([
+            'kode_barang' => $this->kode_barang,
+            'nama_barang' => $this->nama_barang,
+        ]);
+
+        session()->flash('message', 'Barang berhasil ditambahkan.');
+
+        $this->closeModal();
         $this->resetForm();
-        $this->isModalOpen = true;
     }
 
-    // Menutup modal
-    public function closeModal()
-    {
-        $this->isModalOpen = false;
-    }
-
-    // Menampilkan modal untuk form edit
+    //Form Function Edit
     public function edit($id)
     {
         $barang = Barang::findOrFail($id);
         $this->barang_id = $barang->id;
         $this->kode_barang = $barang->kode_barang;
         $this->nama_barang = $barang->nama_barang;
-        $this->isModalOpen = true;
+        $this->isModalOpen = false;
     }
 
-    // Menyimpan data barang baru atau mengupdate data
-    public function store()
+    // Function Update Barang
+    public function update()
     {
         $this->validate();
 
-        if ($this->barang_id) {
-            // Update barang
-            $barang = Barang::find($this->barang_id);
-            $barang->update([
-                'kode_barang' => $this->kode_barang,
-                'nama_barang' => $this->nama_barang,
-            ]);
-            session()->flash('message', 'Barang berhasil diperbarui.');
-        } else {
-            // Simpan barang baru
-            Barang::create([
-                'kode_barang' => $this->kode_barang,
-                'nama_barang' => $this->nama_barang,
-            ]);
-            session()->flash('message', 'Barang berhasil ditambahkan.');
-        }
+        Barang::find($this->barang_id)->update([
+            'kode_barang' => $this->kode_barang,
+            'nama_barang' => $this->nama_barang
+        ]);
+
+        session()->flash('message', 'Barang berhasil diperbarui.');
 
         $this->closeModal();
     }
 
-    // Menghapus barang
-    public function delete($id)
+    // Function Open Modal
+    public function openModal()
     {
-    $barang = Barang::find($id);
-    if ($barang) {
-        $barang->delete();
-        session()->flash('message', 'Data berhasil dihapus.');
-    }
+        $this->resetForm();
+        $this->isModalOpen = true;
     }
 
-    // Reset form input
-    private function resetForm()
+    //Function Close Modal
+    public function closeModal()
     {
+        $this->resetForm();
+        $this->isModalOpen = false;
+    }
+
+    //Function Reset Form
+    public function resetForm()
+    {
+        $this->barang_id = null;
         $this->kode_barang = '';
         $this->nama_barang = '';
-        $this->barang_id = null;
     }
+
+    //Function Delete Confirmation
+    public function confirmDelete($id)
+    {
+        $this->barang_id = $id;
+        $this->isDeleteModalOpen = true;
+    }
+
+    //Function Delete Barang
+    public function delete()
+    {
+        $barang = Barang::findOrFail($this->barang_id);
+        $barang->delete();
+
+        session()->flash('message', 'Barang berhasil dihapus.');
+        $this->isDeleteModalOpen = false;
+    }
+
 }

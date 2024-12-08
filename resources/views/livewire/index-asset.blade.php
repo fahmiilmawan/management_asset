@@ -45,7 +45,8 @@
                         @forelse($assets as $asset)
                             <tr>
                                 <td>
-                                    <a href="#" class="text-primary" wire:click.prevent="showDetail({{ $asset->id }})">
+                                    <a href="#" class="text-primary"
+                                        wire:click.prevent="showDetail({{ $asset->id }})">
                                         {{ $asset->no_inventaris }}
                                     </a>
                                 </td>
@@ -87,7 +88,8 @@
 
     <!-- Modal -->
     @if ($isModalOpen)
-        <div class="modal fade show d-block" style="background-color: rgba(0, 0, 0, 0.5);" tabindex="-1" aria-hidden="true">
+        <div class="modal fade show d-block" style="background-color: rgba(0, 0, 0, 0.5);" tabindex="-1"
+            aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header bg-primary text-white">
@@ -101,7 +103,7 @@
                                     <label class="form-label">Barang</label>
                                     <select class="form-select" wire:model="barang_id" required>
                                         <option value="">Pilih Barang</option>
-                                        @foreach($barangs as $barang)
+                                        @foreach ($barangs as $barang)
                                             <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
                                         @endforeach
                                     </select>
@@ -110,7 +112,7 @@
                                     <label class="form-label">Ruangan</label>
                                     <select class="form-select" wire:model="ruangan_id" required>
                                         <option value="">Pilih Ruangan</option>
-                                        @foreach($ruangans as $ruangan)
+                                        @foreach ($ruangans as $ruangan)
                                             <option value="{{ $ruangan->id }}">{{ $ruangan->nama_ruangan }}</option>
                                         @endforeach
                                     </select>
@@ -119,7 +121,7 @@
                                     <label class="form-label">Unit</label>
                                     <select class="form-select" wire:model="unit_id" required>
                                         <option value="">Pilih Unit</option>
-                                        @foreach($units as $unit)
+                                        @foreach ($units as $unit)
                                             <option value="{{ $unit->id }}">{{ $unit->nama_unit }}</option>
                                         @endforeach
                                     </select>
@@ -132,7 +134,7 @@
                                     <label class="form-label">Bulan</label>
                                     <select class="form-select" wire:model="bulan" required>
                                         <option value="">Pilih Bulan</option>
-                                        @foreach(['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $bln)
+                                        @foreach (['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $bln)
                                             <option value="{{ $bln }}">{{ $bln }}</option>
                                         @endforeach
                                     </select>
@@ -160,7 +162,8 @@
                             </div>
                             <div class="text-end">
                                 <button type="submit" class="btn btn-primary">Simpan</button>
-                                <button type="button" class="btn btn-secondary" wire:click="closeModal">Batal</button>
+                                <button type="button" class="btn btn-secondary"
+                                    wire:click="closeModal">Batal</button>
                             </div>
                         </form>
                     </div>
@@ -170,62 +173,73 @@
     @endif
 
     <!-- Modal Detail Asset -->
-@if ($isDetailModalOpen)
-<div class="modal fade show d-block" style="background-color: rgba(0, 0, 0, 0.5);" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">Detail Asset</h5>
-                <button type="button" class="btn-close" wire:click="closeDetailModal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                @if ($selectedAsset)
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">No Inventaris</label>
-                            <input type="text" class="form-control" value="{{ $selectedAsset->no_inventaris }}" readonly>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Barang</label>
-                            <input type="text" class="form-control" value="{{ $selectedAsset->barang->nama_barang }}" readonly>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Ruangan</label>
-                            <input type="text" class="form-control" value="{{ $selectedAsset->ruangan->nama_ruangan }}" readonly>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Unit</label>
-                            <input type="text" class="form-control" value="{{ $selectedAsset->unit->nama_unit }}" readonly>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Bulan</label>
-                            <input type="text" class="form-control" value="{{ $selectedAsset->bulan }}" readonly>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Tahun</label>
-                            <input type="text" class="form-control" value="{{ $selectedAsset->tahun }}" readonly>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Jumlah</label>
-                            <input type="text" class="form-control" value="{{ $selectedAsset->jumlah }}" readonly>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Satuan</label>
-                            <input type="text" class="form-control" value="{{ $selectedAsset->satuan }}" readonly>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Status</label>
-                            <input type="text" class="form-control" value="{{ $selectedAsset->status }}" readonly>
-                        </div>
+    @if ($isDetailModalOpen)
+        <div class="modal fade show d-block" style="background-color: rgba(0, 0, 0, 0.5);" tabindex="-1"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Detail Asset</h5>
+                        <button type="button" class="btn-close" wire:click="closeDetailModal"
+                            aria-label="Close"></button>
                     </div>
-                @endif
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" wire:click="closeDetailModal">Tutup</button>
+                    <div class="modal-body">
+                        @if ($selectedAsset)
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">No Inventaris</label>
+                                    <input type="text" class="form-control"
+                                        value="{{ $selectedAsset->no_inventaris }}" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Barang</label>
+                                    <input type="text" class="form-control"
+                                        value="{{ $selectedAsset->barang->nama_barang }}" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Ruangan</label>
+                                    <input type="text" class="form-control"
+                                        value="{{ $selectedAsset->ruangan->nama_ruangan }}" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Unit</label>
+                                    <input type="text" class="form-control"
+                                        value="{{ $selectedAsset->unit->nama_unit }}" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Bulan</label>
+                                    <input type="text" class="form-control" value="{{ $selectedAsset->bulan }}"
+                                        readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Tahun</label>
+                                    <input type="text" class="form-control" value="{{ $selectedAsset->tahun }}"
+                                        readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Jumlah</label>
+                                    <input type="text" class="form-control" value="{{ $selectedAsset->jumlah }}"
+                                        readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Satuan</label>
+                                    <input type="text" class="form-control" value="{{ $selectedAsset->satuan }}"
+                                        readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Status</label>
+                                    <input type="text" class="form-control" value="{{ $selectedAsset->status }}"
+                                        readonly>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" wire:click="closeDetailModal">Tutup</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-@endif
+    @endif
 
 </div>

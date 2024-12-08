@@ -80,7 +80,6 @@
                         <h5 class="modal-title" id="modalFormLabel">
                             {{ $pengadaan_id ? 'Edit Pengadaan' : 'Tambah Pengadaan' }}
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <!-- Input Fields -->
@@ -164,7 +163,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalDeleteLabel">Konfirmasi Hapus</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     Apakah Anda yakin ingin menghapus data ini?

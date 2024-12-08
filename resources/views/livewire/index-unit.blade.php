@@ -2,98 +2,121 @@
     <!-- Header -->
     <div class="row mb-4 align-items-center">
         <div class="col-md-6">
-            <h3 class="font-weight-bolder mb-0">Data Unit</h3>
-            <p class="text-muted">{{ Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <h3 class="font-weight-bold mb-0">Data Unit</h3>
+            <p class="text-muted">{{ now()->format('d F Y') }}</p>
         </div>
         <div class="col-md-6 text-end">
-            <button class="btn btn-primary" wire:click="openModal">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" wire:click="openModal">
                 <i class="fas fa-plus"></i> Tambah Unit
             </button>
         </div>
     </div>
+    {{-- End of Header --}}
 
-    <!-- Alert Pesan -->
+    {{-- Alert Message --}}
     @if (session()->has('message'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('message') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('message') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     @endif
+    {{-- End Alert Message --}}
 
-    <!-- Tabel Data Barang -->
+    <!-- Tabel -->
     <div class="card shadow-sm mb-4">
-        <div class="card-header bg-primary ">
-            <h5 class="mb-0 text-white">Daftar Unit</h5>
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Daftar unit</h5>
         </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-striped mb-0">
-                    <thead class="bg-light">
-                        <tr>
-                            <th>Nama Unit</th>
-                            <th>Deskripsi</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($units as $unit)
-                            <tr>
-                                <td>{{ $unit->nama_unit }}</td>
-                                <td>{{ $unit->deskripsi }}</td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-warning me-2" wire:click="edit({{ $unit->id }})">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" wire:click="delete({{ $unit->id }})" wire:confirm="Are you sure you want to delete this post?">
-                                        <i class="fas fa-trash"></i> Hapus
-                                    </button>
-                                </td>
-                            </tr>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nama Unit</th>
+                        <th>Deskripsi</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{-- Looping data from render component --}}
+                    @forelse ( $units as $unit )
+                    <tr>
+
+                        <td>{{ $unit->nama_unit }}</td>
+                        <td>{{ $unit->deskripsi }}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm" wire:click="edit({{ $unit->id }})">Edit</button>
+                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete" wire:click="confirmDelete({{ $unit->id }})">Hapus</button>
+                        </td>
                         @empty
-                            <tr>
-                                <td colspan="3" class="text-center text-muted">Tidak ada data unit.</td>
-                            </tr>
+                        <td colspan="2" class="text-center">Tidak ada data unit.</td>
                         @endforelse
-                    </tbody>
-                </table>
+                    </tr>
+                    {{-- End Looping data from render component --}}
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Render pagination --}}
+        <div class="card-footer">
+            {{ $units->links() }}
+        </div>
+    </div>
+    {{-- End Render pagination --}}
+
+    {{-- Modal Edit and Store Form --}}
+    <div wire:ignore.self class="modal fade" id="modalForm" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form wire:submit.prevent="{{ $unit_id ? 'update': 'store' }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            {{ $unit_id ? 'Edit unit' : 'Tambah unit' }}
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nama_unit" class="form-label">Nama Unit</label>
+                            <input type="text" class="form-control border p-2" id="nama_unit" wire:model="nama_unit">
+                            @error('nama_unit')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="deskripsi" class="form-label">Nama unit</label>
+                            <input type="text" class="form-control border p-2" id="deskripsi" wire:model="deskripsi">
+                            @error('deskripsi')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">{{ $unit_id ? 'Simpan Perubahan' : 'Tambah' }}</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+    {{--End Modal Edit and Store Form --}}
 
-    <!-- Pagination -->
-    <div class="d-flex justify-content-center">
-        {{ $units->links() }}
-    </div>
-
-    <!-- Modal -->
-    @if ($isModalOpen)
-        <div class="modal fade show d-block" style="background-color: rgba(0, 0, 0, 0.5);" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title">{{ $unit_id ? 'Edit Unit' : 'Tambah Unit' }}</h5>
-                        <button type="button" class="btn-close" wire:click="closeModal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form wire:submit.prevent="store">
-                            <div class="mb-3">
-                                <label for="nama_unit" class="form-label">Nama Unit</label>
-                                <input type="text" class="form-control" id="nama_unit" wire:model="nama_unit" placeholder="Masukkan Nama Unit" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="nama_unit" class="form-label">Deskripsi</label>
-                                <input type="text" class="form-control" id="deskripsi" wire:model="deskripsi" placeholder="Masukkan Deskripsi" required>
-                            </div>
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                                <button type="button" class="btn btn-secondary" wire:click="closeModal">Batal</button>
-                            </div>
-                        </form>
-                    </div>
+    {{-- Modal Delete --}}
+    <div wire:ignore.self class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Konfirmasi Hapus
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    Apakah anda yakin ingin menghapus data ini?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" wire:click="delete" data-bs-dismiss="modal">Hapus</button>
                 </div>
             </div>
         </div>
-    @endif
+    </div>
+    {{-- End Modal Delete --}}
 </div>
-
-

@@ -8,19 +8,31 @@ use Livewire\WithPagination;
 
 class IndexUnit extends Component
 {
+    // Pagination
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
 
-    protected $listeners = ['delete'];
-    public $nama_unit,$deskripsi, $unit_id;
+    // Property Unit
+    public $unit_id, $nama_unit, $deskripsi;
+
+    // Property Modal
     public $isModalOpen = false;
     public $isDeleteModalOpen = false;
 
+    // Form Rules
     protected $rules = [
-        'nama_unit' => 'required|string|max:255',
+        'nama_unit' => 'required',
+        'deskripsi' => 'required',
     ];
 
+    // Form Validation Messages
+    protected $messages = [
+        'nama_unit.required' => 'Nama unit harus diisi.',
+        'deskripsi.required' => 'Deskripsi harus diisi.',
+    ];
+
+    // Render Component
     public function render()
     {
         return view('livewire.index-unit', [
@@ -28,20 +40,23 @@ class IndexUnit extends Component
         ]);
     }
 
-    // Menampilkan modal untuk form tambah
-    public function openModal()
+    // Function Store Unit
+    public function store()
     {
-        $this->resetForm();
-        $this->isModalOpen = true;
-    }
+        $this->validate();
 
-    // Menutup modal
-    public function closeModal()
-    {
+        Unit::create([
+            'nama_unit' => $this->nama_unit,
+            'deskripsi' => $this->deskripsi,
+        ]);
+
+        session()->flash('message', 'Unit berhasil ditambahkan.');
+
+        $this->resetForm();
         $this->isModalOpen = false;
     }
 
-    // Menampilkan modal untuk form edit
+    // Form Function Edit
     public function edit($id)
     {
         $unit = Unit::findOrFail($id);
@@ -51,46 +66,56 @@ class IndexUnit extends Component
         $this->isModalOpen = true;
     }
 
-    // Menyimpan data unit baru atau mengupdate data
-    public function store()
+    // Function Update Unit
+    public function update()
     {
         $this->validate();
 
-        if ($this->unit_id) {
-            // Update unit
-            $unit = Unit::find($this->unit_id);
-            $unit->update([
-                'nama_unit' => $this->nama_unit,
-                'deskripsi' => $this->deskripsi,
-            ]);
-            session()->flash('message', 'Unit berhasil diperbarui.');
-        } else {
-            // Simpan barang baru
-            Unit::create([
-                'nama_unit' => $this->nama_unit,
-                'deskripsi' => $this->deskripsi,
-            ]);
-            session()->flash('message', 'Unit berhasil ditambahkan.');
-        }
+        Unit::find($this->unit_id)->update([
+            'nama_unit' => $this->nama_unit,
+            'deskripsi' => $this->deskripsi,
+        ]);
+
+        session()->flash('message', 'Unit berhasil diperbarui.');
 
         $this->closeModal();
     }
 
-    // Menghapus unit
-    public function delete($id)
+    // Function Delete Confirmation
+    public function confirmDelete($id)
     {
-    $unit = Unit::find($id);
-    if ($unit) {
-        $unit->delete();
-        session()->flash('message', 'Data berhasil dihapus.');
-    }
+        $this->unit_id = $id;
+        $this->isDeleteModalOpen = true;
     }
 
-    // Reset form input
-    private function resetForm()
+    // Function Delete Unit
+    public function delete()
     {
+        $unit = Unit::findOrFail($this->unit_id);
+        $unit->delete();
+
+        session()->flash('message', 'Unit berhasil dihapus.');
+        $this->isDeleteModalOpen = false;
+    }
+
+    // Function Open Modal
+    public function openModal()
+    {
+        $this->resetForm();
+        $this->isModalOpen = true;
+    }
+
+    // Function Close Modal
+    public function closeModal()
+    {
+        $this->isModalOpen = false;
+    }
+
+    // Function Reset Form
+    public function resetForm()
+    {
+        $this->unit_id = null;
         $this->nama_unit = '';
         $this->deskripsi = '';
-        $this->unit_id = null;
     }
 }

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('pengaduan');
             $table->integer('jumlah');
             $table->enum('status',['diproses','sudah diperbaiki']);
-            $table->string('bukti_fisik');
+            $table->string('bukti_fisik')->nullable();
             $table->text('deskripsi');
             $table->date('tanggal_rusak');
             $table->timestamps();
