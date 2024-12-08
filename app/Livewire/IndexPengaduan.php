@@ -64,7 +64,7 @@ use WithFileUploads;
     private function uploadBuktiFisik()
     {
         if ($this->bukti_fisik) {
-            return $this->bukti_fisik->storeAs('bukti-fisik', $this->bukti_fisik->getClientOriginalName());
+            return $this->bukti_fisik->storeAs('bukti-fisik', $this->bukti_fisik->getClientOriginalName(),'public');
         }
         return null;
     }

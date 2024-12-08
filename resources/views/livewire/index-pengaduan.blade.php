@@ -44,7 +44,7 @@
                     @forelse ( $pengaduans as $pengaduan )
                     <tr>
                         <td>{{ $pengaduan->tanggal_rusak}}</td>
-                        <td>{{ $pengaduan->bukti_fisik}}</td>
+                        <td><img src="{{ \Illuminate\Support\Facades\Storage::url($pengaduan->bukti_fisik) }}" width="50px" height="50px" alt=""></td>
                         <td>{{ $pengaduan->asset->barang->nama_barang }}</td>
                         <td>{{ $pengaduan->pengaduan }}</td>
                         <td>{{ $pengaduan->jumlah }}</td>

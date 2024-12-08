@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
+
 class UserController extends Controller
 {
     /**
@@ -13,6 +14,7 @@ class UserController extends Controller
      */
     public function index()
     {
+
         return view('user.user');
     }
 
