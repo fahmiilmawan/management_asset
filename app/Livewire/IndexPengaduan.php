@@ -12,7 +12,7 @@ use Livewire\WithPagination;
 
 class IndexPengaduan extends Component
 {
-use WithFileUploads;
+    use WithFileUploads;
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
@@ -20,6 +20,7 @@ use WithFileUploads;
 
     public $isModalOpen = false;
     public $isDeleteModalOpen = false;
+    public $isDetailModalOpen = false;
 
     protected $rules = [
         'pengaduan' => 'required',
@@ -67,6 +68,21 @@ use WithFileUploads;
             return $this->bukti_fisik->storeAs('bukti-fisik', $this->bukti_fisik->getClientOriginalName(),'public');
         }
         return null;
+    }
+
+    public function detail($id)
+    {
+        $pengaduan = Pengaduan::findOrFail($id);
+        $this->pengaduan_id = $pengaduan->id;
+        $this->asset_id = $pengaduan->asset_id;
+        $this->user_id = $pengaduan->user_id;
+        $this->pengaduan = $pengaduan->pengaduan;
+        $this->jumlah = $pengaduan->jumlah;
+        $this->status = $pengaduan->status;
+        $this->bukti_fisik = $pengaduan->bukti_fisik;
+        $this->deskripsi = $pengaduan->deskripsi;
+        $this->tanggal_rusak = $pengaduan->tanggal_rusak;
+        $this->isDetailModalOpen = true;
     }
 
     public function edit($id)

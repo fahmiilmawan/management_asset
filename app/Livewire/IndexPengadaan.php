@@ -31,6 +31,25 @@ class IndexPengadaan extends Component
         'status_pengadaan' => 'required|in:diterima,diproses,barang tiba',
     ];
 
+    protected $messages = [
+        'ruangan_id.required' => 'Ruangan harus dipilih.',
+        'ruangan_id.exists' => 'Ruangan tidak ditemukan.',
+        'nama_barang_pengadaan.required' => 'Nama barang pengadaan harus diisi.',
+        'satuan_pengadaan.required' => 'Satuan pengadaan harus diisi.',
+        'jumlah_pengadaan.required' => 'Jumlah pengadaan harus diisi.',
+        'jumlah_pengadaan.integer' => 'Jumlah pengadaan harus berupa angka.',
+        'jumlah_pengadaan.min' => 'Jumlah pengadaan minimal adalah 1.',
+        'harga_satuan.required' => 'Harga satuan harus diisi.',
+        'harga_satuan.numeric' => 'Harga satuan harus berupa angka.',
+        'harga_satuan.min' => 'Harga satuan minimal adalah 0.',
+        'tahun_pengadaan.required' => 'Tahun pengadaan harus diisi.',
+        'tahun_pengadaan.digits' => 'Tahun pengadaan harus terdiri dari 4 angka.',
+        'tanggal_pengadaan.required' => 'Tanggal pengadaan harus diisi.',
+        'tanggal_pengadaan.date' => 'Tanggal pengadaan harus berupa tanggal.',
+        'status_pengadaan.required' => 'Status pengadaan harus dipilih.',
+        'status_pengadaan.in' => 'Status pengadaan tidak valid.',
+    ];
+
     public function render()
     {
         return view('livewire.index-pengadaan', [

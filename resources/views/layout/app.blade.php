@@ -111,6 +111,12 @@
                                 <span class="nav-link-text ms-1">Data Asset</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="{{ route('index.scanqr')  }}">
+                                <i class="material-symbols-rounded opacity-5">camera</i>
+                                <span class="nav-link-text ms-1">Scan QR Code</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 {{-- End Side Data Asset --}}
@@ -216,6 +222,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->

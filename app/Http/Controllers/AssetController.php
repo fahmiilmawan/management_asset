@@ -15,11 +15,13 @@ class AssetController extends Controller
         return view('asset.asset');
     }
 
-    public function assetDetail($id)
+    public function detailAsset(Request $request)
     {
-        $asset = Asset::findOrFail($id);
-        return view('asset.asset-detail', compact('asset'));
+        $no_inventaris = $request->no_inventaris;
+        $getInventaris = Asset::where('no_inventaris', $no_inventaris)->first();
+        return view('asset.detail-asset', compact('getInventaris'));
     }
+
 
     /**
      * Show the form for creating a new resource.

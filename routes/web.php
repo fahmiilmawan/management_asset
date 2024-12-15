@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengadaanController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\RuanganController;
+use App\Http\Controllers\ScanQRController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Livewire\AssetDetail;
@@ -22,8 +23,12 @@ Route::get('/ruangan',[RuanganController::class,'index'])->name('index.ruangan')
 Route::get('/unit',[UnitController::class,'index'])->name('index.unit');
 Route::get('/user',[UserController::class,'index'])->name('index.user');
 Route::get('/asset',[AssetController::class,'index'])->name('index.asset');
+Route::get('/scan',[AssetController::class,'detailAsset'])->name('index.detail-asset');
+
 Route::get('/pengaduan',[PengaduanController::class,'index'])->name('index.pengaduan');
 Route::get('/pengadaan',[PengadaanController::class,'index'])->name('index.pengadaan');
+Route::get('/scan-qr',[ScanQRController::class,'index'])->name('index.scanqr');
+
 
 
 Route::get('/user/send-wa/{id}',[UserController::class,'sendWhatsappMessage'])->name('sendWhatsapp');

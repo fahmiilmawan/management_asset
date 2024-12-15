@@ -2,244 +2,315 @@
     <!-- Header -->
     <div class="row mb-4 align-items-center">
         <div class="col-md-6">
-            <h3 class="font-weight-bolder mb-0">Data Asset</h3>
-            <p class="text-muted">{{ Carbon\Carbon::now()->translatedFormat('d F Y H:i') }}</p>
+            <h3 class="font-weight-bold mb-0">Data Asset</h3>
+            <p class="text-muted">{{ now()->format('d F Y') }}</p>
         </div>
         <div class="col-md-6 text-end">
-            <button class="btn btn-primary" wire:click="openModal">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" wire:click="openModal">
                 <i class="fas fa-plus"></i> Tambah Asset
             </button>
         </div>
     </div>
+    {{-- End of Header --}}
 
-    <!-- Alert Pesan -->
+    {{-- Alert Message --}}
     @if (session()->has('message'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('message') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('message') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     @endif
+    {{-- End Alert Message --}}
 
-    <!-- Tabel Data Asset -->
+
+    <!-- Tabel -->
     <div class="card shadow-sm mb-4">
-        <div class="card-header bg-primary">
-            <h5 class="mb-0 text-white">Daftar Asset</h5>
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Daftar Asset</h5>
         </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-striped mb-0">
-                    <thead class="bg-light">
-                        <tr>
-                            <th>No Inventaris</th>
-                            <th>Barang</th>
-                            <th>Ruangan</th>
-                            <th>Unit</th>
-                            <th>Periode</th>
-                            <th>Jumlah</th>
-                            <th>Satuan</th>
-                            <th>Status</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($assets as $asset)
-                            <tr>
-                                <td>
-                                    <a href="#" class="text-primary"
-                                        wire:click.prevent="showDetail({{ $asset->id }})">
-                                        {{ $asset->no_inventaris }}
-                                    </a>
-                                </td>
-                                <td>{{ $asset->barang->nama_barang }}</td>
-                                <td>{{ $asset->ruangan->nama_ruangan }}</td>
-                                <td>{{ $asset->unit->nama_unit }}</td>
-                                <td>{{ $asset->bulan }} {{ $asset->tahun }}</td>
-                                <td>{{ $asset->jumlah }}</td>
-                                <td>{{ $asset->satuan }}</td>
-                                <td>
-                                    <span class="badge bg-{{ $asset->status == 'baik' ? 'success' : 'danger' }}">
-                                        {{ $asset->status }}
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <button class="btn btn-sm btn-warning me-2" wire:click="edit({{ $asset->id }})">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" wire:click="delete({{ $asset->id }})">
-                                        <i class="fas fa-trash"></i> Hapus
-                                    </button>
-                                </td>
-                            </tr>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>No Inventaris</th>
+                        <th>Nama Asset</th>
+                        <th>Jumlah</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{-- Looping data from render component --}}
+                    @forelse ( $assets as $asset )
+                    <tr>
+                        <td>
+                            <a href="#" wire:click="detail({{ $asset->id }})" class="text-decoration-underline" data-bs-toggle="modal" data-bs-target="#modalDetail"> {{ $asset->id.'/'.$asset->no_inventaris }} </a>
+                        </td>
+                        <td>{{ $asset->barang->nama_barang }}</td>
+                        <td>{{ $asset->jumlah }}</td>
+                        <td>
+                            <span class="badge bg-gradient-success">{{ $asset->status }}</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm" wire:click="edit({{ $asset->id }})">Edit</button>
+                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete" wire:click="confirmDelete({{ $asset->id }})">Hapus</button>
+                            <a href="" class="btn btn-info btn-sm" data-bs-target="#modalQRCode" data-bs-toggle="modal">QR Code</a>
+                        </td>
                         @empty
-                            <tr>
-                                <td colspan="9" class="text-center text-muted">Tidak ada data asset.</td>
-                            </tr>
+                        <td colspan="5" class="text-center">Tidak ada data asset.</td>
                         @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    </tr>
+                    {{-- End Looping data from render component --}}
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Render pagination --}}
+        <div class="card-footer">
+            {{ $assets->links() }}
         </div>
     </div>
+    {{-- End Render pagination --}}
 
-    <!-- Pagination -->
-    <div class="d-flex justify-content-center">
-        {{ $assets->links() }}
-    </div>
-
-    <!-- Modal -->
-    @if ($isModalOpen)
-        <div class="modal fade show d-block" style="background-color: rgba(0, 0, 0, 0.5);" tabindex="-1"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title">{{ $asset_id ? 'Edit Asset' : 'Tambah Asset' }}</h5>
-                        <button type="button" class="btn-close" wire:click="closeModal" aria-label="Close"></button>
+    {{-- Modal Edit and Store Form --}}
+    <div wire:ignore.self class="modal fade" id="modalForm" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form wire:submit.prevent="{{ $asset_id ? 'update': 'store' }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            {{ $asset_id ? 'Edit asset' : 'Tambah asset' }}
+                        </h5>
                     </div>
                     <div class="modal-body">
-                        <form wire:submit.prevent="store">
+                        <div class="mb-3">
+                            <label for="barang_id" class="form-label">Nama asset</label>
+                            <select class="form-select border p-2" wire:model="barang_id" id="barang_id">
+                                <option class="form-control" value=""> Pilih Asset </option>
+                                @foreach ( $barangs as $barang )
+                                    <option class="form-control" value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
+                                @endforeach
+                            </select>
+                            @error('barang_id')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="unit_id" class="form-label">Untuk Unit</label>
+                            <select class="form-select border p-2" wire:model="unit_id" id="unit_id">
+                                <option class="form-control" value=""> Untuk Unit </option>
+                                @foreach ( $units as $unit )
+                                <option class="form-control" value="{{ $unit->id }}">{{ $unit->nama_unit }}</option>
+                                @endforeach
+                            </select>
+                            @error('unit_id')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="ruangan_id" class="form-label">Untuk Ruangan</label>
+                            <select class="form-select border p-2" wire:model="ruangan_id" id="ruangan_id">
+                                <option class="form-control" value=""> Pilih Ruangan </option>
+                                @foreach ( $ruangans as $ruangan )
+                                <option class="form-control" value="{{ $ruangan->id }}">{{ $ruangan->nama_ruangan }}</option>
+                                @endforeach
+                            </select>
+                            @error('ruangan_id')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
                             <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Barang</label>
-                                    <select class="form-select" wire:model="barang_id" required>
-                                        <option value="">Pilih Barang</option>
-                                        @foreach ($barangs as $barang)
-                                            <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
+                                <div class="col-6">
+                                    <label for="bulan" class="form-label">Bulan</label>
+                                    <select class="form-select border p-2" wire:model="bulan" id="bulan">
+                                        <option value=""> Pilih Bulan</option>
+                                        @foreach ($bulanRomawi as $bulan => $romawi)
+                                            <option value="{{ $bulan }}">{{ $bulan }}</option>
                                         @endforeach
                                     </select>
+                                    @error('bulan')
+                                    <small class="text-danger">{{ $message }}</small>
+                                    @enderror
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Ruangan</label>
-                                    <select class="form-select" wire:model="ruangan_id" required>
-                                        <option value="">Pilih Ruangan</option>
-                                        @foreach ($ruangans as $ruangan)
-                                            <option value="{{ $ruangan->id }}">{{ $ruangan->nama_ruangan }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Unit</label>
-                                    <select class="form-select" wire:model="unit_id" required>
-                                        <option value="">Pilih Unit</option>
-                                        @foreach ($units as $unit)
-                                            <option value="{{ $unit->id }}">{{ $unit->nama_unit }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">No Inventaris</label>
-                                    <input type="text" class="form-control" wire:model="no_inventaris" readonly>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label">Bulan</label>
-                                    <select class="form-select" wire:model="bulan" required>
-                                        <option value="">Pilih Bulan</option>
-                                        @foreach (['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $bln)
-                                            <option value="{{ $bln }}">{{ $bln }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label">Tahun</label>
-                                    <input type="number" class="form-control" wire:model="tahun" required>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label">Status</label>
-                                    <select class="form-select" wire:model="status" required>
-                                        <option value="">Pilih Status</option>
-                                        <option value="baik">Baik</option>
-                                        <option value="rusak">Rusak</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Jumlah</label>
-                                    <input type="number" class="form-control" wire:model="jumlah" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Satuan</label>
-                                    <input type="text" class="form-control" wire:model="satuan" required>
+                                <div class="col-6">
+                                    <label for="tahun" class="form-label">Tahun</label>
+                                    <input type="number" class="form-control border p-2" id="tahun" wire:model="tahun">
+                                    @error('tahun')
+                                    <small class="text-danger">{{ $message }}</small>
+                                    @enderror
                                 </div>
                             </div>
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                                <button type="button" class="btn btn-secondary"
-                                    wire:click="closeModal">Batal</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
+                        </div>
+                        <div class="mb-4">
+                            <input type="hidden" class="form-control border p-2" id="no_inventaris" wire:model="no_inventaris" readonly>
+                        </div>
 
-    <!-- Modal Detail Asset -->
-    @if ($isDetailModalOpen)
-        <div class="modal fade show d-block" style="background-color: rgba(0, 0, 0, 0.5);" tabindex="-1"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title">Detail Asset</h5>
-                        <button type="button" class="btn-close" wire:click="closeDetailModal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        @if ($selectedAsset)
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">No Inventaris</label>
-                                    <input type="text" class="form-control"
-                                        value="{{ $selectedAsset->no_inventaris }}" readonly>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Barang</label>
-                                    <input type="text" class="form-control"
-                                        value="{{ $selectedAsset->barang->nama_barang }}" readonly>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Ruangan</label>
-                                    <input type="text" class="form-control"
-                                        value="{{ $selectedAsset->ruangan->nama_ruangan }}" readonly>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Unit</label>
-                                    <input type="text" class="form-control"
-                                        value="{{ $selectedAsset->unit->nama_unit }}" readonly>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Bulan</label>
-                                    <input type="text" class="form-control" value="{{ $selectedAsset->bulan }}"
-                                        readonly>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Tahun</label>
-                                    <input type="text" class="form-control" value="{{ $selectedAsset->tahun }}"
-                                        readonly>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Jumlah</label>
-                                    <input type="text" class="form-control" value="{{ $selectedAsset->jumlah }}"
-                                        readonly>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Satuan</label>
-                                    <input type="text" class="form-control" value="{{ $selectedAsset->satuan }}"
-                                        readonly>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Status</label>
-                                    <input type="text" class="form-control" value="{{ $selectedAsset->status }}"
-                                        readonly>
-                                </div>
-                            </div>
-                        @endif
+
+                        <div class="mb-4">
+                            <label for="satuan" class="form-label">Satuan</label>
+                            <select class="form-select border p-2" wire:model="satuan" id="">
+                                <option value="">Pilih Satuan</option>
+                                <option value="unit">Unit</option>
+                                <option value="unit">Rim</option>
+                                <option value="unit">Box</option>
+                                <option value="unit">Pcs</option>
+                                <option value="unit">Meter</option>
+                                <option value="unit">Kg</option>
+                                <option value="unit">Lusin</option>
+                                <option value="unit">Roll</option>
+                                <option value="unit">Set</option>
+                                <option value="unit">Kardus</option>
+                            </select>
+                            @error('satuan')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="status" class="form-label">status</label>
+                            <select class="form-select border p-2" wire:model="status" id="">
+                                <option value="">Pilih Status</option>
+                                <option value="baik">Baik</option>
+                                <option value="rusak">Rusak</option>
+                            </select>
+                            @error('status')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="jumlah" class="form-label">Jumlah</label>
+                            <input type="number" class="form-control border p-2" id="jumlah" wire:model="jumlah">
+                            @error('jumlah')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" wire:click="closeDetailModal">Tutup</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">{{ $asset_id ? 'Simpan Perubahan' : 'Tambah' }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{--End Modal Edit and Store Form --}}
+
+    {{-- Detail Modal --}}
+    <!-- Detail Modal -->
+<div wire:ignore.self class="modal fade" id="modalDetail" tabindex="-1" aria-labelledby="modalDetailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDetailLabel">Detail Asset</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Informasi Asset</h6>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <strong>Barang:</strong> <span>{{ $asset->barang->nama }}</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>No Inventaris:</strong> <span>{{ $asset->no_inventaris }}</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Bulan:</strong> <span>{{ $asset->bulan }}</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Tahun:</strong> <span>{{ $asset->tahun }}</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Jumlah:</strong> <span>{{ $asset->jumlah }}</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Satuan:</strong> <span>{{ $asset->satuan }}</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Status:</strong> <span class="badge bg-{{ $asset->status == 'baik' ? 'success' : 'danger' }}">{{ ucfirst($asset->status) }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Lokasi Asset</h6>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <strong>Ruangan:</strong> <span>{{ $asset->ruangan->nama_ruangan }}</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Unit:</strong> <span>{{ $asset->unit->nama_unit }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="mt-4 text-center">
+                                <h6 class="mb-3">QR Code</h6>
+                                <div>
+                                    <img src="{{ $this->generate($asset->no_inventaris) }}">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
         </div>
-    @endif
+    </div>
+</div>
+<!-- End Detail Modal -->
+    {{--End Detail --}}
+    {{-- QRModal --}}
+    <div wire:ignore.self class="modal fade" id="modalQRCode" tabindex="-1" aria-labelledby="modalDetailLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        QR Code
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <img src="{{ $this->generate($asset->no_inventaris) }}">
+                    <span>{{ $asset->id.'/'.$asset->no_inventaris }}</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- End QR Modal --}}
+
+    {{-- Modal Delete --}}
+    <div wire:ignore.self class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Konfirmasi Hapus
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    Apakah anda yakin ingin menghapus data ini?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" wire:click="delete" data-bs-dismiss="modal">Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- End Modal Delete --}}
 
 </div>

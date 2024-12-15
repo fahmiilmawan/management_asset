@@ -49,11 +49,12 @@
                         <td>{{ $pengaduan->pengaduan }}</td>
                         <td>{{ $pengaduan->jumlah }}</td>
                         <td>
+                            <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalDetail" wire:click="detail({{ $pengaduan->id }})">Lihat Detail</button>
                             <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm" wire:click="edit({{ $pengaduan->id }})">Edit</button>
                             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete" wire:click="confirmDelete({{ $pengaduan->id }})">Hapus</button>
                         </td>
                         @empty
-                        <td colspan="5" class="text-center">Tidak ada data pengaduan.</td>
+                        <td colspan="6" class="text-center">Tidak ada data pengaduan.</td>
                         @endforelse
                     </tr>
                     {{-- End Looping data from render component --}}
@@ -137,6 +138,78 @@
         </div>
     </div>
     {{--End Modal Edit and Store Form --}}
+
+    <!-- Detail Modal -->
+<div wire:ignore.self class="modal fade" id="modalDetail" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detail Pengaduan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Informasi Pengaduan</h6>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <strong>Asset:</strong> <span>{{ $pengaduan->asset->no_inventaris }}</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Pengadu:</strong> <span>{{ $pengaduan->user->nama_lengkap }}</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Tanggal Rusak:</strong> <span>{{ $pengaduan->tanggal_rusak }}</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Jumlah:</strong> <span>{{ $pengaduan->jumlah }}</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Status:</strong> <span class="badge bg-{{ $pengaduan->status == 'diproses' ? 'warning' : 'success' }}">{{ ucfirst($pengaduan->status) }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Detail Lainnya</h6>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <strong>Pengaduan:</strong> <span>{{ $pengaduan->pengaduan }}</span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Deskripsi:</strong> <p>{{ $pengaduan->deskripsi }}</p>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Bukti Fisik:</strong>
+                                        @if($pengaduan->bukti_fisik)
+                                            <img src="{{ \Illuminate\Support\Facades\Storage::url($pengaduan->bukti_fisik) }}" width="50px" height="50px" alt="">
+                                        @else
+                                            <span class="text-muted">Tidak ada</span>
+                                        @endif
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Detail Modal -->
+
 
     {{-- Modal Delete --}}
     <div wire:ignore.self class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="modalDeleteLabel" aria-hidden="true">

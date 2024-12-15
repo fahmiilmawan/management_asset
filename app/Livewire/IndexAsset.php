@@ -2,10 +2,15 @@
 
 namespace App\Livewire;
 
+use App\Helper\QRCode;
 use App\Models\Asset;
 use App\Models\Barang;
 use App\Models\Ruangan;
 use App\Models\Unit;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -15,74 +20,104 @@ class IndexAsset extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $asset_id, $barang_id, $ruangan_id, $unit_id, $no_inventaris;
-    public $bulan, $tahun, $satuan, $status, $jumlah;
+    public $asset_id, $barang_id, $ruangan_id, $unit_id, $no_inventaris, $bulan, $tahun, $satuan, $status, $jumlah;
+
     public $isModalOpen = false;
-    public $selectedBarang;
-    public $selectedAsset;
-    public $isDetailModalOpen =false;
+    public $isDetailModalOpen = false;
+    public $isDeleteModalOpen = false;
+
+    protected $bulanRomawi = [
+        'Januari' => 'I',
+        'Februari' => 'II',
+        'Maret' => 'III',
+        'April' => 'IV',
+        'Mei' => 'V',
+        'Juni' => 'VI',
+        'Juli' => 'VII',
+        'Agustus' => 'VIII',
+        'September' => 'IX',
+        'Oktober' => 'X',
+        'November' => 'XI',
+        'Desember' => 'XII',
+    ];
 
     protected $rules = [
         'barang_id' => 'required',
         'ruangan_id' => 'required',
         'unit_id' => 'required',
-        'bulan' => 'required|string',
-        'tahun' => 'required|integer',
-        'satuan' => 'required|string',
-        'status' => 'required|in:baik,rusak',
-        'jumlah' => 'required|integer',
+        'bulan' => 'required',
+        'tahun' => 'required',
+        'satuan' => 'required',
+        'status' => 'required',
+        'jumlah' => 'required',
     ];
 
-    public function updatedBarangId($value)
+    protected $messages = [
+        'barang_id.required' => 'Asset harus diisi',
+        'ruangan_id.required' => 'Ruangan harus diisi',
+        'unit_id.required' => 'Unit harus diisi',
+        'bulan.required' => 'Bulan harus diisi',
+        'tahun.required' => 'Tahun harus diisi',
+        'satuan.required' => 'Satuan harus diisi',
+        'status.required' => 'Status harus diisi',
+        'jumlah.required' => 'Jumlah harus diisi',
+    ];
+
+    public function render()
     {
-        if ($value) {
-            $this->selectedBarang = Barang::find($value);
-            $this->generateNoInventaris();
-        }
+        return view('livewire.index-asset',[
+            'assets' => Asset::with('barang', 'ruangan', 'unit')->paginate(5),
+            'barangs' => Barang::all(),
+            'ruangans' => Ruangan::all(),
+            'units' => Unit::all(),
+            'bulanRomawi' => $this->bulanRomawi
+        ]);
     }
 
-    public function updatedBulan($value)
-    {
-        $this->generateNoInventaris();
-    }
+    public function store(){
+        $this->validate();
 
-    public function updatedTahun($value)
-    {
-        $this->generateNoInventaris();
+         Asset::create([
+            'barang_id' => $this->barang_id,
+            'ruangan_id' => $this->ruangan_id,
+            'unit_id' => $this->unit_id,
+            'no_inventaris' => $this->no_inventaris,
+            'bulan' => $this->bulan,
+            'tahun' => $this->tahun,
+            'satuan' => $this->satuan,
+            'status' => $this->status,
+            'jumlah' => $this->jumlah
+        ]);
+
+
+        $this->resetForm();
+        $this->isModalOpen = false;
+        session()->flash('message', 'Asset berhasil ditambahkan.');
     }
 
     private function generateNoInventaris()
     {
-        if ($this->selectedBarang && $this->bulan && $this->tahun) {
-            $this->no_inventaris = sprintf(
-                "%d/%s/%s/%d",
-                $this->selectedBarang->id,
-                $this->selectedBarang->kode_barang,
-                $this->bulan,
-                $this->tahun
-            );
+        if ( $this->bulan && $this->tahun) {
+            $barang = Barang::find($this->barang_id);
+            $kodeBarang = $barang ? $barang->kode_barang : 'N/A';
+
+            $bulanRomawi = $this->bulanRomawi[$this->bulan];
+            $this->no_inventaris = "{$kodeBarang}/{$bulanRomawi}/{$this->tahun}";
         }
     }
 
-    public function render()
+    public function updated($propertyName)
     {
-        return view('livewire.index-asset', [
-            'assets' => Asset::with(['barang', 'ruangan', 'unit'])->paginate(5),
-            'barangs' => Barang::all(),
-            'ruangans' => Ruangan::all(),
-            'units' => Unit::all(),
-        ]);
+        if (in_array($propertyName, ['barang_id', 'bulan', 'tahun'])) {
+            $this->generateNoInventaris();
+        }
     }
 
-    public function openModal()
+    public function generate($no_inventaris)
     {
-        $this->resetForm();
-        $this->isModalOpen = true;
-    }
+        $QRcode = new QRCode($no_inventaris);
+        return $QRcode->generate();
 
-    public function closeModal()
-    {
-        $this->isModalOpen = false;
     }
 
     public function edit($id)
@@ -101,11 +136,10 @@ class IndexAsset extends Component
         $this->isModalOpen = true;
     }
 
-    public function store()
+    public function update()
     {
         $this->validate();
-
-        $data = [
+        Asset::find($this->asset_id)->update([
             'barang_id' => $this->barang_id,
             'ruangan_id' => $this->ruangan_id,
             'unit_id' => $this->unit_id,
@@ -114,53 +148,67 @@ class IndexAsset extends Component
             'tahun' => $this->tahun,
             'satuan' => $this->satuan,
             'status' => $this->status,
-            'jumlah' => $this->jumlah,
-        ];
+            'jumlah' => $this->jumlah
+        ]);
 
-        if ($this->asset_id) {
-            Asset::find($this->asset_id)->update($data);
-            session()->flash('message', 'Asset berhasil diperbarui.');
-        } else {
-            Asset::create($data);
-            session()->flash('message', 'Asset berhasil ditambahkan.');
-        }
-
-        $this->closeModal();
+        $this->resetForm();
+        $this->isModalOpen = false;
+        session()->flash('message', 'Asset berhasil diubah.');
     }
 
-    public function delete($id)
+    public function confirmDelete($id)
     {
-        $asset = Asset::find($id);
-        if ($asset) {
-            $asset->delete();
-            session()->flash('message', 'Asset berhasil dihapus.');
-        }
+        $this->asset_id = $id;
+        $this->isDeleteModalOpen = true;
     }
 
-    private function resetForm()
+    public function delete()
     {
-        $this->asset_id = null;
-        $this->barang_id = '';
-        $this->ruangan_id = '';
-        $this->unit_id = '';
-        $this->no_inventaris = '';
-        $this->bulan = '';
-        $this->tahun = '';
-        $this->satuan = '';
-        $this->status = '';
-        $this->jumlah = '';
+        Asset::find($this->asset_id)->delete();
+        $this->isDeleteModalOpen = false;
+        session()->flash('message', 'Asset berhasil dihapus.');
     }
 
-    public function showDetail($assetId)
+    public function detail($id)
     {
-
-        $this->selectedAsset = Asset::find($assetId);
-
+        $asset = Asset::findOrFail($id);
+        $this->asset_id = $asset->id;
+        $this->barang_id = $asset->barang_id;
+        $this->ruangan_id = $asset->ruangan_id;
+        $this->unit_id = $asset->unit_id;
+        $this->no_inventaris = $asset->no_inventaris;
+        $this->bulan = $asset->bulan;
+        $this->tahun = $asset->tahun;
+        $this->satuan = $asset->satuan;
+        $this->status = $asset->status;
+        $this->jumlah = $asset->jumlah;
         $this->isDetailModalOpen = true;
     }
-    public function closeDetailModal()
+
+    public function openModal()
     {
-        $this->isDetailModalOpen = false;
-        $this->selectedAsset = null; 
+        $this->resetForm();
+        $this->isModalOpen = true;
     }
+
+    public function closeModal()
+    {
+        $this->isModalOpen = false;
+    }
+
+    public function resetForm()
+    {
+        $this->asset_id = null;
+        $this->barang_id = null;
+        $this->ruangan_id = null;
+        $this->unit_id = null;
+        $this->no_inventaris = null;
+        $this->bulan = null;
+        $this->tahun = null;
+        $this->satuan = null;
+        $this->status = null;
+        $this->jumlah = null;
+    }
+
+
 }

@@ -139,7 +139,7 @@
                         <div class="mb-3">
                             <label for="status_pengadaan" class="form-label">Status Pengadaan</label>
                             <select class="form-select" id="status_pengadaan" wire:model="status_pengadaan">
-                                <option value="">-- Pilih Status --</option>
+                                <option value=""> Pilih Status </option>
                                 <option value="diterima">Diterima</option>
                                 <option value="diproses">Diproses</option>
                                 <option value="barang tiba">Barang Tiba</option>
