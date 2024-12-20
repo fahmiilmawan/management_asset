@@ -6,7 +6,7 @@
             <p class="text-muted">{{ now()->format('d F Y') }}</p>
         </div>
         <div class="col-md-6 text-end">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" wire:click="openModal">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                 <i class="fas fa-plus"></i> Tambah User
             </button>
         </div>
@@ -45,7 +45,7 @@
                         <td>{{ $user->unit->nama_unit }}</td>
                         <td>{{ $user->email }}</td>
                         <td>
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm" wire:click="edit({{ $user->id }})">Edit</button>
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $user->id }})">Edit</button>
                             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete" wire:click="confirmDelete({{ $user->id }})">Hapus</button>
                             <a class="btn btn-success btn-sm" href="{{ route('sendWhatsapp', $user->id) }}"> Kirim Password</a>
                         </td>
@@ -65,14 +65,14 @@
     </div>
     {{-- End Render pagination --}}
 
-    {{-- Modal Edit and Store Form --}}
-    <div wire:ignore.self class="modal fade" id="modalForm" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
+    {{-- Modal Store Form --}}
+    <div wire:ignore.self class="modal fade" id="addModal" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form wire:submit.prevent="{{ $user_id ? 'update': 'store' }}">
+                <form wire:submit.prevent="store">
                     <div class="modal-header">
                         <h5 class="modal-title">
-                            {{ $user_id ? 'Edit user' : 'Tambah user' }}
+                            Tambah User
                         </h5>
                     </div>
                     <div class="modal-body">
@@ -131,13 +131,86 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">{{ $user_id ? 'Simpan Perubahan' : 'Tambah' }}</button>
+                        <button type="submit" class="btn btn-primary">Tambah</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    {{--End Modal Edit and Store Form --}}
+    {{--End Modal Store Form --}}
+    {{-- Modal Edit Form --}}
+    <div wire:ignore.self class="modal fade" id="editModal" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form wire:submit.prevent="update">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Edit User
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
+                            <input type="text" class="form-control border p-2" id="nama_lengkap" wire:model="nama_lengkap">
+                            @error('nama_lengkap')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="unit_id" class="form-label">Unit</label>
+                            <select class="form-select p-2 border" wire:model="unit_id" id="unit_id">
+                                <option class="form-control" value=""> Pilih Unit </option>
+                                @foreach ( $units as $unit )
+                                <option class="form-control" value="{{ $unit->id }}">{{ $unit->nama_unit }}</option>
+                                @endforeach
+                            </select>
+                            @error('unit_id')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="no_hp" class="form-label">No HP</label>
+                            <input type="number" class="form-control border p-2" id="no_hp" wire:model="no_hp">
+                            @error('no_hp')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control border p-2" id="email" wire:model="email">
+                            @error('email')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control border p-2" id="password" wire:model="password">
+                            @error('password')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Role</label>
+                            <select class="form-select p-2 border" wire:model="role" id="">
+                                <option> Pilih Role </option>
+                                <option value="administrator">Administrator</option>
+                                <option value="admin_umum">Admin Umum</option>
+                                <option value="staff_unit">Staff Unit</option>
+                            </select>
+                            @error('role')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Edit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{--End Modal Edit Form --}}
 
     {{-- Modal Delete --}}
     <div wire:ignore.self class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="modalDeleteLabel" aria-hidden="true">
@@ -160,3 +233,11 @@
     </div>
     {{-- End Modal Delete --}}
 </div>
+<script>
+    window.addEventListener('closeModal', event => {
+        $('#addModal').modal('hide');
+    });
+    window.addEventListener('closeModal', event => {
+        $('#editModal').modal('hide');
+    });
+</script>

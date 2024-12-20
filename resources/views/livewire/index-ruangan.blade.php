@@ -6,7 +6,7 @@
             <p class="text-muted">{{ now()->format('d F Y') }}</p>
         </div>
         <div class="col-md-6 text-end">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" wire:click="openModal">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                 <i class="fas fa-plus"></i> Tambah Ruangan
             </button>
         </div>
@@ -41,7 +41,7 @@
                     <tr>
                         <td>{{ $ruangan->nama_ruangan }}</td>
                         <td>
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm" wire:click="edit({{ $ruangan->id }})">Edit</button>
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $ruangan->id }})">Edit</button>
                             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete" wire:click="confirmDelete({{ $ruangan->id }})">Hapus</button>
                         </td>
                         @empty
@@ -60,14 +60,14 @@
     </div>
     {{-- End Render pagination --}}
 
-    {{-- Modal Edit and Store Form --}}
-    <div wire:ignore.self class="modal fade" id="modalForm" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
+    {{-- Modal Store Form --}}
+    <div wire:ignore.self class="modal fade" id="addModal" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form wire:submit.prevent="{{ $ruangan_id ? 'update': 'store' }}">
+                <form wire:submit.prevent="store">
                     <div class="modal-header">
                         <h5 class="modal-title">
-                            {{ $ruangan_id ? 'Edit Ruangan' : 'Tambah Ruangan' }}
+                            Tambah Ruangan
                         </h5>
                     </div>
                     <div class="modal-body">
@@ -81,13 +81,42 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">{{ $ruangan_id ? 'Simpan Perubahan' : 'Tambah' }}</button>
+                        <button type="submit" class="btn btn-primary">Tambah</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    {{--End Modal Edit and Store Form --}}
+
+    {{-- End Modal Store Form --}}
+    {{-- Modal Edit Form --}}
+    <div wire:ignore.self class="modal fade" id="editModal" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form wire:submit.prevent="update">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Edit Ruangan
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nama_ruangan" class="form-label">Nama Ruangan</label>
+                            <input type="text" class="form-control border p-2" id="nama_ruangan" wire:model="nama_ruangan">
+                            @error('nama_ruangan')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Ubah</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{--End  Modal Edit Form --}}
 
     {{-- Modal Delete --}}
     <div wire:ignore.self class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="modalDeleteLabel" aria-hidden="true">
@@ -110,3 +139,12 @@
     </div>
     {{-- End Modal Delete --}}
 </div>
+
+<script>
+    window.addEventListener('closeModal', event => {
+        $('#addModal').modal('hide');
+    });
+    window.addEventListener('closeModal', event => {
+        $('#editModal').modal('hide');
+    });
+</script>

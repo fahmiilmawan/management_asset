@@ -11,26 +11,7 @@ class IndexUser extends Component
 {
     use WithPagination;
 
-    public $user_id,$nama_lengkap, $unit_id, $email, $password, $role;
-
-    public $isModalOpen = false;
-    public $isDeleteModalOpen = false;
-
-    protected $rules = [
-        'nama_lengkap' => 'required',
-        'unit_id' => 'required',
-        'email' => 'required',
-        'password' => 'required',
-        'role' => 'required',
-    ];
-
-    protected $messages = [
-        'nama_lengkap.required' => 'Nama Lengkap harus diisi.',
-        'unit_id.required' => 'Unit harus dipilih.',
-        'email.required' => 'Email harus diisi.',
-        'password.required' => 'Password harus diisi.',
-        'role.required' => 'Role harus dipilih.',
-    ];
+    public $user_id,$nama_lengkap, $unit_id, $email, $password, $role, $no_hp;
 
     public function render()
     {
@@ -43,55 +24,90 @@ class IndexUser extends Component
 
     public function store()
     {
-        $this->validate();
-
-        User::create([
-            'nama_lengkap' => $this->nama_lengkap,
-            'unit_id' => $this->unit_id,
-            'email' => $this->email,
-            'password' => $this->password,
-            'role' => $this->role
+        $this->validate([
+            'unit_id' => 'required',
+            'nama_lengkap' => 'required',
+            'email' => 'required|unique:users,email',
+            'password' => 'required',
+            'role' => 'required',
+            'no_hp' => 'required'
+        ],[
+            'nama_lengkap.required' => 'Nama lengkap tidak boleh kosong',
+            'unit_id.required' => 'Unit tidak boleh kosong',
+            'email.required' => 'Email tidak boleh kosong',
+            'email.unique' => 'Email sudah ada',
+            'password.required' => 'Password tidak boleh kosong',
+            'role.required' => 'Role tidak boleh kosong',
+            'no_hp.required' => 'No HP tidak boleh kosong',
         ]);
 
-        session()->flash('message', 'User berhasil ditambahkan.');
+        User::create([
+            'unit_id' => $this->unit_id,
+            'nama_lengkap' => $this->nama_lengkap,
+            'email' => $this->email,
+            'password' => bcrypt($this->password),
+            'role' => $this->role,
+            'no_hp' => $this->no_hp
+        ]);
 
         $this->resetForm();
-        $this->isModalOpen = false;
+
+        session()->flash('message', 'User berhasil ditambahkan.');
+        $this->dispatch('closeModal');
+
     }
 
     public function edit($id)
     {
         $user = User::findOrFail($id);
         $this->user_id = $user->id;
-        $this->nama_lengkap = $user->nama_lengkap;
         $this->unit_id = $user->unit_id;
+        $this->nama_lengkap = $user->nama_lengkap;
         $this->email = $user->email;
-        $this->password = $user->password;
+        $this->password = null;
         $this->role = $user->role;
-        $this->isModalOpen = true;
+        $this->no_hp = $user->no_hp;
     }
 
     public function update()
     {
-        $this->validate();
-
-        User::find($this->user_id)->update([
-            'nama_lengkap' => $this->nama_lengkap,
-            'unit_id' => $this->unit_id,
-            'email' => $this->email,
-            'password' => $this->password,
-            'role' => $this->role
+        $this->validate([
+            'unit_id' => 'required',
+            'nama_lengkap' => 'required',
+            'email' => 'required|unique:users,email,'.$this->user_id,
+            'password' => 'required',
+            'role' => 'required',
+            'no_hp' => 'required'
+        ],[
+            'unit_id.required' => 'Unit tidak boleh kosong',
+            'nama_lengkap.required' => 'Nama lengkap tidak boleh kosong',
+            'email.required' => 'Email tidak boleh kosong',
+            'email.unique' => 'Email sudah ada',
+            'password.required' => 'Password tidak boleh kosong',
+            'role.required' => 'Role tidak boleh kosong',
+            'no_hp.required' => 'No HP tidak boleh kosong',
         ]);
 
-        session()->flash('message', 'User berhasil diperbarui.');
+        $user = User::findOrFail($this->user_id);
+        $user->update([
+            'unit_id' => $this->unit_id,
+            'nama_lengkap' => $this->nama_lengkap,
+            'email' => $this->email,
+            'password' => bcrypt($this->password),
+            'role' => $this->role,
+            'no_hp' => $this->no_hp
+        ]);
 
-        $this->closeModal();
+        $this->resetForm();
+
+        session()->flash('message', 'User berhasil diubah.');
+        $this->dispatch('closeModal');
     }
 
     public function confirmDelete($id)
     {
         $this->user_id = $id;
-        $this->isDeleteModalOpen = true;
+
     }
 
     public function delete()
@@ -100,23 +116,9 @@ class IndexUser extends Component
         $user->delete();
 
         session()->flash('message', 'User berhasil dihapus.');
-        $this->isDeleteModalOpen = false;
     }
 
-    public function isModalOpen()
-    {
-        $this->isModalOpen = true;
-    }
 
-    public function openModal()
-    {
-        $this->resetForm();
-        $this->isModalOpen = true;
-    }
-    public function closeModal()
-    {
-        $this->isModalOpen = false;
-    }
 
     public function resetForm()
     {

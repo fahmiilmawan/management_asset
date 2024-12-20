@@ -7,10 +7,6 @@ use App\Models\Asset;
 use App\Models\Barang;
 use App\Models\Ruangan;
 use App\Models\Unit;
-use BaconQrCode\Renderer\Image\SvgImageBackEnd;
-use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use BaconQrCode\Writer;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -22,9 +18,6 @@ class IndexAsset extends Component
 
     public $asset_id, $barang_id, $ruangan_id, $unit_id, $no_inventaris, $bulan, $tahun, $satuan, $status, $jumlah;
 
-    public $isModalOpen = false;
-    public $isDetailModalOpen = false;
-    public $isDeleteModalOpen = false;
 
     protected $bulanRomawi = [
         'Januari' => 'I',
@@ -41,27 +34,6 @@ class IndexAsset extends Component
         'Desember' => 'XII',
     ];
 
-    protected $rules = [
-        'barang_id' => 'required',
-        'ruangan_id' => 'required',
-        'unit_id' => 'required',
-        'bulan' => 'required',
-        'tahun' => 'required',
-        'satuan' => 'required',
-        'status' => 'required',
-        'jumlah' => 'required',
-    ];
-
-    protected $messages = [
-        'barang_id.required' => 'Asset harus diisi',
-        'ruangan_id.required' => 'Ruangan harus diisi',
-        'unit_id.required' => 'Unit harus diisi',
-        'bulan.required' => 'Bulan harus diisi',
-        'tahun.required' => 'Tahun harus diisi',
-        'satuan.required' => 'Satuan harus diisi',
-        'status.required' => 'Status harus diisi',
-        'jumlah.required' => 'Jumlah harus diisi',
-    ];
 
     public function render()
     {
@@ -74,25 +46,45 @@ class IndexAsset extends Component
         ]);
     }
 
-    public function store(){
-        $this->validate();
-
-         Asset::create([
-            'barang_id' => $this->barang_id,
-            'ruangan_id' => $this->ruangan_id,
-            'unit_id' => $this->unit_id,
-            'no_inventaris' => $this->no_inventaris,
-            'bulan' => $this->bulan,
-            'tahun' => $this->tahun,
-            'satuan' => $this->satuan,
-            'status' => $this->status,
-            'jumlah' => $this->jumlah
+    public function store()
+    {
+        $this->validate([
+            'barang_id' => 'required',
+            'ruangan_id' => 'required',
+            'unit_id' => 'required',
+            'bulan' => 'required',
+            'tahun' => 'required',
+            'satuan' => 'required',
+            'status' => 'required',
+            'jumlah' => 'required'
+        ],
+        [
+            'barang_id.required' => 'Barang harus diisi.',
+            'ruangan_id.required' => 'Ruangan harus diisi.',
+            'unit_id.required' => 'Unit harus diisi.',
+            'bulan.required' => 'Bulan harus diisi.',
+            'tahun.required' => 'Tahun harus diisi.',
+            'satuan.required' => 'Satuan harus diisi.',
+            'status.required' => 'Status harus diisi.',
+            'jumlah.required' => 'Jumlah harus diisi.'
         ]);
 
+        $asset = new Asset();
+        $asset->barang_id = $this->barang_id;
+        $asset->ruangan_id = $this->ruangan_id;
+        $asset->unit_id = $this->unit_id;
+        $asset->no_inventaris = $this->no_inventaris;
+        $asset->bulan = $this->bulan;
+        $asset->tahun = $this->tahun;
+        $asset->satuan = $this->satuan;
+        $asset->status = $this->status;
+        $asset->jumlah = $this->jumlah;
+        $asset->save();
 
         $this->resetForm();
-        $this->isModalOpen = false;
+
         session()->flash('message', 'Asset berhasil ditambahkan.');
+        $this->dispatch('closeModal');
     }
 
     private function generateNoInventaris()
@@ -133,12 +125,32 @@ class IndexAsset extends Component
         $this->satuan = $asset->satuan;
         $this->status = $asset->status;
         $this->jumlah = $asset->jumlah;
-        $this->isModalOpen = true;
+
     }
 
     public function update()
     {
-        $this->validate();
+        $this->validate([
+            'barang_id' => 'required',
+            'ruangan_id' => 'required',
+            'unit_id' => 'required',
+            'bulan' => 'required',
+            'tahun' => 'required',
+            'satuan' => 'required',
+            'status' => 'required',
+            'jumlah' => 'required'
+        ],
+        [
+            'barang_id.required' => 'Barang harus diisi.',
+            'ruangan_id.required' => 'Ruangan harus diisi.',
+            'unit_id.required' => 'Unit harus diisi.',
+            'bulan.required' => 'Bulan harus diisi.',
+            'tahun.required' => 'Tahun harus diisi.',
+            'satuan.required' => 'Satuan harus diisi.',
+            'status.required' => 'Status harus diisi.',
+            'jumlah.required' => 'Jumlah harus diisi.'
+        ]);
+
         Asset::find($this->asset_id)->update([
             'barang_id' => $this->barang_id,
             'ruangan_id' => $this->ruangan_id,
@@ -152,20 +164,18 @@ class IndexAsset extends Component
         ]);
 
         $this->resetForm();
-        $this->isModalOpen = false;
         session()->flash('message', 'Asset berhasil diubah.');
+        $this->dispatch('closeModal');
     }
 
     public function confirmDelete($id)
     {
         $this->asset_id = $id;
-        $this->isDeleteModalOpen = true;
     }
 
     public function delete()
     {
         Asset::find($this->asset_id)->delete();
-        $this->isDeleteModalOpen = false;
         session()->flash('message', 'Asset berhasil dihapus.');
     }
 
@@ -182,19 +192,8 @@ class IndexAsset extends Component
         $this->satuan = $asset->satuan;
         $this->status = $asset->status;
         $this->jumlah = $asset->jumlah;
-        $this->isDetailModalOpen = true;
     }
 
-    public function openModal()
-    {
-        $this->resetForm();
-        $this->isModalOpen = true;
-    }
-
-    public function closeModal()
-    {
-        $this->isModalOpen = false;
-    }
 
     public function resetForm()
     {

@@ -17,20 +17,6 @@ class IndexRuangan extends Component
     // Property Ruangan
     public $ruangan_id, $nama_ruangan;
 
-    // Property Modal
-    public $isModalOpen = false;
-    public $isDeleteModalOpen = false;
-
-    // Validation Rules
-    protected $rules = [
-        'nama_ruangan' => 'required',
-    ];
-
-    // Validation Messages
-    protected $messages = [
-        'nama_ruangan.required' => 'Nama ruangan harus diisi.',
-    ];
-
     // Render Component
     public function render()
     {
@@ -42,16 +28,20 @@ class IndexRuangan extends Component
     // Function Store Ruangan
     public function store()
     {
-        $this->validate();
-
-        Ruangan::create([
-            'nama_ruangan' => $this->nama_ruangan,
+        $this->validate([
+            'nama_ruangan' => 'required'
+        ],
+        [
+            'nama_ruangan.required' => 'Nama ruangan harus diisi.'
         ]);
+
+        $ruangan = new Ruangan();
+        $ruangan->nama_ruangan = $this->nama_ruangan;
+        $ruangan->save();
 
         session()->flash('message', 'Ruangan berhasil ditambahkan.');
 
-        $this->closeModal();
-        $this->resetForm();
+        $this->dispatch('closeModal');
     }
 
     // Function Edit Ruangan
@@ -60,34 +50,26 @@ class IndexRuangan extends Component
         $ruangan = Ruangan::findOrFail($id);
         $this->ruangan_id = $ruangan->id;
         $this->nama_ruangan = $ruangan->nama_ruangan;
-        $this->isModalOpen = false;
     }
 
     // Function Update Ruangan
     public function update()
     {
-        $this->validate();
+        $this->validate([
+            'nama_ruangan' => 'required'
+        ],
+        [
+            'nama_ruangan.required' => 'Nama ruangan harus diisi.'
+        ]);
 
-        Ruangan::find($this->ruangan_id)->update([
-            'nama_ruangan' => $this->nama_ruangan,
+        $ruangan = Ruangan::find($this->ruangan_id);
+        $ruangan->update([
+            'nama_ruangan' => $this->nama_ruangan
         ]);
 
         session()->flash('message', 'Ruangan berhasil diperbarui.');
 
-        $this->closeModal();
-    }
-
-    // Function Open Modal
-    public function openModal()
-    {
-        $this->resetForm();
-        $this->isModalOpen = true;
-    }
-
-    // Function Close Modal
-    public function closeModal()
-    {
-        $this->isModalOpen = false;
+        $this->dispatch('closeModal');
     }
 
     // Function Reset Form
@@ -101,7 +83,7 @@ class IndexRuangan extends Component
     public function confirmDelete($id)
     {
         $this->ruangan_id = $id;
-        $this->isDeleteModalOpen = true;
+
     }
 
     // Function Delete Ruangan
@@ -111,6 +93,6 @@ class IndexRuangan extends Component
         $ruangan->delete();
 
         session()->flash('message', 'Ruangan berhasil dihapus.');
-        $this->isDeleteModalOpen = false;
+
     }
 }

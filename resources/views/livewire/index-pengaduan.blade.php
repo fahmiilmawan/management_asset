@@ -139,6 +139,7 @@
     </div>
     {{--End Modal Edit and Store Form --}}
 
+    @if (isset($pengaduan))
     <!-- Detail Modal -->
 <div wire:ignore.self class="modal fade" id="modalDetail" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -157,7 +158,7 @@
                             <div class="card-body">
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">
-                                        <strong>Asset:</strong> <span>{{ $pengaduan->asset->no_inventaris }}</span>
+                                        <strong>Asset:</strong> <span>{{ $pengaduan->asset->barang->nama_barang }}</span>
                                     </li>
                                     <li class="list-group-item">
                                         <strong>Pengadu:</strong> <span>{{ $pengaduan->user->nama_lengkap }}</span>
@@ -209,6 +210,8 @@
     </div>
 </div>
 <!-- End Detail Modal -->
+    @endif
+
 
 
     {{-- Modal Delete --}}

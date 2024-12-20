@@ -16,21 +16,6 @@ class IndexUnit extends Component
     // Property Unit
     public $unit_id, $nama_unit, $deskripsi;
 
-    // Property Modal
-    public $isModalOpen = false;
-    public $isDeleteModalOpen = false;
-
-    // Form Rules
-    protected $rules = [
-        'nama_unit' => 'required',
-        'deskripsi' => 'required',
-    ];
-
-    // Form Validation Messages
-    protected $messages = [
-        'nama_unit.required' => 'Nama unit harus diisi.',
-        'deskripsi.required' => 'Deskripsi harus diisi.',
-    ];
 
     // Render Component
     public function render()
@@ -43,17 +28,23 @@ class IndexUnit extends Component
     // Function Store Unit
     public function store()
     {
-        $this->validate();
-
-        Unit::create([
-            'nama_unit' => $this->nama_unit,
-            'deskripsi' => $this->deskripsi,
+        $this->validate([
+            'nama_unit' => 'required',
+            'deskripsi' => 'required'
+        ],
+        [
+            'nama_unit.required' => 'Nama unit harus diisi.',
+            'deskripsi.required' => 'Deskripsi harus diisi.'
         ]);
+
+        $unit = new Unit();
+        $unit->nama_unit = $this->nama_unit;
+        $unit->deskripsi = $this->deskripsi;
+        $unit->save();
 
         session()->flash('message', 'Unit berhasil ditambahkan.');
 
-        $this->resetForm();
-        $this->isModalOpen = false;
+        $this->dispatch('closeModal');
     }
 
     // Form Function Edit
@@ -63,29 +54,35 @@ class IndexUnit extends Component
         $this->unit_id = $unit->id;
         $this->nama_unit = $unit->nama_unit;
         $this->deskripsi = $unit->deskripsi;
-        $this->isModalOpen = true;
     }
 
     // Function Update Unit
     public function update()
     {
-        $this->validate();
-
-        Unit::find($this->unit_id)->update([
-            'nama_unit' => $this->nama_unit,
-            'deskripsi' => $this->deskripsi,
+        $this->validate([
+            'nama_unit' => 'required',
+            'deskripsi' => 'required'
+        ],
+        [
+            'nama_unit.required' => 'Nama unit harus diisi.',
+            'deskripsi.required' => 'Deskripsi harus diisi.'
         ]);
 
-        session()->flash('message', 'Unit berhasil diperbarui.');
+        $unit = Unit::findOrFail($this->unit_id);
+        $unit->update([
+            'nama_unit' => $this->nama_unit,
+            'deskripsi' => $this->deskripsi
+        ]);
 
-        $this->closeModal();
+        session()->flash('message', 'Unit berhasil diubah.');
+
+        $this->dispatch('closeModal');
     }
 
     // Function Delete Confirmation
     public function confirmDelete($id)
     {
         $this->unit_id = $id;
-        $this->isDeleteModalOpen = true;
     }
 
     // Function Delete Unit
@@ -95,21 +92,9 @@ class IndexUnit extends Component
         $unit->delete();
 
         session()->flash('message', 'Unit berhasil dihapus.');
-        $this->isDeleteModalOpen = false;
+
     }
 
-    // Function Open Modal
-    public function openModal()
-    {
-        $this->resetForm();
-        $this->isModalOpen = true;
-    }
-
-    // Function Close Modal
-    public function closeModal()
-    {
-        $this->isModalOpen = false;
-    }
 
     // Function Reset Form
     public function resetForm()
