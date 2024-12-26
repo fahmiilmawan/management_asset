@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Barang;
+use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -70,12 +71,11 @@ class IndexBarang extends Component
     public function update()
     {
         $this->validate([
-            'kode_barang' => 'required|unique:barangs,kode_barang',
+            'kode_barang' => 'required',
             'nama_barang' => 'required'
         ],
         [
             'kode_barang.required' => 'Kode barang harus diisi.',
-            'kode_barang.unique' => 'Kode barang sudah ada.',
             'nama_barang.required' => 'Nama barang harus diisi.'
         ]);
 

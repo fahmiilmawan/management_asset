@@ -1,63 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Login</title>
     @vite('resources/css/app.css')
 </head>
-<body>
-    <body class="bg-base-200 flex items-center justify-center min-h-screen">
-        <div class="card w-96 bg-base-100 shadow-xl">
-            <div class="card-body">
-                <div class="flex justify-center">
-                    <img src="https://placehold.co/600x400" width="100" alt="">
-                </div>
-                <div class="flex justify-center">
-                    <h2 class="card-title text-2xl font-bold mb-6">Login</h2>
-                </div>
-                <form action="{{ route('login') }}" method="POST">
-                    @csrf
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text">Email</span>
-                        </label>
-                        <label class="input input-bordered flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
-                                <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                                <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                            </svg>
-                            <input type="email" class="grow" name="email" placeholder="email@example.com" value="{{ old('email') }}" />
-                        </label>
-                        @error('email')
-                        <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
-                        @enderror
-                    </div>
 
-                    <div class="form-control mt-4">
-                        <label class="label">
-                            <span class="label-text">Password</span>
-                        </label>
-                        <label class="input input-bordered flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
-                                <path fill-rule="evenodd" d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z" clip-rule="evenodd" />
-                            </svg>
-                            <input type="password" name="password" class="grow" placeholder="Enter password" />
-                        </label>
-                        @error('password')
-                        <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-control mt-6">
-                        <button class="btn btn-primary">
-                            Login
-                        </button>
-                    </div>
-                </form>
-
+<body class="bg-gray-100">
+    <!-- Login Form -->
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+            <div class="flex justify-center mb-6">
+                <img src="https://placehold.co/100x100" alt="Logo" class="w-24">
             </div>
+            <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
+            <form action="{{ route('login') }}" method="POST">
+                @csrf
+                <!-- Email -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2" for="email">Email</label>
+                    <input type="email" name="email" id="email" placeholder="email@example.com"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value="{{ old('email') }}">
+                    @error('email')
+                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- Password -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2" for="password">Password</label>
+                    <input type="password" name="password" id="password" placeholder="Enter password"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    @error('password')
+                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-6">
+                    <button type="submit"
+                        class="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 focus:outline-none">
+                        Login
+                    </button>
+                </div>
+            </form>
         </div>
-    </body>
+    </div>
 </body>
+
 </html>

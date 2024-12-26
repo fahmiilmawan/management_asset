@@ -5,11 +5,14 @@
             <h3 class="font-weight-bold mb-0">Data Asset</h3>
             <p class="text-muted">{{ now()->format('d F Y') }}</p>
         </div>
+        @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'staff_unit')
+
         <div class="col-md-6 text-end">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                 <i class="fas fa-plus"></i> Tambah Asset
             </button>
         </div>
+        @endif
     </div>
     {{-- End of Header --}}
 
@@ -44,16 +47,27 @@
                     @forelse ( $assets as $asset )
                     <tr>
                         <td>
-                            <a href="#" wire:click="detail({{ $asset->id }})" class="text-decoration-underline" data-bs-toggle="modal" data-bs-target="#modalDetail"> {{ $asset->id.'/'.$asset->no_inventaris }} </a>
+                            <a href="#" wire:click="detail({{ $asset->id }})" class="text-decoration-underline" data-bs-toggle="modal" data-bs-target="#modalDetail"> {{ $asset->no_urut }}/{{ $asset->no_inventaris }} </a>
                         </td>
                         <td>{{ $asset->barang->nama_barang }}</td>
                         <td>{{ $asset->jumlah }}</td>
                         <td>
-                            <span class="badge bg-gradient-success">{{ $asset->status }}</span>
+                            @if ($asset->status == 'baik')
+                                <span class="badge bg-success">{{Str::upper($asset->status)  }}</span>
+                            @else
+                                <span class="badge bg-danger">{{Str::upper($asset->status)  }}</span>
+                            @endif
                         </td>
                         <td>
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $asset->id }})">Edit</button>
-                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete" wire:click="confirmDelete({{ $asset->id }})">Hapus</button>
+
+
+                        @if (Auth::user()->role == 'admin_umum')
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $asset->id }})">Edit</button>
+                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete" wire:click="confirmDelete({{ $asset->id }})">Hapus</button>
+                        @elseif (Auth::user()->role == 'staff_unit')
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $asset->id }})">Edit</button>
+                        @endif
+
                             <a href="" class="btn btn-info btn-sm" data-bs-target="#modalQRCode" data-bs-toggle="modal">QR Code</a>
                         </td>
                         @empty
@@ -161,7 +175,6 @@
                                 <option value="unit">Lusin</option>
                                 <option value="unit">Roll</option>
                                 <option value="unit">Set</option>
-                                <option value="unit">Kardus</option>
                             </select>
                             @error('satuan')
                             <small class="text-danger">{{ $message }}</small>
@@ -171,7 +184,7 @@
                             <label for="status" class="form-label">status</label>
                             <select class="form-select border p-2" wire:model="status" id="">
                                 <option value="">Pilih Status</option>
-                                <option value="baik">Baik</option>
+                                <option  value="baik">Baik</option>
                                 <option value="rusak">Rusak</option>
                             </select>
                             @error('status')
@@ -339,10 +352,10 @@
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item">
-                                            <strong>Barang:</strong> <span>{{ $asset->barang->nama }}</span>
+                                            <strong>Barang:</strong> <span>{{ $asset->barang->nama_barang }}</span>
                                         </li>
                                         <li class="list-group-item">
-                                            <strong>No Inventaris:</strong> <span>{{ $asset->no_inventaris }}</span>
+                                            <strong>No Inventaris:</strong> <span>{{$asset->no_urut}}/{{ $asset->no_inventaris }}</span>
                                         </li>
                                         <li class="list-group-item">
                                             <strong>Bulan:</strong> <span>{{ $asset->bulan }}</span>
@@ -406,7 +419,7 @@
                 </div>
                 <div class="modal-body">
                     <img src="{{ $this->generate($asset->no_inventaris) }}">
-                    <span>{{ $asset->id.'/'.$asset->no_inventaris }}</span>
+                    <span>{{ $asset->no_urut.'/'.$asset->no_inventaris }}</span>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

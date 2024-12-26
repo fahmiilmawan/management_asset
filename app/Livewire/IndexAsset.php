@@ -16,7 +16,7 @@ class IndexAsset extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $asset_id, $barang_id, $ruangan_id, $unit_id, $no_inventaris, $bulan, $tahun, $satuan, $status, $jumlah;
+    public $asset_id, $barang_id, $ruangan_id, $unit_id,$no_urut, $no_inventaris, $bulan, $tahun, $satuan, $status, $jumlah;
 
 
     protected $bulanRomawi = [
@@ -69,10 +69,15 @@ class IndexAsset extends Component
             'jumlah.required' => 'Jumlah harus diisi.'
         ]);
 
+
+        $noUrut = Asset::max('no_urut') ?? 0;
+        $newNoUrut = $noUrut + 1;
+
         $asset = new Asset();
         $asset->barang_id = $this->barang_id;
         $asset->ruangan_id = $this->ruangan_id;
         $asset->unit_id = $this->unit_id;
+        $asset->no_urut = $newNoUrut;
         $asset->no_inventaris = $this->no_inventaris;
         $asset->bulan = $this->bulan;
         $asset->tahun = $this->tahun;
@@ -90,6 +95,7 @@ class IndexAsset extends Component
     private function generateNoInventaris()
     {
         if ( $this->bulan && $this->tahun) {
+
             $barang = Barang::find($this->barang_id);
             $kodeBarang = $barang ? $barang->kode_barang : 'N/A';
 

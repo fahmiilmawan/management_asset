@@ -16,11 +16,28 @@ class IndexPengadaan extends Component
     protected $paginationTheme = 'bootstrap';
     protected $listeners = ['confirmDelete'];
 
-    public $pengadaan_id, $user_id, $ruangan_id, $nama_barang_pengadaan, $satuan_pengadaan, $jumlah_pengadaan, $harga_satuan, $total_harga, $tahun_pengadaan, $tanggal_pengadaan, $status_pengadaan;
-    public $isModalOpen = false;
-    public $isDeleteModalOpen = false;
+    public $pengadaan_id, $user_id, $ruangan_id, $nama_barang_pengadaan, $satuan_pengadaan, $jumlah_pengadaan, $harga_satuan, $total_harga, $tahun_pengadaan, $tanggal_pengadaan, $status_pengadaan, $deskripsi;
 
-    protected $rules = [
+    public function render()
+{
+    $pengadaans = Pengadaan::with('ruangan')
+        ->when(!Auth::user()->isAdmin(), function ($query) {
+            $query->where('user_id', Auth::id());
+        })
+        ->paginate(5); // Pastikan paginate dipanggil pada query Eloquent
+
+    return view('livewire.index-pengadaan', [
+        'pengadaans' => $pengadaans,
+        'ruangans' => Ruangan::all(),
+    ]);
+}
+
+
+
+
+    public function store()
+    {
+        $this->validate([
         'ruangan_id' => 'required|exists:ruangans,id',
         'nama_barang_pengadaan' => 'required|string|max:255',
         'satuan_pengadaan' => 'required|string|max:50',
@@ -28,10 +45,8 @@ class IndexPengadaan extends Component
         'harga_satuan' => 'required|numeric|min:0',
         'tahun_pengadaan' => 'required|digits:4',
         'tanggal_pengadaan' => 'required|date',
-        'status_pengadaan' => 'required|in:diterima,diproses,barang tiba',
-    ];
-
-    protected $messages = [
+        ],
+    [
         'ruangan_id.required' => 'Ruangan harus dipilih.',
         'ruangan_id.exists' => 'Ruangan tidak ditemukan.',
         'nama_barang_pengadaan.required' => 'Nama barang pengadaan harus diisi.',
@@ -46,29 +61,29 @@ class IndexPengadaan extends Component
         'tahun_pengadaan.digits' => 'Tahun pengadaan harus terdiri dari 4 angka.',
         'tanggal_pengadaan.required' => 'Tanggal pengadaan harus diisi.',
         'tanggal_pengadaan.date' => 'Tanggal pengadaan harus berupa tanggal.',
-        'status_pengadaan.required' => 'Status pengadaan harus dipilih.',
-        'status_pengadaan.in' => 'Status pengadaan tidak valid.',
-    ];
+    ]);
 
-    public function render()
-    {
-        return view('livewire.index-pengadaan', [
-            'pengadaans' => Pengadaan::with('ruangan')->paginate(5),
-            'ruangans' => Ruangan::all(),
+        $this->total_harga = $this->jumlah_pengadaan * $this->harga_satuan;
+
+        Pengadaan::create([
+            'user_id' => Auth::user()->id,
+            'ruangan_id' => $this->ruangan_id,
+            'nama_barang_pengadaan' => $this->nama_barang_pengadaan,
+            'satuan_pengadaan' => $this->satuan_pengadaan,
+            'jumlah_pengadaan' => $this->jumlah_pengadaan,
+            'harga_satuan' => $this->harga_satuan,
+            'total_harga' => $this->total_harga,
+            'tahun_pengadaan' => $this->tahun_pengadaan,
+            'tanggal_pengadaan' => $this->tanggal_pengadaan,
+            'status_pengadaan' => $this->status_pengadaan = 'diproses',
+            'deskripsi' => $this->deskripsi,
         ]);
-    }
 
-    public function openModal()
-    {
+        session()->flash('message', 'Pengadaan berhasil ditambahkan.');
+
         $this->resetForm();
-        $this->isModalOpen = true;
+        $this->dispatch('closeModal');
     }
-
-    public function closeModal()
-    {
-        $this->isModalOpen = false;
-    }
-
     public function edit($id)
     {
         $pengadaan = Pengadaan::findOrFail($id);
@@ -84,38 +99,13 @@ class IndexPengadaan extends Component
         $this->tahun_pengadaan = $pengadaan->tahun_pengadaan;
         $this->tanggal_pengadaan = $pengadaan->tanggal_pengadaan;
         $this->status_pengadaan = $pengadaan->status_pengadaan;
+        $this->deskripsi = $pengadaan->deskripsi;
 
-        $this->isModalOpen = true;
-    }
-
-    public function store()
-    {
-        $this->validate();
-
-        $this->total_harga = $this->jumlah_pengadaan * $this->harga_satuan;
-
-        Pengadaan::create([
-            'user_id' => Auth::user()->id,
-            'ruangan_id' => $this->ruangan_id,
-            'nama_barang_pengadaan' => $this->nama_barang_pengadaan,
-            'satuan_pengadaan' => $this->satuan_pengadaan,
-            'jumlah_pengadaan' => $this->jumlah_pengadaan,
-            'harga_satuan' => $this->harga_satuan,
-            'total_harga' => $this->total_harga,
-            'tahun_pengadaan' => $this->tahun_pengadaan,
-            'tanggal_pengadaan' => $this->tanggal_pengadaan,
-            'status_pengadaan' => 'diproses',
-        ]);
-
-        session()->flash('message', 'Pengadaan berhasil ditambahkan.');
-
-        $this->closeModal();
-        $this->resetForm();
     }
 
     public function calculateTotal()
-{
-    if ($this->jumlah_pengadaan && $this->harga_satuan) {
+    {
+        if ($this->jumlah_pengadaan && $this->harga_satuan) {
         $this->total_harga = $this->jumlah_pengadaan * $this->harga_satuan;
     } else {
         $this->total_harga = 0;
@@ -125,7 +115,34 @@ class IndexPengadaan extends Component
 
     public function update()
     {
-        $this->validate();
+        $this->validate([
+            'ruangan_id' => 'required|exists:ruangans,id',
+            'nama_barang_pengadaan' => 'required|string|max:255',
+            'satuan_pengadaan' => 'required|string|max:50',
+            'jumlah_pengadaan' => 'required|integer|min:1',
+            'harga_satuan' => 'required|numeric|min:0',
+            'tahun_pengadaan' => 'required|digits:4',
+            'tanggal_pengadaan' => 'required|date',
+            'status_pengadaan' => 'required|in:diterima,diproses,barang tiba',
+            ],
+        [
+            'ruangan_id.required' => 'Ruangan harus dipilih.',
+            'ruangan_id.exists' => 'Ruangan tidak ditemukan.',
+            'nama_barang_pengadaan.required' => 'Nama barang pengadaan harus diisi.',
+            'satuan_pengadaan.required' => 'Satuan pengadaan harus diisi.',
+            'jumlah_pengadaan.required' => 'Jumlah pengadaan harus diisi.',
+            'jumlah_pengadaan.integer' => 'Jumlah pengadaan harus berupa angka.',
+            'jumlah_pengadaan.min' => 'Jumlah pengadaan minimal adalah 1.',
+            'harga_satuan.required' => 'Harga satuan harus diisi.',
+            'harga_satuan.numeric' => 'Harga satuan harus berupa angka.',
+            'harga_satuan.min' => 'Harga satuan minimal adalah 0.',
+            'tahun_pengadaan.required' => 'Tahun pengadaan harus diisi.',
+            'tahun_pengadaan.digits' => 'Tahun pengadaan harus terdiri dari 4 angka.',
+            'tanggal_pengadaan.required' => 'Tanggal pengadaan harus diisi.',
+            'tanggal_pengadaan.date' => 'Tanggal pengadaan harus berupa tanggal.',
+            'status_pengadaan.required' => 'Status pengadaan harus dipilih.',
+            'status_pengadaan.in' => 'Status pengadaan tidak valid.',
+        ]);
 
         $pengadaan = Pengadaan::findOrFail($this->pengadaan_id);
 
@@ -140,17 +157,18 @@ class IndexPengadaan extends Component
             'tahun_pengadaan' => $this->tahun_pengadaan,
             'tanggal_pengadaan' => $this->tanggal_pengadaan,
             'status_pengadaan' => $this->status_pengadaan,
+            'deskripsi' => $this->deskripsi,
         ]);
 
         session()->flash('message', 'Pengadaan berhasil diperbarui.');
 
-        $this->closeModal();
+        $this->dispatch('closeModal');
     }
 
     public function confirmDelete($id)
     {
         $this->pengadaan_id = $id;
-        $this->isDeleteModalOpen = true;
+
     }
 
     public function delete()
@@ -159,7 +177,6 @@ class IndexPengadaan extends Component
         $pengadaan->delete();
 
         session()->flash('message', 'Pengadaan berhasil dihapus.');
-        $this->isDeleteModalOpen = false;
     }
 
     private function resetForm()
@@ -175,5 +192,6 @@ class IndexPengadaan extends Component
         $this->tahun_pengadaan = null;
         $this->tanggal_pengadaan = null;
         $this->status_pengadaan = '';
+        $this->deskripsi ='' ;
     }
 }

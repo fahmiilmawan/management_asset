@@ -18,24 +18,15 @@ class IndexPengaduan extends Component
 
     public $pengaduan_id, $asset_id, $user_id, $pengaduan, $jumlah, $status, $bukti_fisik, $deskripsi, $tanggal_rusak;
 
-    public $isModalOpen = false;
-    public $isDeleteModalOpen = false;
-    public $isDetailModalOpen = false;
 
-    protected $rules = [
-        'pengaduan' => 'required',
-        'jumlah' => 'required',
-    ];
-
-    protected $messages = [
-        'pengaduan.required' => 'Pengaduan harus diisi.',
-        'jumlah.required' => 'Jumlah harus diisi.',
-    ];
 
     public function render()
     {
+        $pengaduans = Pengaduan::with('user', 'asset')->when(!Auth::user()->isAdmin(),function ($query){
+            return $query->where('user_id', Auth::user()->id);
+        })->paginate(5);
         return view('livewire.index-pengaduan',[
-            'pengaduans' => Pengaduan::with('user', 'asset')->paginate(5),
+            'pengaduans' => $pengaduans,
             'assets' => Asset::with('barang', 'ruangan', 'unit')->get(),
             'barangs' => Barang::all(),
         ]);
@@ -43,8 +34,22 @@ class IndexPengaduan extends Component
 
     public function store()
     {
-        $this->validate();
-        $filePath = $this->uploadBuktiFisik();
+        $this->validate([
+            'asset_id' => 'required',
+            'pengaduan' => 'required',
+            'jumlah' => 'required',
+            'deskripsi' => 'required',
+            'tanggal_rusak' => 'required',
+        ],
+        [
+            'asset_id.required' => 'Asset harus diisi.',
+            'pengaduan.required' => 'Pengaduan harus diisi.',
+            'jumlah.required' => 'Jumlah harus diisi.',
+            'deskripsi.required' => 'Deskripsi harus diisi.',
+            'tanggal_rusak.required' => 'Tanggal rusak harus diisi.',
+        ]);
+
+        $bukti_fisik = $this->uploadBuktiFisik();
 
         Pengaduan::create([
             'asset_id' => $this->asset_id,
@@ -52,14 +57,15 @@ class IndexPengaduan extends Component
             'pengaduan' => $this->pengaduan,
             'jumlah' => $this->jumlah,
             'status' => 'diproses',
-            'bukti_fisik' => $filePath,
+            'bukti_fisik' => $bukti_fisik,
             'deskripsi' => $this->deskripsi,
             'tanggal_rusak' => $this->tanggal_rusak,
         ]);
 
-        $this->resetForm();
-        $this->isModalOpen = false;
         session()->flash('message', 'Pengaduan berhasil ditambahkan.');
+
+        $this->resetForm();
+        $this->dispatch('closeModal');
     }
 
     private function uploadBuktiFisik()
@@ -82,7 +88,7 @@ class IndexPengaduan extends Component
         $this->bukti_fisik = $pengaduan->bukti_fisik;
         $this->deskripsi = $pengaduan->deskripsi;
         $this->tanggal_rusak = $pengaduan->tanggal_rusak;
-        $this->isDetailModalOpen = true;
+
     }
 
     public function edit($id)
@@ -97,14 +103,27 @@ class IndexPengaduan extends Component
         $this->bukti_fisik = $pengaduan->bukti_fisik;
         $this->deskripsi = $pengaduan->deskripsi;
         $this->tanggal_rusak = $pengaduan->tanggal_rusak;
-        $this->isModalOpen = true;
     }
 
     public function update()
     {
-        $this->validate();
-        $filePath = $this->uploadBuktiFisik();
 
+        $this->validate([
+            'asset_id' => 'required',
+            'pengaduan' => 'required',
+            'jumlah' => 'required',
+            'deskripsi' => 'required',
+            'tanggal_rusak' => 'required',
+        ],
+        [
+            'asset_id.required' => 'Asset harus diisi.',
+            'pengaduan.required' => 'Pengaduan harus diisi.',
+            'jumlah.required' => 'Jumlah harus diisi.',
+            'deskripsi.required' => 'Deskripsi harus diisi.',
+            'tanggal_rusak.required' => 'Tanggal rusak harus diisi.',
+        ]);
+
+        $filePath = $this->uploadBuktiFisik();
         Pengaduan::find($this->pengaduan_id)->update([
             'asset_id' => $this->asset_id,
             'user_id' => $this->user_id,
@@ -117,38 +136,24 @@ class IndexPengaduan extends Component
         ]);
 
         $this->resetForm();
-        $this->isModalOpen = false;
+
         session()->flash('message', 'Pengaduan berhasil diperbarui.');
+        $this->dispatch('closeModal');
     }
 
     public function confirmDelete($id)
     {
         $this->pengaduan_id = $id;
-        $this->isDeleteModalOpen = true;
+
     }
 
     public function delete()
     {
         Pengaduan::find($this->pengaduan_id)->delete();
-        $this->isDeleteModalOpen = false;
+
         session()->flash('message', 'Pengaduan berhasil dihapus.');
     }
 
-    public function isModalOpen()
-    {
-        $this->isModalOpen = true;
-    }
-
-    public function openModal()
-    {
-        $this->resetForm();
-        $this->isModalOpen = true;
-    }
-
-    public function closeModal()
-    {
-        $this->isModalOpen = false;
-    }
 
     public function resetForm()
     {

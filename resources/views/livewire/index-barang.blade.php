@@ -5,11 +5,13 @@
             <h3 class="font-weight-bold mb-0">Data Barang</h3>
             <p class="text-muted">{{ now()->format('d F Y') }}</p>
         </div>
+        @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'staff_unit')
         <div class="col-md-6 text-end">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                 <i class="fas fa-plus"></i> Tambah Barang
             </button>
         </div>
+        @endif
     </div>
     {{-- End of Header --}}
 
@@ -34,7 +36,9 @@
                     <tr>
                         <th>Kode Barang</th>
                         <th>Nama Barang</th>
+                        @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'staff_unit')
                         <th>Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -45,8 +49,12 @@
                         <td>{{ $barang->kode_barang }}</td>
                         <td>{{ $barang->nama_barang }}</td>
                         <td>
+                            @if (Auth::user()->role == 'admin_umum')
                             <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $barang->id }})">Edit</button>
                             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete" wire:click="confirmDelete({{ $barang->id }})">Hapus</button>
+                            @elseif (Auth::user()->role == 'staff_unit')
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $barang->id }})">Edit</button>
+                            @endif
                         </td>
                         @empty
                         <td colspan="3" class="text-center">Tidak ada data barang.</td>
@@ -82,7 +90,7 @@
                             <input type="text" wire:model="kode_barang" class="form-control" id="kode_barang">
                             @error('kode_barang') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
-                        <div class="mb-3">
+ <div class="mb-3">
                             <label for="nama_barang" class="form-label">Nama Barang</label>
                             <input type="text" wire:model="nama_barang" class="form-control" id="nama_barang">
                             @error('nama_barang') <small class="text-danger">{{ $message }}</small> @enderror
@@ -154,10 +162,14 @@
     {{-- End Modal Delete --}}
 </div>
 <script>
+    // window.addEventListener('closeModal', event => {
+    //     $('#addModal').modal('hide');
+    // });
+    // window.addEventListener('closeModal', event => {
+    //     $('#editModal').modal('hide');
+    // });
     window.addEventListener('closeModal', event => {
         $('#addModal').modal('hide');
-    });
-    window.addEventListener('closeModal', event => {
         $('#editModal').modal('hide');
     });
 </script>

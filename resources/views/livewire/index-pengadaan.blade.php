@@ -5,11 +5,13 @@
             <h3 class="font-weight-bold mb-0">Data Pengadaan</h3>
             <p class="text-muted">{{ now()->format('d F Y') }}</p>
         </div>
+        @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'staff_unit')
         <div class="col-md-6 text-end">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" wire:click="openModal">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                 <i class="fas fa-plus"></i> Tambah Pengadaan
             </button>
         </div>
+        @endif
     </div>
 
     <!-- Alert -->
@@ -35,7 +37,9 @@
                         <th>Harga Satuan</th>
                         <th>Total Harga</th>
                         <th>Status</th>
+                        @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'staff_unit')
                         <th>Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -44,18 +48,23 @@
                         <td>{{ $pengadaan->nama_barang_pengadaan }}</td>
                         <td>{{ $pengadaan->ruangan->nama_ruangan }}</td>
                         <td>{{ $pengadaan->jumlah_pengadaan }}</td>
-                        <td>{{ number_format($pengadaan->harga_satuan, 0, ',', '.') }}</td>
-                        <td>{{ number_format($pengadaan->total_harga, 0, ',', '.') }}</td>
+                        <td>Rp.{{ number_format($pengadaan->harga_satuan, 0, ',', '.') }}</td>
+                        <td>Rp.{{ number_format($pengadaan->total_harga, 0, ',', '.') }}</td>
                         <td>
-                            <span class="badge bg-gradient-{{
+                            <span class="badge bg-{{
                                 $pengadaan->status_pengadaan === 'diproses' ? 'warning' :
                                 ($pengadaan->status_pengadaan === 'barang tiba' ? 'success' : 'info') }}">
                                 {{ ucfirst($pengadaan->status_pengadaan) }}
                             </span>
                         </td>
+
                         <td>
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm" wire:click="edit({{ $pengadaan->id }})">Edit</button>
+                            @if (Auth::user()->role == 'admin_umum')
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $pengadaan->id }})">Edit</button>
                             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete" wire:click="confirmDelete({{ $pengadaan->id }})">Hapus</button>
+                            @elseif (Auth::user()->role == 'staff_unit')
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $pengadaan->id }})">Edit</button>
+                            @endif
                         </td>
                     </tr>
                     @empty
@@ -72,13 +81,91 @@
     </div>
 
     <!-- Modal Form -->
-    <div wire:ignore.self class="modal fade" id="modalForm" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="addModal" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form wire:submit.prevent="{{ $pengadaan_id ? 'update' : 'store' }}">
+                <form wire:submit.prevent="store">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalFormLabel">
-                            {{ $pengadaan_id ? 'Edit Pengadaan' : 'Tambah Pengadaan' }}
+                            Tambah Pengadaan
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Input Fields -->
+
+                        <div class="mb-3">
+                            <label for="nama_barang_pengadaan" class="form-label">Nama Barang</label>
+                            <input type="text" class="form-control border p-2" id="nama_barang_pengadaan" wire:model="nama_barang_pengadaan">
+                            @error('nama_barang_pengadaan') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="ruangan_id" class="form-label">Untuk Ruangan</label>
+                            <select class="form-select p-2" id="ruangan_id" wire:model="ruangan_id">
+                                <option value=""> Pilih Ruangan </option>
+                                @foreach ($ruangans as $ruangan)
+                                <option value="{{ $ruangan->id }}">{{ $ruangan->nama_ruangan }}</option>
+                                @endforeach
+                            </select>
+                            @error('ruangan_id') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="satuan_pengadaan" class="form-label">Satuan</label>
+                            <input type="text" class="form-control border p-2" id="satuan_pengadaan" wire:model="satuan_pengadaan">
+                            @error('satuan_pengadaan') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="jumlah_pengadaan" class="form-label">Jumlah</label>
+                            <input type="number" class="form-control border p-2" id="jumlah_pengadaan" wire:model="jumlah_pengadaan">
+                            @error('jumlah_pengadaan') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="harga_satuan" class="form-label">Harga Satuan</label>
+                            <input type="number" class="form-control border p-2" id="harga_satuan" wire:model="harga_satuan" wire:keyup="calculateTotal">
+                            @error('harga_satuan') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="total_harga" class="form-label">Total Harga</label>
+                            <input type="number" class="form-control border p-2" id="total_harga" wire:model="total_harga" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tahun_pengadaan" class="form-label">Tahun Pengadaan</label>
+                            <input type="number" class="form-control border p-2" id="tahun_pengadaan" wire:model="tahun_pengadaan">
+                            @error('tahun_pengadaan') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tanggal_pengadaan" class="form-label">Tanggal Pengadaan</label>
+                            <input type="date" class="form-control border p-2" id="tanggal_pengadaan" wire:model="tanggal_pengadaan">
+                            @error('tanggal_pengadaan') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="deskripsi" class="form-label">Deskripsi</label>
+                            <textarea name="deskripsi" class="form-control" id="deskripsi" wire:model = "deskripsi" cols="5" rows="5"></textarea>
+                            @error('deskripsi') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Tambah</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div wire:ignore.self class="modal fade" id="editModal" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form wire:submit.prevent="store">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalFormLabel">
+                            Edit Pengadaan
                         </h5>
                     </div>
                     <div class="modal-body">
@@ -146,10 +233,15 @@
                             </select>
                             @error('status_pengadaan') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
+                        <div class="mb-3">
+                            <label for="deskripsi" class="form-label">Deskripsi</label>
+                            <textarea name="deskripsi" class="form-control" id="deskripsi" wire:model = "deskripsi" cols="5" rows="5"></textarea>
+                            @error('deskripsi') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">{{ $pengadaan_id ? 'Simpan Perubahan' : 'Tambah' }}</button>
+                        <button type="submit" class="btn btn-primary">Edit</button>
                     </div>
                 </form>
             </div>
@@ -175,3 +267,12 @@
         </div>
     </div>
 </div>
+
+<script>
+    window.addEventListener('closeModal', event => {
+        $('#addModal').modal('hide');
+    })
+    window.addEventListener('closeModal', event => {
+        $('#editModal').modal('hide');
+    })
+</script>

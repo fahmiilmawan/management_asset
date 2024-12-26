@@ -3,13 +3,16 @@
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PengadaanController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\ScanQRController;
+use App\Http\Controllers\SettingProfileController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Livewire\AssetDetail;
+use App\Livewire\SettingProfile;
 use Illuminate\Support\Facades\Route;
 
 
@@ -17,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('/login');
 });
+
 Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
 Route::get('/barang',[BarangController::class,'index'])->name('index.barang');
 Route::get('/ruangan',[RuanganController::class,'index'])->name('index.ruangan');
@@ -28,10 +32,13 @@ Route::get('/scan',[AssetController::class,'detailAsset'])->name('index.detail-a
 Route::get('/pengaduan',[PengaduanController::class,'index'])->name('index.pengaduan');
 Route::get('/pengadaan',[PengadaanController::class,'index'])->name('index.pengadaan');
 Route::get('/scan-qr',[ScanQRController::class,'index'])->name('index.scanqr');
+Route::get('/setting-profile',[SettingProfileController::class,'index'])->name('setting-profile');
 
 
 
 Route::get('/user/send-wa/{id}',[UserController::class,'sendWhatsappMessage'])->name('sendWhatsapp');
+Route::get('/laporan-asset',[LaporanController::class,'indexLaporanAsset'])->name('index.laporan-asset');
+Route::get('/laporan-pengadaan',[LaporanController::class,'indexLaporanPengadaan'])->name('index.laporan-pengadaan');
 
 
 

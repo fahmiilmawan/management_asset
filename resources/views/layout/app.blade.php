@@ -4,195 +4,201 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('img') }}/apple-icon.png">
-    <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}">
     <title>Dashboard</title>
 
-    <!-- Fonts and Icons -->
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
-    <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
-    <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <link id="pagestyle" href="{{ asset('assets') }}/css/material-dashboard.css" rel="stylesheet" />
+    <!-- Vendor CSS Files -->
+    <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/quill/quill.snow.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/simple-datatables/style.css') }}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
 
     @livewireStyles
-    <style>
-        /* Memastikan modal dan backdrop tampil dengan benar */
-        .modal-backdrop {
-            z-index: 1040 !important;
-        }
-
-        .modal {
-            z-index: 1050 !important;
-        }
-
-        .navbar-main {
-            z-index: 1030;
-        }
-    </style>
 </head>
 
-<body class="g-sidenav-show bg-gray-100">
-    {{-- Sidebar --}}
-    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
-        id="sidenav-main">
-        <div class="sidenav-header">
-            <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
-                aria-hidden="true" id="iconSidenav"></i>
-            <a class="navbar-brand px-4 py-3 m-0"
-                href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
-                <img src="{{ asset('assets/img/logo-ct-dark.png') }}" class="navbar-brand-img" width="26"
-                    height="26" alt="main_logo">
-                <span class="ms-1 text-sm text-dark">Management Asset</span>
+<body>
+    <!-- Header -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="index.html" class="logo d-flex align-items-center">
+                <img src="{{ asset('assets/img/logo.png') }}" alt="">
+                <span class="d-none d-lg-block" style="font-size: 20px">Management Asset</span>
             </a>
-        </div>
-        <hr class="horizontal dark mt-0 mb-2">
-        <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
-            <ul class="navbar-nav">
-                {{-- Side Dashboard --}}
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('dashboard') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="{{ route('dashboard') }}">
-                        <i class="material-symbols-rounded opacity-5">dashboard</i>
-                        <span class="nav-link-text ms-1">Dashboard</span>
-                    </a>
-                </li>
-                {{-- End Side Dashboard --}}
-                {{-- Side Master Data --}}
-                <li class="nav-item mt-3">
-                    <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Master Data</h6>
-                </li>
-                <li class="nav-item mt-3">
-                    <a class="nav-link {{ Request::is('barang','ruangan','unit') ? 'active bg-gradient-dark text-white' : 'text-dark' }} text-dark" data-bs-toggle="collapse" href="#masterDataMenu" role="button"
-                        aria-expanded="false" aria-controls="masterDataMenu">
-                        <i class="material-symbols-rounded opacity-5">category</i>
-                        <span class="nav-link-text ms-1">Master Data</span>
-                    </a>
-                    <div class="collapse ps-4" id="masterDataMenu">
-                        <ul class="nav flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="{{ route('index.barang') }}">
-                                    <i class="material-symbols-rounded opacity-5">view_in_ar</i>
-                                    <span class="nav-link-text ms-1">Data Barang</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="{{ route('index.ruangan') }}">
-                                    <i class="material-symbols-rounded opacity-5">receipt_long</i>
-                                    <span class="nav-link-text ms-1">Data Ruangan</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href={{ route('index.unit') }}>
-                                    <i class="material-symbols-rounded opacity-5">view_in_ar</i>
-                                    <span class="nav-link-text ms-1">Data Unit</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="{{ route('index.user') }}">
-                                    <i class="material-symbols-rounded opacity-5">person</i>
-                                    <span class="nav-link-text ms-1">Data User</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    {{-- End Side Master Data --}}
-                    {{-- Side Data Asset --}}
-                <li class="nav-item mt-3">
-                    <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Data Asset</h6>
-                </li>
-                <a class="nav-link text-dark" data-bs-toggle="collapse" href="#dataAssetMenu" role="button"
-                    aria-expanded="false" aria-controls="masterDataMenu">
-                    <i class="material-symbols-rounded opacity-5">category</i>
-                    <span class="nav-link-text ms-1">Data Asset</span>
-                </a>
-                <div class="collapse ps-4" id="dataAssetMenu">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="{{ route('index.asset')  }}">
-                                <i class="material-symbols-rounded opacity-5">person</i>
-                                <span class="nav-link-text ms-1">Data Asset</span>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div><!-- End Logo -->
+
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
+
+                <li class="nav-item dropdown pe-3">
+
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                        <span class="d-none d-md-block dropdown-toggle ps-2">Selamat Datang, {{ Auth::user()->nama_lengkap }}</span>
+                    </a><!-- End Profile Iamge Icon -->
+
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                        <li class="dropdown-header">
+                            <h6>{{ Auth::user()->nama_lengkap }}</h6>
+                            <span>{{ Auth::user()->role }}</span>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="{{ route('setting-profile', Auth::user()->id) }}">
+                                <i class="bi bi-person"></i>
+                                <span>My Profile</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="{{ route('index.scanqr')  }}">
-                                <i class="material-symbols-rounded opacity-5">camera</i>
-                                <span class="nav-link-text ms-1">Scan QR Code</span>
-                            </a>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item d-flex align-items-center">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    <span>Sign Out</span>
+                                </button>
+                            </form>
                         </li>
-                    </ul>
-                </div>
-                {{-- End Side Data Asset --}}
-                {{-- Side Laporan Pengaduan --}}
-                <li class="nav-item mt-3">
-                    <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Pengaduan &
-                        Pengajuan</h6>
-                </li>
-                <a class="nav-link  {{ Request::is('pengaduan') ? 'active bg-gradient-dark text-white' : 'text-dark' }} text-dark" data-bs-toggle="collapse" href="#pengaduanPengadaan" role="button"
-                    aria-expanded="false" aria-controls="pengadaanPengaduan">
-                    <i class="material-symbols-rounded opacity-5">category</i>
-                    <span class="nav-link-text ms-1">Pengaduan & Pengadaan</span>
-                </a>
-                <div class="collapse ps-4" id="pengaduanPengadaan">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="{{ route('index.pengaduan') }}">
-                                <i class="material-symbols-rounded opacity-5">person</i>
-                                <span class="nav-link-text ms-1">Pengaduan</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="{{ route('index.pengadaan') }}">
-                                <i class="material-symbols-rounded opacity-5">person</i>
-                                <span class="nav-link-text ms-1">Pengadaan</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                {{-- End Side Laporan Pengaduan --}}
+
+                    </ul><!-- End Profile Dropdown Items -->
+                </li><!-- End Profile Nav -->
+
             </ul>
-        </div>
-    </aside>
-    {{-- End Sidebar --}}
+        </nav><!-- End Icons Navigation -->
 
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <!-- Navbar -->
-        <nav class="navbar navbar-main navbar-expand-lg px-0 py-3 my-3 shadow-sm" data-scroll="true">
-            <div class="container-fluid py-1 px-3">
-                <div class="collapse navbar-collapse mt-sm-0 me-md-0 me-sm-4" id="navbar">
-                    <ul class="navbar-nav d-flex align-items-center ms-auto justify-content-end">
-                        <li class="nav-item dropdown ps-3 mx-2 d-flex align-items-center">
-                            <a href="javascript:;" class="nav-link text-body p-0" id="navbarProfileDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="https://placehold.co/400" class="avatar avatar-sm rounded-circle me-2" alt="user-profile">
-                                <span class="d-sm-inline d-none">Hi, {{ Auth::user()->nama_lengkap }}</span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end px-2 py-3" aria-labelledby="navbarProfileDropdown">
-                                <li><a class="dropdown-item border-radius-md" href="#">Profil</a></li>
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item border-radius-md">Sign Out</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <!-- End Navbar -->
+    </header><!-- End Header -->
+    <!-- ======= Sidebar ======= -->
+    <aside id="sidebar" class="sidebar">
+        <ul class="sidebar-nav" id="sidebar-nav">
 
-        {{-- Main Content --}}
+            <!-- Dashboard -->
+            <li class="nav-item">
+                <a class="nav-link {{ Request::is('dashboard') ? '' : 'collapsed' }}" href="{{ route('dashboard') }}">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            @if (Auth::user()->role == 'administrator' || Auth::user()->role == 'admin_umum')
+            <!-- Master Data -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#master-data-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-layout-text-window-reverse"></i>
+                    <span>Master Data</span>
+                    <i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="master-data-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ route('index.barang') }}">
+                            <i class="bi bi-circle"></i><span>Data Barang</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('index.ruangan') }}">
+                            <i class="bi bi-circle"></i><span>Data Ruangan</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('index.unit') }}">
+                            <i class="bi bi-circle"></i><span>Data Unit</span>
+                        </a>
+                    </li>
+                    @if (Auth::user()->role == 'administrator')
+                    <li>
+                        <a href="{{ route('index.user') }}">
+                            <i class="bi bi-circle"></i><span>Data User</span>
+                        </a>
+                    </li>
+                    @endif
+                </ul>
+            </li>
+            @endif
+
+            @if (Auth::user()->role == 'administrator' || Auth::user()->role == 'admin_umum')
+            <!-- Data Asset -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#data-asset-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-journal-text"></i><span>Data Asset</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="data-asset-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ route('index.asset') }}">
+                            <i class="bi bi-circle"></i><span>Data Asset</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('index.scanqr') }}">
+                            <i class="bi bi-circle"></i><span>Scan QR Code</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            @endif
+            {{-- Data Laporan --}}
+
+            <!-- Pengaduan & Pengadaan -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#complaint-procurement-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-menu-button-wide"></i><span>Pengaduan & Pengadaan</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="complaint-procurement-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ route('index.pengaduan') }}">
+                            <i class="bi bi-circle"></i><span>Pengaduan</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('index.pengadaan') }}">
+                            <i class="bi bi-circle"></i><span>Pengadaan</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#data-laporan-asset" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-journal-text"></i><span>Data Laporan</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="data-laporan-asset" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ route('index.laporan-asset') }}">
+                            <i class="bi bi-circle"></i><span>Laporan Keseluruhan Asset</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('index.laporan-pengadaan') }}">
+                            <i class="bi bi-circle"></i><span>Laporan Pengadaan</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+        </ul>
+    </aside><!-- End Sidebar -->
+
+    <!-- ======= Main Content ======= -->
+    <main id="main" class="main">
+        <!-- Page Content -->
         @yield('main-content')
-        {{-- End Main Content --}}
-    </main>
+    </main><!-- End Main Content -->
 
     @livewireScripts
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Vendor JS Files -->
+    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
+    <script src="{{ asset('assets/vendor/quill/quill.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/tinymce/tinymce.min.js') }}"></script>
+
+    <!-- Template Main JS File -->
+    <script src="{{ asset('assets/js/main.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="{{ asset('assets/js/material-dashboard.min.js') }}"></script>
+
     @stack('script')
 </body>
 

@@ -5,11 +5,13 @@
             <h3 class="font-weight-bold mb-0">Data Unit</h3>
             <p class="text-muted">{{ now()->format('d F Y') }}</p>
         </div>
+        @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'staff_unit')
         <div class="col-md-6 text-end">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                 <i class="fas fa-plus"></i> Tambah Unit
             </button>
         </div>
+        @endif
     </div>
     {{-- End of Header --}}
 
@@ -33,7 +35,9 @@
                     <tr>
                         <th>Nama Unit</th>
                         <th>Deskripsi</th>
+                        @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'staff_unit')
                         <th>Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -44,8 +48,12 @@
                         <td>{{ $unit->nama_unit }}</td>
                         <td>{{ $unit->deskripsi }}</td>
                         <td>
+                            @if (Auth::user()->role == 'admin_umum')
                             <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $unit->id }})">Edit</button>
                             <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete" wire:click="confirmDelete({{ $unit->id }})">Hapus</button>
+                            @elseif (Auth::user()->role == 'staff_unit')
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $unit->id }})">Edit</button>
+                            @endif
                         </td>
                         @empty
                         <td colspan="2" class="text-center">Tidak ada data unit.</td>

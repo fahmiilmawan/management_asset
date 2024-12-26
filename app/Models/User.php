@@ -17,6 +17,7 @@ class User extends Authenticatable
         'email',
         'no_hp',
         'password',
+        'plain_password',
         'role',
     ];
 
@@ -32,5 +33,10 @@ class User extends Authenticatable
     public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class);
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'administrator';
     }
 }

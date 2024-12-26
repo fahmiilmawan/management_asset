@@ -10,7 +10,7 @@
                 <strong>Barang:</strong> <span>{{ $getInventaris->barang->nama_barang }}</span>
             </li>
             <li class="list-group-item">
-                <strong>No Inventaris:</strong> <span>{{ $getInventaris->no_inventaris }}</span>
+                <strong>No Inventaris:</strong> <span>{{ $getInventaris->no_urut }}/{{ $getInventaris->no_inventaris }}</span>
             </li>
             <li class="list-group-item">
                 <strong>Bulan:</strong> <span>{{ $getInventaris->bulan }}</span>

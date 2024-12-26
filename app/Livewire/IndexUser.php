@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use App\Models\Unit;
 use App\Models\User;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -45,7 +47,8 @@ class IndexUser extends Component
             'unit_id' => $this->unit_id,
             'nama_lengkap' => $this->nama_lengkap,
             'email' => $this->email,
-            'password' => bcrypt($this->password),
+            'password' => Hash::make($this->password),
+            'plain_password' =>Crypt::encryptString($this->password),
             'role' => $this->role,
             'no_hp' => $this->no_hp
         ]);
@@ -93,7 +96,9 @@ class IndexUser extends Component
             'unit_id' => $this->unit_id,
             'nama_lengkap' => $this->nama_lengkap,
             'email' => $this->email,
-            'password' => bcrypt($this->password),
+            'plain_password' => Crypt::encryptString($this->password),
+            'password' => Hash::make($this->password),
+            'plain_password' => $this->password,
             'role' => $this->role,
             'no_hp' => $this->no_hp
         ]);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 
 
@@ -23,11 +24,11 @@ class UserController extends Controller
        // Ambil data user berdasarkan ID
        $user = User::find($userId);
 
+       $decrypt = Crypt::decryptString($user->plain_password);
        // Periksa apakah user ditemukan
        if ($user) {
             $nama_lengkap = $user->nama_lengkap;
             $email        = $user->email;
-            $password     = $user->password;
             $no_hp        = $user->no_hp;
 
            // Membuat pesan WhatsApp
@@ -35,7 +36,7 @@ class UserController extends Controller
            $pesan .= "Selamat Pagi, " . $nama_lengkap. "\n";
            $pesan .= "Informasi akun :\n";
            $pesan .= "Email: " . $email . "\n";
-           $pesan .= "Password: " . $password . "\n";
+           $pesan .= "Password: " . $decrypt . "\n";
 
            // Menyusun URL WhatsApp
             $whatsapp = "https://api.whatsapp.com/send?phone=".$no_hp."&text=".urlencode($pesan);

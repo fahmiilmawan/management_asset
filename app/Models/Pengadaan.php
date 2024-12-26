@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Pengadaan extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'user_id',
         'nama_barang_pengadaan',
@@ -19,7 +19,8 @@ class Pengadaan extends Model
         'total_harga',
         'tahun_pengadaan',
         'tanggal_pengadaan',
-        'status_pengadaan'
+        'status_pengadaan',
+        'deskripsi'
     ];
 
     public function ruangan()
