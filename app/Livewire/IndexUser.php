@@ -13,12 +13,21 @@ class IndexUser extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'bootstrap';
+
     public $user_id,$nama_lengkap, $unit_id, $email, $password, $role, $no_hp;
+    public $search = '';
 
     public function render()
     {
+        $users = User::query()
+        ->when($this->search, function ($query) {
+            $query->where('nama_lengkap', 'like', '%' . $this->search . '%')
+                  ->orWhere('email', 'like', '%' . $this->search . '%');
+        });
+
         return view('livewire.index-user',[
-            'users' => User::with('unit')->paginate(5),
+            'users' => $users->paginate(5),
             'units' => Unit::all(),
         ]);
 

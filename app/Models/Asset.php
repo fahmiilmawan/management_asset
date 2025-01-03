@@ -25,7 +25,7 @@ class Asset extends Model
 
     public function ruangan()
     {
-        return $this->belongsTo(Ruangan::class);
+        return $this->belongsTo(Ruangan::class, 'ruangan_id');
     }
 
     public function unit()

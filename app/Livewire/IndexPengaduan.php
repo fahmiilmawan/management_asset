@@ -16,21 +16,55 @@ class IndexPengaduan extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
-    public $pengaduan_id, $asset_id, $user_id, $pengaduan, $jumlah, $status, $bukti_fisik, $deskripsi, $tanggal_rusak;
+    public $pengaduan_id, $asset_id, $user_id, $pengaduan, $jumlah, $status, $bukti_fisik, $deskripsi, $tanggal_rusak, $search;
 
 
 
     public function render()
     {
+
+
         $pengaduans = Pengaduan::with('user', 'asset')->when(!Auth::user()->isAdmin(),function ($query){
             return $query->where('user_id', Auth::user()->id);
         })->paginate(5);
+
+        if (empty($this->search)) {
+            $pengaduans = Pengaduan::with('user', 'asset')->paginate(5);
+        } elseif (trim($this->search) == '') {
+            $pengaduans = Pengaduan::with('user', 'asset')->paginate(5);
+        } else {
+            $pengaduans = Pengaduan::with('user', 'asset')
+                ->where('pengaduan', 'like', '%' . $this->search . '%')
+                ->orWhere('status', 'like', '%' . $this->search . '%')
+                ->orWhereHas('user', function ($q) {
+                    $q->where('nama_lengkap', 'like', '%' . $this->search . '%');
+                })
+                ->orWhereHas('asset.barang', function ($q) {
+                    $q->where('nama_barang', 'like', '%' . $this->search . '%')
+                        ->orWhere('tanggal_rusak', 'like', '%' . $this->search . '%');
+                });
+    };
+
+    $pengaduans = Pengaduan::Orderby('id', 'desc')->paginate(5);
+
+
         return view('livewire.index-pengaduan',[
             'pengaduans' => $pengaduans,
             'assets' => Asset::with('barang', 'ruangan', 'unit')->get(),
             'barangs' => Barang::all(),
         ]);
     }
+
+    public function updateStatus($id, $status)
+{
+    $pengaduan = Pengaduan::findOrFail($id);
+
+    $pengaduan->update([
+        'status' => $status
+    ]);
+
+    session()->flash('message', 'Status pengaduan berhasil diubah menjadi ' . $status . '.');
+}
 
     public function store()
     {
@@ -56,7 +90,7 @@ class IndexPengaduan extends Component
             'user_id' => Auth::user()->id,
             'pengaduan' => $this->pengaduan,
             'jumlah' => $this->jumlah,
-            'status' => 'diproses',
+            'status' => 'diajukan',
             'bukti_fisik' => $bukti_fisik,
             'deskripsi' => $this->deskripsi,
             'tanggal_rusak' => $this->tanggal_rusak,

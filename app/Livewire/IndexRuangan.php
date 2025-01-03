@@ -16,14 +16,27 @@ class IndexRuangan extends Component
 
     // Property Ruangan
     public $ruangan_id, $nama_ruangan;
+    public $search = '';
 
     // Render Component
     public function render()
     {
+        $ruangans = Ruangan::query()
+            ->when($this->search, function ($query) {
+                $query->where('nama_ruangan', 'like', '%' . $this->search . '%');
+            });
+
         return view('livewire.index-ruangan', [
-            'ruangans' => Ruangan::paginate(5),
+            'ruangans' => $ruangans->paginate(5), // Pagination dengan 5 item per halaman
         ]);
     }
+
+    // Reset pagination saat pencarian berubah
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
 
     // Function Store Ruangan
     public function store()

@@ -16,5 +16,17 @@ class RuanganSeeder extends Seeder
         Ruangan::create([
             'nama_ruangan' => 'Ruangan IT'
         ]);
+        Ruangan::create([
+            'nama_ruangan' => 'Ruangan Finance'
+        ]);
+        Ruangan::create([
+            'nama_ruangan' => 'Gudang'
+        ]);
+        Ruangan::create([
+            'nama_ruangan' => 'Ruangan Produksi'
+        ]);
+        Ruangan::create([
+            'nama_ruangan' => 'HRD'
+        ]);
     }
 }

@@ -13,22 +13,99 @@
     <!-- Dashboard Cards -->
     <div class="row">
         <!-- Data Asset Card -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card shadow-sm border-light">
-                <div class="card-header p-3">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <p class="text-sm mb-0 text-capitalize">Data Barang</p>
-                            <h4 class="mb-0">{{ $dataBarang }}</h4>
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card info-card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-primary">
+                            <i class="bi bi-box-seam text-white fs-4"></i>
+                        </div>
+                        <div class="ps-3">
+                            <h6 class="card-title mb-0 text-uppercase text-secondary">Total Asset</h6>
+                            <h3 class="mb-0 fw-bold text-dark">{{ $totalAssets }}</h3>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row text-center">
+                        <div class="col">
+                            <h4 class="fw-bold mt-1 text-dark">{{ $assetsBaik }}</h4>
+                            <span class="badge bg-success p-2 text-white">Baik</span>
+                        </div>
+                        <div class="col">
+                            <h4 class="fw-bold mt-1 text-dark">{{ $assetsRusak }}</h4>
+                            <span class="badge bg-danger p-2 text-white">Rusak</span>
                         </div>
                     </div>
                 </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-2">
-                    <a href="{{ route('index.barang') }}" class="btn btn-dark btn-sm">Lihat Selengkapnya</a>
+                <div class="card-footer bg-light d-flex justify-content-center">
+                    <a href="{{ route('index.asset') }}" class="btn btn-sm btn-primary px-4">Lihat Selengkapnya</a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Data Pengaduan Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card info-card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                            <i class="bi bi-flag text-white fs-4"></i>
+                        </div>
+                        <div class="ps-3">
+                            <h6 class="card-title mb-0 text-uppercase text-secondary">Total Pengaduan</h6>
+                            <h3 class="mb-0 fw-bold text-dark">{{ $totalPengaduan }}</h3>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row text-center">
+                        <div class="col">
+                            <h4 class="fw-bold mt-1 text-dark">{{ $pengaduanDiproses }}</h4>
+                            <span class="badge bg-warning p-2 text-white">Diproses</span>
+                        </div>
+                        <div class="col">
+                            <h4 class="fw-bold mt-1 text-dark">{{ $pengaduanDitolak }}</h4>
+                            <span class="badge bg-danger p-2 text-white">Ditolak</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light d-flex justify-content-center">
+                    <a href="{{ route('index.pengaduan') }}" class="btn btn-sm btn-warning px-4">Lihat Selengkapnya</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Pengadaan Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card info-card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-success">
+                            <i class="bi bi-cart text-white fs-4"></i>
+                        </div>
+                        <div class="ps-3">
+                            <h6 class="card-title mb-0 text-uppercase text-secondary">Total Pengadaan</h6>
+                            <h3 class="mb-0 fw-bold text-dark">{{ $totalPengadaan }}</h3>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row text-center">
+                        <div class="col">
+                            <h4 class="fw-bold mt-1 text-dark">{{ $pengadaanDiproses }}</h4>
+                            <span class="badge bg-warning p-2 text-white">Diproses</span>
+                        </div>
+                        <div class="col">
+                            <h4 class="fw-bold mt-1 text-dark">{{ $pengadaanSelesai }}</h4>
+                            <span class="badge bg-success p-2 text-white">Selesai</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light d-flex justify-content-center">
+                    <a href="{{ route('index.pengadaan') }}" class="btn btn-sm btn-success px-4">Lihat Selengkapnya</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 @endsection

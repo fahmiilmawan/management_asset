@@ -29,10 +29,17 @@
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">Daftar unit</h5>
         </div>
+        <div class="row m-3">
+            <div class="col-md-4">
+                <label for="search" class="form-label">Cari</label>
+                <input type="text" class="form-control" name="search" id="search" wire:model.live="search" placeholder="Cari Nama Unit">
+            </div>
+        </div>
         <div class="card-body">
             <table class="table table-striped">
                 <thead>
                     <tr>
+                        <th>No</th>
                         <th>Nama Unit</th>
                         <th>Deskripsi</th>
                         @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'staff_unit')
@@ -42,30 +49,46 @@
                 </thead>
                 <tbody>
                     {{-- Looping data from render component --}}
-                    @forelse ( $units as $unit )
+                    @forelse ( $units as $index => $unit )
                     <tr>
-
+                        <td>{{ $units->firstItem() + $index }}</td>
                         <td>{{ $unit->nama_unit }}</td>
                         <td>{{ $unit->deskripsi }}</td>
                         <td>
                             @if (Auth::user()->role == 'admin_umum')
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $unit->id }})">Edit</button>
-                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete" wire:click="confirmDelete({{ $unit->id }})">Hapus</button>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#" class="dropdown-item" data-bs-toggle="modal"
+                                        data-bs-target="#editModal" wire:click="edit({{ $unit->id }})"><i
+                                        class="bi bi-pencil-square"></i> Edit</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="dropdown-item text-danger" data-bs-toggle="modal"
+                                        data-bs-target="#modalDelete"
+                                        wire:click="confirmDelete({{ $unit->id }})"><i
+                                        class="bi bi-trash"></i> Hapus</a>
+                                    </li>
+                                </ul>
+                            </div>
                             @elseif (Auth::user()->role == 'staff_unit')
                             <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $unit->id }})">Edit</button>
                             @endif
                         </td>
+                    </tr>
                         @empty
-                        <td colspan="2" class="text-center">Tidak ada data unit.</td>
+                        <tr>
+                            <td colspan="3" class="text-center">Tidak ada data unit.</td>
+                        </tr>
                         @endforelse
                     </tr>
                     {{-- End Looping data from render component --}}
                 </tbody>
             </table>
-        </div>
-
-        {{-- Render pagination --}}
-        <div class="card-footer">
             {{ $units->links() }}
         </div>
     </div>

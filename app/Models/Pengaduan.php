@@ -19,5 +19,9 @@ public function user()
 {
     return $this->belongsTo(User::class);
 }
+public function ruangan()
+{
+    return $this->belongsTo(Ruangan::class);
+}
 
 }

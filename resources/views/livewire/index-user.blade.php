@@ -27,10 +27,17 @@
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">Daftar User</h5>
         </div>
+        <div class="row m-3">
+            <div class="col-md-4">
+                <label for="search" class="form-label">Cari</label>
+                <input type="text" class="form-control" name="search" id="search" wire:model.live="search" placeholder="Cari Nama User">
+            </div>
+        </div>
         <div class="card-body">
             <table class="table table-striped">
                 <thead>
                     <tr>
+                        <th>No</th>
                         <th>Nama</th>
                         <th>Nama Unit</th>
                         <th>Email</th>
@@ -39,28 +46,46 @@
                 </thead>
                 <tbody>
                     {{-- Looping data from render component --}}
-                    @forelse ( $users as $user )
+                    @forelse ( $users as $index => $user )
                     <tr>
+                        <td>{{ $users->firstItem() + $index }}</td>
                         <td>{{ $user->nama_lengkap }}</td>
                         <td>{{ $user->unit->nama_unit }}</td>
                         <td>{{ $user->email }}</td>
                         <td>
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $user->id }})">Edit</button>
-                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete" wire:click="confirmDelete({{ $user->id }})">Hapus</button>
-                            <a class="btn btn-success btn-sm" href="{{ route('sendWhatsapp', $user->id) }}"> Kirim Password</a>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $user->id }})"><i class="bi bi-pencil-square"></i> Edit</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#modalDelete" wire:click="confirmDelete({{ $user->id }})"><i class="bi bi-trash"></i> Hapus</a>
+                                    </li>
+                                    <li>
+                                        <a class="text-success dropdown-item" href="{{ route('sendWhatsapp', $user->id) }}"> <i class="bi bi-whatsapp"></i> Kirim Password</a>
+                                    </li>
+                                </ul>
+                            </div>
+
                         </td>
+                    </tr>
                         @empty
-                        <td colspan="2" class="text-center">Tidak ada data user.</td>
+                        <tr>
+                            <td colspan="4" class="text-center">Tidak ada data user.</td>
+                        </tr>
                         @endforelse
                     </tr>
                     {{-- End Looping data from render component --}}
                 </tbody>
             </table>
+            {{ $users->links() }}
         </div>
 
         {{-- Render pagination --}}
         <div class="card-footer">
-            {{ $users->links() }}
         </div>
     </div>
     {{-- End Render pagination --}}

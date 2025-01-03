@@ -6,8 +6,6 @@
             <p class="text-muted">{{ now()->format('d F Y') }}</p>
         </div>
     </div>
-    {{-- End of Header --}}
-
 
     <!-- Tabel -->
     <div class="card shadow-sm mb-4">
@@ -15,19 +13,34 @@
             <h5 class="mb-0">Daftar Laporan Keseluruhan Asset</h5>
         </div>
         <div class="row m-3">
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <label for="filter_unit" class="form-label">Cari</label>
-                <input type="text" class="form-control" wire:model.live = "search" placeholder="Cari Nama Barang, Unit, Ruangan">
+                <input type="text" class="form-control" wire:model.live="search" placeholder="Cari Nama Asset, Unit, Ruangan">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <label for="filter_unit" class="form-label">Filter Periode</label>
                 <select name="periode" id="periode" class="form-control" wire:model.live="periode">
                     <option value=""> -- Pilih Periode -- </option>
-                    @foreach ( $periodes as $periode)
-                    <option value="{{ $periode }}"> {{ $periode }} </option>
-
+                    @foreach ($periodes as $periode)
+                        <option value="{{ $periode }}"> {{ $periode }} </option>
                     @endforeach
                 </select>
+            </div>
+            <div class="col-md-3">
+                <label for="lokasi" class="form-label">Filter Lokasi</label>
+                <select name="lokasi" id="lokasi" class="form-control" wire:model.live="lokasi">
+                    <option value=""> -- Pilih Lokasi -- </option>
+                    @foreach ($lokasis as $l)
+                        <option value="{{ $l['id'] }}"> {{ $l['nama'] }} </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="filter_unit" class="form-label">Export</label>
+                <div>
+                    <button wire:click="printPDF" class="btn btn-primary"> Print PDF</button>
+                    <button wire:click="exportExcel" class="btn btn-success">Export Excel</button>
+                </div>
             </div>
         </div>
         <div class="card-body">
@@ -43,21 +56,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- Looping data laporan asset from render component --}}
-                    @forelse ( $assets as $asset )
-                    <tr>
-
-                        <td>{{ $asset->no_inventaris }}</td>
-                        <td>{{ $asset->barang->nama_barang }}</td>
-                        <td>{{ $asset->unit->nama_unit }}</td>
-                        <td>{{ $asset->jumlah }}</td>
-                        <td>{{ $asset->ruangan->nama_ruangan }}</td>
-                        <td>{{ $asset->tahun }}</td>
-                        @empty
-                        <td colspan="3" class="text-center">Tidak ada data barang.</td>
-                        @endforelse
-                    </tr>
-                    {{-- End Looping data from render component --}}
+                    @forelse ($assets as $asset)
+                        <tr>
+                            <td>{{ $asset->no_inventaris }}</td>
+                            <td>{{ $asset->barang->nama_barang }}</td>
+                            <td>{{ $asset->unit->nama_unit }}</td>
+                            <td>{{ $asset->jumlah }}</td>
+                            <td>{{ $asset->ruangan->nama_ruangan }}</td>
+                            <td>{{ $asset->tahun }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center">No results found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -67,10 +79,4 @@
             {{ $assets->links() }}
         </div>
     </div>
-    {{-- End Render pagination --}}
-
 </div>
-
-
-
-

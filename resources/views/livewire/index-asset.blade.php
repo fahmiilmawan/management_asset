@@ -31,6 +31,12 @@
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">Daftar Asset</h5>
         </div>
+        <div class="row m-3">
+            <div class="col-md-4">
+                <label for="search" class="form-label">Cari</label>
+                <input type="text" class="form-control" name="search" id="search" wire:model.live="search" placeholder="Cari No Inventaris dan Nama Asset">
+            </div>
+        </div>
         <div class="card-body">
             <table class="table table-striped">
                 <thead>
@@ -39,7 +45,11 @@
                         <th>Nama Asset</th>
                         <th>Jumlah</th>
                         <th>Status</th>
-                        <th>Aksi</th>
+                        <th >QR Code</th>
+                        @if (Auth::user()->role == 'admin_umum')
+
+                        <th >Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -60,27 +70,31 @@
                         </td>
                         <td>
 
-
-                        @if (Auth::user()->role == 'admin_umum')
-                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $asset->id }})">Edit</button>
-                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete" wire:click="confirmDelete({{ $asset->id }})">Hapus</button>
-                        @elseif (Auth::user()->role == 'staff_unit')
-                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal" wire:click="edit({{ $asset->id }})">Edit</button>
-                        @endif
-
                             <a href="" class="btn btn-info btn-sm" data-bs-target="#modalQRCode" data-bs-toggle="modal">QR Code</a>
                         </td>
+                        @if (Auth::user()->role == 'admin_umum')
+                        <td>
+                        <div class="dropdown">
+                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" wire:click="edit({{ $asset->id }})" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal"><i class="bi bi-pencil-square"></i>Edit </a></li>
+                                <li><a href="#" wire:click="confirmDelete({{ $asset->id }})" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#modalDelete"><i class="bi bi-trash"></i>Delete </a></li>
+                            </ul>
+                        </div>
+                        @endif
+                        </td>
+                    </tr>
                         @empty
-                        <td colspan="5" class="text-center">Tidak ada data asset.</td>
+                        <tr>
+                            <td colspan="5" class="text-center">Tidak ada data</td>
+                        </tr>
                         @endforelse
                     </tr>
                     {{-- End Looping data from render component --}}
                 </tbody>
             </table>
-        </div>
-
-        {{-- Render pagination --}}
-        <div class="card-footer">
             {{ $assets->links() }}
         </div>
     </div>

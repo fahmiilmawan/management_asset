@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asset;
 use App\Models\Barang;
+use App\Models\Pengadaan;
+use App\Models\Pengaduan;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -12,9 +15,34 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $dataBarang = Barang::all()->count();
-        return view('dashboard',compact('dataBarang'));
+        // Total Asset
+        $totalAssets = Asset::count();
+        $assetsBaik = Asset::where('status', 'baik')->count();
+        $assetsRusak = Asset::where('status', 'rusak')->count();
+
+        // Total Pengaduan
+        $totalPengaduan = Pengaduan::count();
+        $pengaduanDiproses = Pengaduan::where('status', 'diproses')->count();
+        $pengaduanDitolak = Pengaduan::where('status', 'ditolak')->count();
+
+        // Total Pengadaan
+        $totalPengadaan = Pengadaan::count();
+        $pengadaanDiproses = Pengadaan::where('status_pengadaan', 'diproses')->count();
+        $pengadaanSelesai = Pengadaan::where('status_pengadaan', 'selesai')->count();
+
+        return view('dashboard', compact(
+            'totalAssets',
+            'assetsBaik',
+            'assetsRusak',
+            'totalPengaduan',
+            'pengaduanDiproses',
+            'pengaduanDitolak',
+            'totalPengadaan',
+            'pengadaanDiproses',
+            'pengadaanSelesai'
+        ));
     }
+
 
     /**
      * Show the form for creating a new resource.

@@ -16,7 +16,8 @@ class IndexPengadaan extends Component
     protected $paginationTheme = 'bootstrap';
     protected $listeners = ['confirmDelete'];
 
-    public $pengadaan_id, $user_id, $ruangan_id, $nama_barang_pengadaan, $satuan_pengadaan, $jumlah_pengadaan, $harga_satuan, $total_harga, $tahun_pengadaan, $tanggal_pengadaan, $status_pengadaan, $deskripsi;
+
+    public $pengadaan_id, $user_id, $ruangan_id, $nama_barang_pengadaan, $satuan_pengadaan, $jumlah_pengadaan, $harga_satuan, $total_harga, $tahun_pengadaan, $tanggal_pengadaan, $status_pengadaan, $deskripsi, $search;
 
     public function render()
 {
@@ -24,7 +25,22 @@ class IndexPengadaan extends Component
         ->when(!Auth::user()->isAdmin(), function ($query) {
             $query->where('user_id', Auth::id());
         })
-        ->paginate(5); // Pastikan paginate dipanggil pada query Eloquent
+        ->paginate(5);
+
+    if (empty($this->search)) {
+        $pengadaans = Pengadaan::with('ruangan')->paginate(5);
+    } elseif (trim($this->search) == '') {
+        $pengadaans = Pengadaan::with('ruangan')->paginate(5);
+    } else {
+        $pengadaans = Pengadaan::with('ruangan')
+            ->where('nama_barang_pengadaan', 'like', '%' . $this->search . '%')
+            ->orWhere('status_pengadaan', 'like', '%' . $this->search . '%')
+            ->orWhereHas('ruangan', function ($q) {
+                $q->where('nama_ruangan', 'like', '%' . $this->search . '%');
+            });
+    }
+
+    $pengadaans = Pengadaan::Orderby('id', 'desc')->paginate(5);
 
     return view('livewire.index-pengadaan', [
         'pengadaans' => $pengadaans,
@@ -32,6 +48,15 @@ class IndexPengadaan extends Component
     ]);
 }
 
+public function updateStatus($id, $status_pengadaan)
+{
+    $pengadaan = Pengadaan::findOrFail($id);
+
+    $pengadaan->update([
+        'status_pengadaan' => $status_pengadaan,
+    ]);
+    session()->flash('message', 'Status pengadaan berhasil diperbarui menjadi ' . $status_pengadaan . '.');
+}
 
 
 
@@ -75,7 +100,7 @@ class IndexPengadaan extends Component
             'total_harga' => $this->total_harga,
             'tahun_pengadaan' => $this->tahun_pengadaan,
             'tanggal_pengadaan' => $this->tanggal_pengadaan,
-            'status_pengadaan' => $this->status_pengadaan = 'diproses',
+            'status_pengadaan' => $this->status_pengadaan = 'diajukan',
             'deskripsi' => $this->deskripsi,
         ]);
 
@@ -103,6 +128,24 @@ class IndexPengadaan extends Component
 
     }
 
+    public function detail($id)
+    {
+        $pengadaan = Pengadaan::findOrFail($id);
+
+        $this->pengadaan_id = $pengadaan->id;
+        $this->user_id = $pengadaan->user_id;
+        $this->ruangan_id = $pengadaan->ruangan_id;
+        $this->nama_barang_pengadaan = $pengadaan->nama_barang_pengadaan;
+        $this->satuan_pengadaan = $pengadaan->satuan_pengadaan;
+        $this->jumlah_pengadaan = $pengadaan->jumlah_pengadaan;
+        $this->harga_satuan = $pengadaan->harga_satuan;
+        $this->total_harga = $pengadaan->total_harga;
+        $this->tahun_pengadaan = $pengadaan->tahun_pengadaan;
+        $this->tanggal_pengadaan = $pengadaan->tanggal_pengadaan;
+        $this->status_pengadaan = $pengadaan->status_pengadaan;
+        $this->deskripsi = $pengadaan->deskripsi;
+    }
+
     public function calculateTotal()
     {
         if ($this->jumlah_pengadaan && $this->harga_satuan) {
@@ -123,7 +166,6 @@ class IndexPengadaan extends Component
             'harga_satuan' => 'required|numeric|min:0',
             'tahun_pengadaan' => 'required|digits:4',
             'tanggal_pengadaan' => 'required|date',
-            'status_pengadaan' => 'required|in:diterima,diproses,barang tiba',
             ],
         [
             'ruangan_id.required' => 'Ruangan harus dipilih.',
@@ -140,12 +182,9 @@ class IndexPengadaan extends Component
             'tahun_pengadaan.digits' => 'Tahun pengadaan harus terdiri dari 4 angka.',
             'tanggal_pengadaan.required' => 'Tanggal pengadaan harus diisi.',
             'tanggal_pengadaan.date' => 'Tanggal pengadaan harus berupa tanggal.',
-            'status_pengadaan.required' => 'Status pengadaan harus dipilih.',
-            'status_pengadaan.in' => 'Status pengadaan tidak valid.',
         ]);
 
         $pengadaan = Pengadaan::findOrFail($this->pengadaan_id);
-
         $pengadaan->update([
             'user_id' => Auth::user()->id,
             'ruangan_id' => $this->ruangan_id,

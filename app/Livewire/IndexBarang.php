@@ -13,8 +13,8 @@ class IndexBarang extends Component
     use WithPagination;
 
     //Property Barang
-    public $barang_id,$kode_barang, $nama_barang;
-
+    public $barang_id, $kode_barang, $nama_barang;
+    public $search = '';
 
     //Pagination Theme
     protected $paginationTheme = 'bootstrap';
@@ -22,23 +22,41 @@ class IndexBarang extends Component
     //Render Component
     public function render()
     {
-        return view('livewire.index-barang',[
-            'barangs' => Barang::paginate(5),
+        // Query barang
+        $barangs = Barang::query()
+            ->when($this->search, function ($query) {
+                // Jika ada nilai pencarian, filter data
+                $query->where('kode_barang', 'like', '%' . $this->search . '%')
+                      ->orWhere('nama_barang', 'like', '%' . $this->search . '%');
+            });
+
+        // Mengembalikan view dengan data paginated
+        return view('livewire.index-barang', [
+            'barangs' => $barangs->paginate(5),
         ]);
     }
+
+    // Fungsi untuk reset pagination ketika pencarian berubah
+    public function updatedSearch()
+    {
+        $this->resetPage(); 
+    }
+
 
     // Function Store Barang
     public function store()
     {
-        $this->validate([
-            'kode_barang' => 'required|unique:barangs,kode_barang',
-            'nama_barang' => 'required'
-        ],
-        [
-            'kode_barang.required' => 'Kode barang harus diisi.',
-            'kode_barang.unique' => 'Kode barang sudah ada.',
-            'nama_barang.required' => 'Nama barang harus diisi.'
-        ]);
+        $this->validate(
+            [
+                'kode_barang' => 'required|unique:barangs,kode_barang',
+                'nama_barang' => 'required'
+            ],
+            [
+                'kode_barang.required' => 'Kode barang harus diisi.',
+                'kode_barang.unique' => 'Kode barang sudah ada.',
+                'nama_barang.required' => 'Nama barang harus diisi.'
+            ]
+        );
 
         $barang = new Barang();
         $barang->kode_barang = $this->kode_barang;
@@ -48,15 +66,13 @@ class IndexBarang extends Component
 
         $this->resetForm();
         $this->dispatch('closeModal');
-
-
     }
 
     private function resetForm()
-{
-    $this->kode_barang = '';
-    $this->nama_barang = '';
-}
+    {
+        $this->kode_barang = '';
+        $this->nama_barang = '';
+    }
 
     public function edit($id)
     {
@@ -70,14 +86,16 @@ class IndexBarang extends Component
     // // Function Update Barang
     public function update()
     {
-        $this->validate([
-            'kode_barang' => 'required',
-            'nama_barang' => 'required'
-        ],
-        [
-            'kode_barang.required' => 'Kode barang harus diisi.',
-            'nama_barang.required' => 'Nama barang harus diisi.'
-        ]);
+        $this->validate(
+            [
+                'kode_barang' => 'required',
+                'nama_barang' => 'required'
+            ],
+            [
+                'kode_barang.required' => 'Kode barang harus diisi.',
+                'nama_barang.required' => 'Nama barang harus diisi.'
+            ]
+        );
 
         Barang::find($this->barang_id)->update([
             'kode_barang' => $this->kode_barang,
@@ -103,5 +121,4 @@ class IndexBarang extends Component
 
         session()->flash('message', 'Barang berhasil dihapus.');
     }
-
 }

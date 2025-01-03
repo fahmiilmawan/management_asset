@@ -15,14 +15,26 @@ class IndexUnit extends Component
 
     // Property Unit
     public $unit_id, $nama_unit, $deskripsi;
+    public $search = '';
 
 
     // Render Component
     public function render()
     {
+        $units = Unit::query()
+            ->when($this->search, function ($query) {
+                $query->where('nama_unit', 'like', '%' . $this->search . '%');
+            })
+            ->paginate(5);
+
         return view('livewire.index-unit', [
-            'units' => Unit::paginate(5),
+            'units' => $units,
         ]);
+    }
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
     }
 
     // Function Store Unit

@@ -175,6 +175,11 @@
                             <i class="bi bi-circle"></i><span>Laporan Pengadaan</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('index.laporan-pengaduan') }}">
+                            <i class="bi bi-circle"></i><span>Laporan Pengaduan</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
@@ -194,6 +199,12 @@
     <script src="{{ asset('assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
     <script src="{{ asset('assets/vendor/quill/quill.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/tinymce/tinymce.min.js') }}"></script>
+    <!-- Lightbox2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/lightbox2/dist/css/lightbox.min.css" rel="stylesheet">
+
+<!-- Lightbox2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/lightbox2/dist/js/lightbox.min.js"></script>
+
 
     <!-- Template Main JS File -->
     <script src="{{ asset('assets/js/main.js') }}"></script>

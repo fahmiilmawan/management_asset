@@ -39,6 +39,15 @@ Route::get('/setting-profile',[SettingProfileController::class,'index'])->name('
 Route::get('/user/send-wa/{id}',[UserController::class,'sendWhatsappMessage'])->name('sendWhatsapp');
 Route::get('/laporan-asset',[LaporanController::class,'indexLaporanAsset'])->name('index.laporan-asset');
 Route::get('/laporan-pengadaan',[LaporanController::class,'indexLaporanPengadaan'])->name('index.laporan-pengadaan');
+Route::get('/laporan-pengaduan',[LaporanController::class,'indexLaporanPengaduan'])->name('index.laporan-pengaduan');
+
+Route::get('/print-laporan-asset',[LaporanController::class,'generatePrintPDFAsset'])->name('print.laporan-asset');
+Route::get('/print-laporan-pengadaan',[LaporanController::class,'generatePrintPDFPengadaan'])->name('print.laporan-pengadaan');
+Route::get('/print-laporan-pengaduan',[LaporanController::class,'generatePrintPDFPengaduan'])->name('print.laporan-pengaduan');
+
+Route::get('/export-laporan-asset',[LaporanController::class,'exportExcelAsset'])->name('export.laporan-asset');
+Route::get('/export-laporan-pengadaan',[LaporanController::class,'exportExcelPengadaan'])->name('export.laporan-pengadaan');
+Route::get('/export-laporan-pengaduan',[LaporanController::class,'exportExcelPengaduan'])->name('export.laporan-pengaduan');
 
 
 

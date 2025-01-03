@@ -16,7 +16,7 @@ class IndexAsset extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $asset_id, $barang_id, $ruangan_id, $unit_id,$no_urut, $no_inventaris, $bulan, $tahun, $satuan, $status, $jumlah;
+    public $asset_id, $barang_id, $ruangan_id, $unit_id,$no_urut, $no_inventaris, $bulan, $tahun, $satuan, $status, $jumlah, $search;
 
 
     protected $bulanRomawi = [
@@ -37,8 +37,25 @@ class IndexAsset extends Component
 
     public function render()
     {
+        $query = Asset::with('barang', 'ruangan', 'unit');
+
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->where('no_inventaris', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('barang', function ($q) {
+                      $q->where('nama_barang', 'like', '%' . $this->search . '%');
+                  })
+                  ->orWhereHas('unit', function ($q) {
+                      $q->where('nama_unit', 'like', '%' . $this->search . '%');
+                  })
+                  ->orWhereHas('ruangan', function ($q) {
+                      $q->where('nama_ruangan', 'like', '%' . $this->search . '%');
+                  });
+            });
+        }
+
         return view('livewire.index-asset',[
-            'assets' => Asset::with('barang', 'ruangan', 'unit')->paginate(5),
+            'assets' => $query->paginate(5),
             'barangs' => Barang::all(),
             'ruangans' => Ruangan::all(),
             'units' => Unit::all(),
