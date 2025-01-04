@@ -14,7 +14,12 @@ class AssetsImport implements ToModel
     */
     public function model(array $row)
     {
+
+        $noUrut = Asset::max('no_urut') ?? 0;
+        $newNoUrut = $noUrut + 1;
+
         return new Asset([
+            'no_urut' => $newNoUrut,
             'no_inventaris' => $row[0],
             'bulan' => $row[1],
             'tahun' => $row[2],
