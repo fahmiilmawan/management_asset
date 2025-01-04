@@ -23,6 +23,7 @@ class AssetsImport implements ToModel
             'jumlah' => $row[5],
             'status' => $row[6],
             'ruangan_id' => $row[7],
+            'unit_id' => $row[8]
         ]);
     }
 }
