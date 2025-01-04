@@ -29,12 +29,20 @@
     <!-- Tabel -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Daftar Asset</h5>
+            <div class="d-flex justify-content-between">
+                <h5 class="mb-0">Daftar Asset</h5>
+            </div>
         </div>
         <div class="row m-3">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label for="search" class="form-label">Cari</label>
                 <input type="text" class="form-control" name="search" id="search" wire:model.live="search" placeholder="Cari No Inventaris dan Nama Asset">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Import</label>
+                <div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal"> <i class="bi bi-upload"></i> Import Asset</button>
+                </div>
             </div>
         </div>
         <div class="card-body">
@@ -43,6 +51,7 @@
                     <tr>
                         <th>No Inventaris</th>
                         <th>Nama Asset</th>
+                        <th>Merk</th>
                         <th>Jumlah</th>
                         <th>Status</th>
                         <th >QR Code</th>
@@ -60,6 +69,7 @@
                             <a href="#" wire:click="detail({{ $asset->id }})" class="text-decoration-underline" data-bs-toggle="modal" data-bs-target="#modalDetail"> {{ $asset->no_urut }}/{{ $asset->no_inventaris }} </a>
                         </td>
                         <td>{{ $asset->barang->nama_barang }}</td>
+                        <td>{{ $asset->merk }}</td>
                         <td>{{ $asset->jumlah }}</td>
                         <td>
                             @if ($asset->status == 'baik')
@@ -121,6 +131,13 @@
                                 @endforeach
                             </select>
                             @error('barang_id')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="barang_id" class="form-label">Merk</label>
+                            <input type="text" class="form-control border p-2" id="merk" wire:model="merk">
+                            @error('merk')
                             <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
@@ -195,17 +212,6 @@
                             @enderror
                         </div>
                         <div class="mb-4">
-                            <label for="status" class="form-label">status</label>
-                            <select class="form-select border p-2" wire:model="status" id="">
-                                <option value="">Pilih Status</option>
-                                <option  value="baik">Baik</option>
-                                <option value="rusak">Rusak</option>
-                            </select>
-                            @error('status')
-                            <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="mb-4">
                             <label for="jumlah" class="form-label">Jumlah</label>
                             <input type="number" class="form-control border p-2" id="jumlah" wire:model="jumlah">
                             @error('jumlah')
@@ -243,6 +249,13 @@
                                 @endforeach
                             </select>
                             @error('barang_id')
+                            <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="barang_id" class="form-label">Merk</label>
+                            <input type="text" class="form-control border p-2" id="merk" wire:model="merk">
+                            @error('merk')
                             <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
@@ -464,6 +477,35 @@
         </div>
     </div>
     {{-- End Modal Delete --}}
+
+    {{-- Import Modal --}}
+    <div wire:ignore.self class="modal fade" id="importModal" tabindex="-1" aria-labelledby="modalDetailLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Import Asset
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <form wire:submit.prevent="import">
+                        <div class="form-group">
+                            <label for="file">File Excel</label>
+                            <input type="file" wire:model="file" class="form-control">
+                            @error('file') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary">Import</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- End QR Modal --}}
 </div>
 
 <script>
@@ -472,5 +514,9 @@
     })
     window.addEventListener('closeModal', event => {
         $('#editModal').modal('hide');
+    })
+
+    window.addEventListener('closeModal', event => {
+        $('#importModal').modal('hide');
     })
 </script>

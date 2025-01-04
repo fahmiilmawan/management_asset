@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\LaporanAssetExport;
 use App\Exports\LaporanPengadaanExport;
 use App\Exports\LaporanPengaduanExport;
+use App\Helper\QRCode;
 use App\Models\Asset;
 use App\Models\Pengadaan;
 use App\Models\Pengaduan;
@@ -55,10 +56,16 @@ class LaporanController extends Controller
 
         $assets = $query->get();
 
+        // Generate QR Code for each asset
+        foreach ($assets as $asset) {
+            $QRCode = new QRCode($asset->no_inventaris); // Correcting the usage
+            $asset->qr_code = $QRCode->generate(); // Assign the QR code
+        }
+
         $pdf = Pdf::loadView('laporan.print-laporan-asset', compact('assets'));
 
         return $pdf->download('laporan_asset.pdf');
-     }
+    }
 
      public function exportExcelAsset(Request $request)
      {
@@ -156,6 +163,7 @@ class LaporanController extends Controller
         }
 
         $pengaduans = $query->get();
+
 
         $pdf = Pdf::loadView('laporan.print-laporan-pengaduan', compact('pengaduans'));
 

@@ -19,6 +19,7 @@
     <table>
         <thead>
             <tr>
+                <th>QR Code</th>
                 <th>No Inventaris</th>
                 <th>Nama Asset</th>
                 <th>Untuk Unit</th>
@@ -30,7 +31,8 @@
         <tbody>
             @foreach ($assets as $asset)
                 <tr>
-                    <td>{{ $asset->no_inventaris }}</td>
+                    <td> <img src="{{ $asset->qr_code }}" width="50px" height="50px"></td>
+                    <td>{{  $asset->no_inventaris }}</td>
                     <td>{{ $asset->barang->nama_barang }}</td>
                     <td>{{ $asset->unit->nama_unit }}</td>
                     <td>{{ $asset->jumlah }}</td>

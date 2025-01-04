@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('/login');
 });
+Route::middleware(['auth'])->group(function () {
 
+});
 Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
 Route::get('/barang',[BarangController::class,'index'])->name('index.barang');
 Route::get('/ruangan',[RuanganController::class,'index'])->name('index.ruangan');
@@ -33,7 +35,6 @@ Route::get('/pengaduan',[PengaduanController::class,'index'])->name('index.penga
 Route::get('/pengadaan',[PengadaanController::class,'index'])->name('index.pengadaan');
 Route::get('/scan-qr',[ScanQRController::class,'index'])->name('index.scanqr');
 Route::get('/setting-profile',[SettingProfileController::class,'index'])->name('setting-profile');
-
 
 
 Route::get('/user/send-wa/{id}',[UserController::class,'sendWhatsappMessage'])->name('sendWhatsapp');

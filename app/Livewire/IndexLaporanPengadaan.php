@@ -11,8 +11,8 @@ class IndexLaporanPengadaan extends Component
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
-    public $search = '', $ruangan = '', $user = '';
-    protected $updatesQueryString = ['search', 'ruangan', 'user'];
+    public $search = '';
+    public $start_date, $end_date;
 
     public function render()
     {
@@ -30,43 +30,15 @@ class IndexLaporanPengadaan extends Component
                     });
             });
         }
+    
 
-        // Filter by room and user
-        if ($this->ruangan) {
-            $query->where('ruangan_id', $this->ruangan);
+        // Filter by date range
+        if($this->start_date && $this->end_date){
+            $query->whereBetween('tanggal_pengadaan', [$this->start_date, $this->end_date]);
         }
-        if ($this->user) {
-            $query->where('user_id', $this->user);
-        }
-
-        // Get unique rooms for the filter
-        $ruangans = Pengadaan::with('ruangan')
-            ->select('ruangan_id')
-            ->distinct()
-            ->get()
-            ->map(function ($pengadaan) {
-                return [
-                    'ruangan_id' => $pengadaan->ruangan_id,
-                    'nama_ruangan' => $pengadaan->ruangan->nama_ruangan,
-                ];
-            });
-
-        // Get unique users for the filter
-        $users = Pengadaan::with('user')
-            ->select('user_id')
-            ->distinct()
-            ->get()
-            ->map(function ($pengadaan) {
-                return [
-                    'user_id' => $pengadaan->user_id,
-                    'nama_lengkap' => $pengadaan->user->nama_lengkap,
-                ];
-            });
 
         return view('livewire.index-laporan-pengadaan', [
             'pengadaans' => $query->paginate(5),
-            'ruangans' => $ruangans,
-            'users' => $users,
         ]);
     }
 

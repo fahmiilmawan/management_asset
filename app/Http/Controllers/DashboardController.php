@@ -16,7 +16,7 @@ class DashboardController extends Controller
     public function index()
     {
         // Total Asset
-        $totalAssets = Asset::count();
+        $totalAssets = Asset::select('jumlah')->sum('jumlah');
         $assetsBaik = Asset::where('status', 'baik')->count();
         $assetsRusak = Asset::where('status', 'rusak')->count();
 

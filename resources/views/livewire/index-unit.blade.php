@@ -41,7 +41,6 @@
                     <tr>
                         <th>No</th>
                         <th>Nama Unit</th>
-                        <th>Deskripsi</th>
                         @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'staff_unit')
                         <th>Aksi</th>
                         @endif
@@ -53,7 +52,6 @@
                     <tr>
                         <td>{{ $units->firstItem() + $index }}</td>
                         <td>{{ $unit->nama_unit }}</td>
-                        <td>{{ $unit->deskripsi }}</td>
                         <td>
                             @if (Auth::user()->role == 'admin_umum')
                             <div class="dropdown">

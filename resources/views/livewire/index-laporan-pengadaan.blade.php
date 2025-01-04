@@ -18,22 +18,12 @@
                 <input type="text" class="form-control" wire:model.live="search" placeholder="Cari Nama Barang, Ruangan">
             </div>
             <div class="col-md-3">
-                <label for="ruangan" class="form-label">Filter Ruangan</label>
-                <select name="ruangan" id="ruangan" class="form-control" wire:model.live="ruangan">
-                    <option value=""> -- Pilih Ruangan -- </option>
-                    @foreach ($ruangans as $ruangan)
-                        <option value="{{ $ruangan['ruangan_id'] }}"> {{ $ruangan['nama_ruangan'] }} </option>
-                    @endforeach
-                </select>
+                <label class="form-label">Dari</label>
+                <input type="date" class="form-control" wire:model.live="start_date">
             </div>
             <div class="col-md-3">
-                <label for="user" class="form-label">Diajukan Oleh</label>
-                <select name="user" id="user" class="form-control" wire:model.live="user">
-                    <option value=""> -- Pilih Yang Mengajukan -- </option>
-                    @foreach ($users as $u)
-                        <option value="{{ $u['user_id'] }}"> {{ $u['nama_lengkap'] }} </option>
-                    @endforeach
-                </select>
+                <label class="form-label">Sampai</label>
+                <input type="date" class="form-control" wire:model.live="end_date">
             </div>
             <div class="col-md-3">
                 <label for="filter_unit" class="form-label">Export</label>
@@ -47,11 +37,11 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
+                        <th>Tanggal Pengadaan</th>
                         <th>Nama Barang</th>
                         <th>Diajukan Oleh</th>
                         <th>Untuk Ruangan</th>
                         <th>Jumlah</th>
-                        <th>Satuan</th>
                         <th>Harga Satuan</th>
                         <th>Total Harga</th>
                     </tr>
@@ -59,11 +49,11 @@
                 <tbody>
                     @forelse ($pengadaans as $pengadaan)
                         <tr>
+                            <td>{{ $pengadaan->tanggal_pengadaan }}</td>
                             <td>{{ $pengadaan->nama_barang_pengadaan }}</td>
                             <td>{{ $pengadaan->user->nama_lengkap }}</td>
                             <td>{{ $pengadaan->ruangan->nama_ruangan }}</td>
                             <td>{{ $pengadaan->jumlah_pengadaan }}</td>
-                            <td>{{ $pengadaan->satuan_pengadaan }}</td>
                             <td>Rp.{{ number_format($pengadaan->harga_satuan, 0, ',', '.') }}</td>
                             <td>Rp.{{ number_format($pengadaan->total_harga, 0, ',', '.') }}</td>
                         </tr>

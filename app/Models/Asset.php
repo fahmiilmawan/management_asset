@@ -8,6 +8,7 @@ class Asset extends Model
 {
     protected $fillable = [
         'barang_id',
+        'merk',
         'ruangan_id',
         'unit_id',
         'no_inventaris',

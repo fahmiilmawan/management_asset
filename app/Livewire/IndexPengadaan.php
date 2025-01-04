@@ -37,10 +37,9 @@ class IndexPengadaan extends Component
             ->orWhere('status_pengadaan', 'like', '%' . $this->search . '%')
             ->orWhereHas('ruangan', function ($q) {
                 $q->where('nama_ruangan', 'like', '%' . $this->search . '%');
-            });
+            })->paginate(5);
     }
 
-    $pengadaans = Pengadaan::Orderby('id', 'desc')->paginate(5);
 
     return view('livewire.index-pengadaan', [
         'pengadaans' => $pengadaans,

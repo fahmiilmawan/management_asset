@@ -123,6 +123,7 @@
                         <div class="mb-3">
                             <label for="no_hp" class="form-label">No HP</label>
                             <input type="text" class="form-control border p-2" id="no_hp" wire:model="no_hp">
+                            <small>contoh : +628123456789</small>
                             @error('no_hp')
                             <small class="text-danger">{{ $message }}</small>
                             @enderror

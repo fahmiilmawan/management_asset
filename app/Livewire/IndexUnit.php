@@ -14,7 +14,7 @@ class IndexUnit extends Component
     protected $paginationTheme = 'bootstrap';
 
     // Property Unit
-    public $unit_id, $nama_unit, $deskripsi;
+    public $unit_id, $nama_unit;
     public $search = '';
 
 
@@ -42,16 +42,14 @@ class IndexUnit extends Component
     {
         $this->validate([
             'nama_unit' => 'required',
-            'deskripsi' => 'required'
+
         ],
         [
             'nama_unit.required' => 'Nama unit harus diisi.',
-            'deskripsi.required' => 'Deskripsi harus diisi.'
         ]);
 
         $unit = new Unit();
         $unit->nama_unit = $this->nama_unit;
-        $unit->deskripsi = $this->deskripsi;
         $unit->save();
 
         session()->flash('message', 'Unit berhasil ditambahkan.');
@@ -65,7 +63,6 @@ class IndexUnit extends Component
         $unit = Unit::findOrFail($id);
         $this->unit_id = $unit->id;
         $this->nama_unit = $unit->nama_unit;
-        $this->deskripsi = $unit->deskripsi;
     }
 
     // Function Update Unit
@@ -83,7 +80,6 @@ class IndexUnit extends Component
         $unit = Unit::findOrFail($this->unit_id);
         $unit->update([
             'nama_unit' => $this->nama_unit,
-            'deskripsi' => $this->deskripsi
         ]);
 
         session()->flash('message', 'Unit berhasil diubah.');
@@ -113,6 +109,5 @@ class IndexUnit extends Component
     {
         $this->unit_id = null;
         $this->nama_unit = '';
-        $this->deskripsi = '';
     }
 }

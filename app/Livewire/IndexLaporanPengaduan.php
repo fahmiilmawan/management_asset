@@ -12,7 +12,8 @@ class IndexLaporanPengaduan extends Component
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
-    public $search = '', $asset = '', $user = '';
+    public $search = '';
+    public $start_date, $end_date;
     protected $updatesQueryString = ['search', 'asset', 'user'];
 
     public function render()
@@ -32,42 +33,14 @@ class IndexLaporanPengaduan extends Component
             });
         }
 
-        // Filter by asset and user
-        if ($this->asset) {
-            $query->where('asset_id', $this->asset);
-        }
-        if ($this->user) {
-            $query->where('user_id', $this->user);
+        // Filter by range date
+        if($this->start_date && $this->end_date){
+            $query->whereBetween('tanggal_rusak', [$this->start_date, $this->end_date]);
         }
 
-        // Get unique assets for the filter
-        $assets = Pengaduan::with('asset')
-            ->select('asset_id')
-            ->distinct()
-            ->get()
-            ->map(function ($pengaduan) {
-                return [
-                    'asset_id' => $pengaduan->asset_id,
-                    'nama_asset' => $pengaduan->asset->barang->nama_barang,
-                ];
-            });
-
-        // Get unique users for the filter
-        $users = Pengaduan::with('user')
-            ->select('user_id')
-            ->distinct()
-            ->get()
-            ->map(function ($pengaduan) {
-                return [
-                    'user_id' => $pengaduan->user_id,
-                    'nama_lengkap' => $pengaduan->user->nama_lengkap,
-                ];
-            });
 
         return view('livewire.index-laporan-pengaduan', [
             'pengaduans' => $query->paginate(5),
-            'assets' => $assets,
-            'users' => $users,
         ]);
     }
     public function printPDF()

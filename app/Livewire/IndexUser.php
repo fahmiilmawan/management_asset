@@ -107,7 +107,6 @@ class IndexUser extends Component
             'email' => $this->email,
             'plain_password' => Crypt::encryptString($this->password),
             'password' => Hash::make($this->password),
-            'plain_password' => $this->password,
             'role' => $this->role,
             'no_hp' => $this->no_hp
         ]);

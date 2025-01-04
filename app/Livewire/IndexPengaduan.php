@@ -22,8 +22,6 @@ class IndexPengaduan extends Component
 
     public function render()
     {
-
-
         $pengaduans = Pengaduan::with('user', 'asset')->when(!Auth::user()->isAdmin(),function ($query){
             return $query->where('user_id', Auth::user()->id);
         })->paginate(5);
@@ -42,10 +40,8 @@ class IndexPengaduan extends Component
                 ->orWhereHas('asset.barang', function ($q) {
                     $q->where('nama_barang', 'like', '%' . $this->search . '%')
                         ->orWhere('tanggal_rusak', 'like', '%' . $this->search . '%');
-                });
+                })->paginate(5);
     };
-
-    $pengaduans = Pengaduan::Orderby('id', 'desc')->paginate(5);
 
 
         return view('livewire.index-pengaduan',[

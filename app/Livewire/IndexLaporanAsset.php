@@ -13,9 +13,7 @@ class IndexLaporanAsset extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $search = '';
-    public $periode = '';
-    public $lokasi = '';
-
+    public $start_date, $end_date;
     // Debounce the search input to reduce the number of requests
     protected $updatesQueryString = ['search', 'periode', 'lokasi'];
 
@@ -39,33 +37,14 @@ class IndexLaporanAsset extends Component
             });
         }
 
-        // Filter by period
-        if ($this->periode) {
-            $query->where('tahun', $this->periode);
+        //Filter by date range
+        if($this->start_date && $this->end_date){
+            $query->whereBetween('created_at', [$this->start_date, $this->end_date]);
         }
-
-        // Filter by location
-        if ($this->lokasi) {
-            $query->where('ruangan_id', $this->lokasi);
-        }
-
-        // Get unique locations for the filter
-        $lokasis = Asset::with('ruangan')
-            ->select('ruangan_id')
-            ->distinct()
-            ->get()
-            ->map(function ($asset) {
-                return [
-                    'id' => $asset->ruangan_id,
-                    'nama' => $asset->ruangan->nama_ruangan,
-                ];
-            });
 
         // Paginating the results
         return view('livewire.index-laporan-asset', [
             'assets' => $query->paginate(5),
-            'periodes' => Asset::select('tahun')->distinct()->pluck('tahun'),
-            'lokasis' => $lokasis,
         ]);
     }
 

@@ -18,22 +18,12 @@
                 <input type="text" class="form-control" wire:model.live="search" placeholder="Cari Pengaduan, Asset">
             </div>
             <div class="col-md-3">
-                <label for="asset" class="form-label">Filter Asset</label>
-                <select name="asset" id="asset" class="form-control" wire:model.live="asset">
-                    <option value=""> -- Pilih Asset -- </option>
-                    @foreach ($assets as $asset)
-                        <option value="{{ $asset['asset_id'] }}"> {{ $asset['nama_asset'] }} </option>
-                    @endforeach
-                </select>
+                <label class="form-label">Dari</label>
+                <input type="date" class="form-control" wire:model.live="start_date">
             </div>
             <div class="col-md-3">
-                <label for="user" class="form-label">Diajukan Oleh</label>
-                <select name="user" id="user" class="form-control" wire:model.live="user">
-                    <option value=""> -- Pilih Yang Mengajukan -- </option>
-                    @foreach ($users as $u)
-                        <option value="{{ $u['user_id'] }}"> {{ $u['nama_lengkap'] }} </option>
-                    @endforeach
-                </select>
+                <label class="form-label">Sampai</label>
+                <input type="date" class="form-control" wire:model.live="end_date">
             </div>
             <div class="col-md-3">
                 <label for="filter_unit" class="form-label">Export</label>
@@ -47,9 +37,10 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
+                        <th>Tanggal Pengaduan</th>
                         <th>Pengaduan</th>
                         <th>Diajukan Oleh</th>
-                        <th>Asset</th>
+                        <th>Nama Asset</th>
                         <th>Jumlah</th>
                         <th>Status</th>
                     </tr>
@@ -57,6 +48,7 @@
                 <tbody>
                     @forelse ($pengaduans as $pengaduan)
                         <tr>
+                            <td>{{ $pengaduan->tanggal_rusak }}</td>
                             <td>{{ $pengaduan->pengaduan }}</td>
                             <td>{{ $pengaduan->user->nama_lengkap }}</td>
                             <td>{{ $pengaduan->asset->barang->nama_barang }}</td>

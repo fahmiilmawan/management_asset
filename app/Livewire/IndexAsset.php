@@ -3,21 +3,26 @@
 namespace App\Livewire;
 
 use App\Helper\QRCode;
+use App\Imports\AssetsImport;
 use App\Models\Asset;
 use App\Models\Barang;
 use App\Models\Ruangan;
 use App\Models\Unit;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 class IndexAsset extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
+
 
     protected $paginationTheme = 'bootstrap';
 
-    public $asset_id, $barang_id, $ruangan_id, $unit_id,$no_urut, $no_inventaris, $bulan, $tahun, $satuan, $status, $jumlah, $search;
-
+    public $asset_id, $barang_id,$merk, $ruangan_id, $unit_id,$no_urut, $no_inventaris, $bulan, $tahun, $satuan, $jumlah, $search;
+    public $status = 'baik';
+    public $file;
 
     protected $bulanRomawi = [
         'Januari' => 'I',
@@ -67,6 +72,7 @@ class IndexAsset extends Component
     {
         $this->validate([
             'barang_id' => 'required',
+            'merk' => 'required',
             'ruangan_id' => 'required',
             'unit_id' => 'required',
             'bulan' => 'required',
@@ -77,6 +83,7 @@ class IndexAsset extends Component
         ],
         [
             'barang_id.required' => 'Barang harus diisi.',
+            'merk.required' => 'Merk harus diisi.',
             'ruangan_id.required' => 'Ruangan harus diisi.',
             'unit_id.required' => 'Unit harus diisi.',
             'bulan.required' => 'Bulan harus diisi.',
@@ -92,6 +99,7 @@ class IndexAsset extends Component
 
         $asset = new Asset();
         $asset->barang_id = $this->barang_id;
+        $asset->merk = $this->merk;
         $asset->ruangan_id = $this->ruangan_id;
         $asset->unit_id = $this->unit_id;
         $asset->no_urut = $newNoUrut;
@@ -140,6 +148,7 @@ class IndexAsset extends Component
         $asset = Asset::findOrFail($id);
         $this->asset_id = $asset->id;
         $this->barang_id = $asset->barang_id;
+        $this->merk = $asset->merk;
         $this->ruangan_id = $asset->ruangan_id;
         $this->unit_id = $asset->unit_id;
         $this->no_inventaris = $asset->no_inventaris;
@@ -155,6 +164,7 @@ class IndexAsset extends Component
     {
         $this->validate([
             'barang_id' => 'required',
+            'merk' => 'required',
             'ruangan_id' => 'required',
             'unit_id' => 'required',
             'bulan' => 'required',
@@ -165,6 +175,7 @@ class IndexAsset extends Component
         ],
         [
             'barang_id.required' => 'Barang harus diisi.',
+            'merk.required' => 'Merk harus diisi.',
             'ruangan_id.required' => 'Ruangan harus diisi.',
             'unit_id.required' => 'Unit harus diisi.',
             'bulan.required' => 'Bulan harus diisi.',
@@ -176,6 +187,7 @@ class IndexAsset extends Component
 
         Asset::find($this->asset_id)->update([
             'barang_id' => $this->barang_id,
+            'merk' => $this->merk,
             'ruangan_id' => $this->ruangan_id,
             'unit_id' => $this->unit_id,
             'no_inventaris' => $this->no_inventaris,
@@ -230,6 +242,22 @@ class IndexAsset extends Component
         $this->satuan = null;
         $this->status = null;
         $this->jumlah = null;
+    }
+
+    public function import()
+    {
+        $this->validate([
+            'file' => 'required|mimes:csv,xls,xlsx'
+        ],[
+            'file.required' => 'File harus diisi.',
+            'file.mimes' => 'Format file harus CSV, XLS, atau XLSX.'
+        ]);
+
+        $file = $this->file;
+        Excel::import(new AssetsImport, $file);
+        session()->flash('message', 'Data berhasil diimport.');
+
+        $this->dispatch('closeModal');
     }
 
 

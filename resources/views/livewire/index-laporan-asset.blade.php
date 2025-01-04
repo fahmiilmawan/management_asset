@@ -18,23 +18,14 @@
                 <input type="text" class="form-control" wire:model.live="search" placeholder="Cari Nama Asset, Unit, Ruangan">
             </div>
             <div class="col-md-3">
-                <label for="filter_unit" class="form-label">Filter Periode</label>
-                <select name="periode" id="periode" class="form-control" wire:model.live="periode">
-                    <option value=""> -- Pilih Periode -- </option>
-                    @foreach ($periodes as $periode)
-                        <option value="{{ $periode }}"> {{ $periode }} </option>
-                    @endforeach
-                </select>
+                <label for="" class="form-label">Dari</label>
+                <input type="date" class="form-control" wire:model.live="start_date">
             </div>
             <div class="col-md-3">
-                <label for="lokasi" class="form-label">Filter Lokasi</label>
-                <select name="lokasi" id="lokasi" class="form-control" wire:model.live="lokasi">
-                    <option value=""> -- Pilih Lokasi -- </option>
-                    @foreach ($lokasis as $l)
-                        <option value="{{ $l['id'] }}"> {{ $l['nama'] }} </option>
-                    @endforeach
-                </select>
+                <label for="" class="form-label">Sampai</label>
+                <input type="date" class="form-control" wire:model.live ="end_date">
             </div>
+
             <div class="col-md-3">
                 <label for="filter_unit" class="form-label">Export</label>
                 <div>
