@@ -244,21 +244,6 @@ class IndexAsset extends Component
         $this->jumlah = null;
     }
 
-    public function import()
-    {
-        $this->validate([
-            'file' => 'required|mimes:csv,xls,xlsx'
-        ],[
-            'file.required' => 'File harus diisi.',
-            'file.mimes' => 'Format file harus CSV, XLS, atau XLSX.'
-        ]);
-
-        $file = $this->file;
-        Excel::import(new AssetsImport, $file);
-        session()->flash('message', 'Data berhasil diimport.');
-
-        $this->dispatch('closeModal');
-    }
 
 
 }

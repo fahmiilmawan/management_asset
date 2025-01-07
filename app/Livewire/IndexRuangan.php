@@ -2,20 +2,24 @@
 
 namespace App\Livewire;
 
+use App\Imports\RuanganImport;
 use App\Models\Ruangan;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+
+use Maatwebsite\Excel\Facades\Excel as FacadesExcel;
 
 class IndexRuangan extends Component
 {
     // Pagination
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     // Pagination Theme Bootstrap
     protected $paginationTheme = 'bootstrap';
 
     // Property Ruangan
-    public $ruangan_id, $nama_ruangan;
+    public $ruangan_id, $nama_ruangan, $file;
     public $search = '';
 
     // Render Component
@@ -107,5 +111,36 @@ class IndexRuangan extends Component
 
         session()->flash('message', 'Ruangan berhasil dihapus.');
 
+    }
+
+    public function import()
+    {
+        $this->validate([
+            'file' => 'required|mimes:csv,xls,xlsx',
+        ], [
+            'file.required' => 'File harus diisi.',
+            'file.mimes' => 'Format file harus CSV, XLS, atau XLSX.',
+        ]);
+
+
+        $file = $this->file;
+        $filename = $file->getClientOriginalName();
+        $path = $file->storeAs('excel/', $filename);
+
+
+        $filePath = public_path('storage/excel/' . $filename);
+
+        try {
+            FacadesExcel::import(new RuanganImport, $filePath);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            session()->flash('message', 'Barang berhasil diimport.');
+
+            $this->dispatch('closeModal');
+        } catch (\Exception $e) {
+            session()->flash('message', 'Barang gagal diimport. Error: ' . $e->getMessage());
+        }
     }
 }

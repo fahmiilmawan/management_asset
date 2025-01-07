@@ -30,9 +30,15 @@
             <h5 class="mb-0">Daftar Ruangan</h5>
         </div>
         <div class="row m-3">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label for="" class="form-label">Cari</label>
                 <input type="text" class="form-control" name="search" id="search" wire:model.live="search" placeholder="Cari Nama Ruangan">
+            </div>
+            <div class="col-md-6">
+                <label for="search" class="form-label">Import</label>
+                <div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal"><i class="bi bi-upload"></i> Import</button>
+                </div>
             </div>
         </div>
         <div class="card-body">
@@ -158,6 +164,35 @@
         </div>
     </div>
     {{-- End Modal Delete --}}
+    {{-- Import Modal --}}
+    <div wire:ignore.self class="modal fade" id="importModal" tabindex="-1" aria-labelledby="modalDetailLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Import Ruangan
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <form wire:submit.prevent="import">
+                        <div class="form-group">
+                            <label for="file">File Excel</label>
+                            <input type="file" wire:model="file" class="form-control">
+                            @error('file') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary">Import</button>
+                            <a href="{{ route('export.template-ruangan') }}" class="btn btn-success">Download Template Import</a>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- End Import Modal --}}
 </div>
 
 <script>
@@ -166,5 +201,8 @@
     });
     window.addEventListener('closeModal', event => {
         $('#editModal').modal('hide');
+    });
+    window.addEventListener('closeModal', event => {
+        $('#importModal').modal('hide');
     });
 </script>

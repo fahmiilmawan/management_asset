@@ -16,22 +16,18 @@ class UnitSeeder extends Seeder
         Unit::create([
             'id'=>1,
             'nama_unit' =>'IT',
-            'deskripsi' =>'Unit IT'
         ]);
         Unit::create([
             'id'=>2,
             'nama_unit' =>'IT 2',
-            'deskripsi' =>'Unit IT'
         ]);
         Unit::create([
             'id'=>3,
             'nama_unit' =>'IT 3',
-            'deskripsi' =>'Unit IT'
         ]);
         Unit::create([
             'id'=>4,
             'nama_unit' =>'IT 4',
-            'deskripsi' =>'Unit IT'
         ]);
     }
 }

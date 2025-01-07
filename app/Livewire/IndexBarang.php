@@ -2,18 +2,23 @@
 
 namespace App\Livewire;
 
+use App\Imports\BarangImport;
 use App\Models\Barang;
 use App\Models\User;
+use Clockwork\Storage\Storage;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Excel;
+use Maatwebsite\Excel\Facades\Excel as FacadesExcel;
 
 class IndexBarang extends Component
 {
     //Pagination
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     //Property Barang
-    public $barang_id, $kode_barang, $nama_barang;
+    public $barang_id, $kode_barang, $nama_barang, $file;
     public $search = '';
 
     //Pagination Theme
@@ -39,7 +44,7 @@ class IndexBarang extends Component
     // Fungsi untuk reset pagination ketika pencarian berubah
     public function updatedSearch()
     {
-        $this->resetPage(); 
+        $this->resetPage();
     }
 
 
@@ -121,4 +126,33 @@ class IndexBarang extends Component
 
         session()->flash('message', 'Barang berhasil dihapus.');
     }
+
+    public function import()
+{
+    $this->validate([
+        'file' => 'required|mimes:csv,xls,xlsx',
+    ], [
+        'file.required' => 'File harus diisi.',
+        'file.mimes' => 'Format file harus CSV, XLS, atau XLSX.',
+    ]);
+
+
+    $file = $this->file;
+    $filename = $file->getClientOriginalName();
+    $path = $file->storeAs('excel/', $filename);
+
+
+    $filePath = public_path('storage/excel/' . $filename);
+
+    try {
+        FacadesExcel::import(new BarangImport, $filePath);
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+
+        session()->flash('message', 'Barang berhasil diimport.');
+    } catch (\Exception $e) {
+        session()->flash('message', 'Barang gagal diimport. Error: ' . $e->getMessage());
+    }
+}
 }

@@ -14,6 +14,11 @@ use App\Http\Controllers\UserController;
 use App\Livewire\AssetDetail;
 use App\Livewire\SettingProfile;
 use Illuminate\Support\Facades\Route;
+use App\Exports\AssetTemplateExport;
+use App\Exports\BarangTemplateExport;
+use App\Exports\RuanganTemplateExport;
+use App\Exports\UnitTemplateExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 // Route Login
@@ -49,6 +54,20 @@ Route::get('/print-laporan-pengaduan',[LaporanController::class,'generatePrintPD
 Route::get('/export-laporan-asset',[LaporanController::class,'exportExcelAsset'])->name('export.laporan-asset');
 Route::get('/export-laporan-pengadaan',[LaporanController::class,'exportExcelPengadaan'])->name('export.laporan-pengadaan');
 Route::get('/export-laporan-pengaduan',[LaporanController::class,'exportExcelPengaduan'])->name('export.laporan-pengaduan');
+
+Route::get('/export-template-barang',function(){
+    return Excel::download(new BarangTemplateExport, 'template-import-barang.xlsx');
+})->name('export.template-barang');
+
+Route::get('/export-template-ruangan',function(){
+    return Excel::download(new RuanganTemplateExport, 'template-import-ruangan.xlsx');
+})->name('export.template-ruangan');
+
+Route::get('/export-template-unit',function(){
+    return Excel::download(new UnitTemplateExport, 'template-import-unit.xlsx');
+})->name('export.template-unit');
+
+
 
 
 

@@ -56,8 +56,11 @@
                     @forelse ($pengaduans as $pengaduan)
                         <tr>
                             <td>{{ $pengaduan->tanggal_rusak }}</td>
-                            <td><img src="{{ \Illuminate\Support\Facades\Storage::url($pengaduan->bukti_fisik) }}"
-                                    width="50px" height="50px" alt=""></td>
+                            <td>
+                                <a href="{{ \Illuminate\Support\Facades\Storage::url($pengaduan->bukti_fisik) }}" class="popup-link">
+                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($pengaduan->bukti_fisik) }}" width="50px" height="50px" alt="Bukti Fisik">
+                                </a>
+                            </td>
                             <td>{{ $pengaduan->asset->barang->nama_barang }}</td>
                             <td>{{ $pengaduan->pengaduan }}</td>
                             <td>{{ $pengaduan->jumlah }}</td>
@@ -449,4 +452,16 @@
         window.addEventListener('closeModal', event => {
             $('#editModal').modal('hide');
         })
+
+        $(document).ready(function() {
+        $('.popup-link').magnificPopup({
+            type: 'image',
+            closeOnContentClick: true,
+            mainClass: 'mfp-img-mobile',
+            image: {
+                verticalFit: true
+            },
+            closeBtnInside: true,
+        });
+    });
     </script>
