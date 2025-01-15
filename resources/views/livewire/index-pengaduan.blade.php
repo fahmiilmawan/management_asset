@@ -57,12 +57,14 @@
                         <tr>
                             <td>{{ $pengaduan->tanggal_rusak }}</td>
                             <td>
-                                <a href="{{ \Illuminate\Support\Facades\Storage::url($pengaduan->bukti_fisik) }}" class="popup-link">
-                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($pengaduan->bukti_fisik) }}" width="50px" height="50px" alt="Bukti Fisik">
+                                <a href="{{ \Illuminate\Support\Facades\Storage::url($pengaduan->bukti_fisik) }}"
+                                    class="popup-link">
+                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($pengaduan->bukti_fisik) }}"
+                                        width="50px" height="50px" alt="Bukti Fisik">
                                 </a>
                             </td>
                             <td>{{ $pengaduan->asset->barang->nama_barang }}</td>
-                            <td>{{ $pengaduan->pengaduan }}</td>
+                            <td>{{ $pengaduan->nama_pengaduan }}</td>
                             <td>{{ $pengaduan->jumlah }}</td>
 
                             <td>
@@ -193,8 +195,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="pengaduan" class="form-label">Pengaduan</label>
-                                <input type="text" wire:model="pengaduan" class="form-control border p-2">
-                                @error('pengaduan')
+                                <input type="text" wire:model="nama_pengaduan" class="form-control border p-2">
+                                @error('nama_pengaduan')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
@@ -267,8 +269,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="pengaduan" class="form-label">Pengaduan</label>
-                                <input type="text" wire:model="pengaduan" class="form-control border p-2">
-                                @error('pengaduan')
+                                <input type="text" wire:model="nama_pengaduan" class="form-control border p-2">
+                                @error('nama_pengaduan')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
@@ -378,7 +380,7 @@
                                                 @if ($pengaduan)
                                                     <li class="list-group-item">
                                                         <strong>Pengaduan:</strong>
-                                                        <span>{{ $pengaduan->pengaduan ?? '-' }}</span>
+                                                        <span>{{ $pengaduan->nama_pengaduan ?? '-' }}</span>
                                                     </li>
                                                     <li class="list-group-item">
                                                         <strong>Deskripsi:</strong>
@@ -454,14 +456,14 @@
         })
 
         $(document).ready(function() {
-        $('.popup-link').magnificPopup({
-            type: 'image',
-            closeOnContentClick: true,
-            mainClass: 'mfp-img-mobile',
-            image: {
-                verticalFit: true
-            },
-            closeBtnInside: true,
+            $('.popup-link').magnificPopup({
+                type: 'image',
+                closeOnContentClick: true,
+                mainClass: 'mfp-img-mobile',
+                image: {
+                    verticalFit: true
+                },
+                closeBtnInside: true,
+            });
         });
-    });
     </script>

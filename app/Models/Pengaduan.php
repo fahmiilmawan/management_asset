@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Pengaduan extends Model
 {
     protected $fillable = [
-        'asset_id','user_id','pengaduan','jumlah','status','bukti_fisik','deskripsi','tanggal_rusak'
+        'asset_id','user_id','nama_pengaduan','jumlah','status_barang','status','bukti_fisik','deskripsi','tanggal_rusak'
     ];
 
     public function asset()

@@ -5,7 +5,9 @@ namespace App\Livewire;
 use App\Models\Asset;
 use App\Models\Barang;
 use App\Models\Pengaduan;
+use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -16,7 +18,7 @@ class IndexPengaduan extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
-    public $pengaduan_id, $asset_id, $user_id, $pengaduan, $jumlah, $status, $bukti_fisik, $deskripsi, $tanggal_rusak, $search;
+    public $pengaduan_id, $asset_id, $user_id, $nama_pengaduan, $jumlah, $status,$status_barang, $bukti_fisik, $deskripsi, $tanggal_rusak, $search;
 
 
 
@@ -64,38 +66,64 @@ class IndexPengaduan extends Component
 
     public function store()
     {
-        $this->validate([
-            'asset_id' => 'required',
-            'pengaduan' => 'required',
-            'jumlah' => 'required',
-            'deskripsi' => 'required',
-            'tanggal_rusak' => 'required',
-        ],
-        [
-            'asset_id.required' => 'Asset harus diisi.',
-            'pengaduan.required' => 'Pengaduan harus diisi.',
-            'jumlah.required' => 'Jumlah harus diisi.',
-            'deskripsi.required' => 'Deskripsi harus diisi.',
-            'tanggal_rusak.required' => 'Tanggal rusak harus diisi.',
-        ]);
+        try {
+            $this->validate([
+                'asset_id' => 'required',
+                'nama_pengaduan' => 'required',
+                'jumlah' => 'required',
+                'deskripsi' => 'required',
+                'tanggal_rusak' => 'required',
+            ],
+            [
+                'asset_id.required' => 'Asset harus diisi.',
+                'nama_pengaduan.required' => 'Pengaduan harus diisi.',
+                'jumlah.required' => 'Jumlah harus diisi.',
+                'deskripsi.required' => 'Deskripsi harus diisi.',
+                'tanggal_rusak.required' => 'Tanggal rusak harus diisi.',
+            ]);
 
-        $bukti_fisik = $this->uploadBuktiFisik();
+            $bukti_fisik = $this->uploadBuktiFisik();
+            DB::beginTransaction();
+            $asset = Asset::findOrFail($this->asset_id);
 
-        Pengaduan::create([
-            'asset_id' => $this->asset_id,
-            'user_id' => Auth::user()->id,
-            'pengaduan' => $this->pengaduan,
-            'jumlah' => $this->jumlah,
-            'status' => 'diajukan',
-            'bukti_fisik' => $bukti_fisik,
-            'deskripsi' => $this->deskripsi,
-            'tanggal_rusak' => $this->tanggal_rusak,
-        ]);
+            $jumlahAsset = $asset->jumlah;
+            $jumlahPengaduan = $this->jumlah;
 
-        session()->flash('message', 'Pengaduan berhasil ditambahkan.');
+            if ($jumlahPengaduan > $jumlahAsset ) {
+                $this->addError('jumlah', 'Jumlah pengaduan melebihi jumlah asset');
+                throw new Exception('Jumlah pengaduan melebihi jumlah asset');
+            }
 
-        $this->resetForm();
-        $this->dispatch('closeModal');
+            $hitungJumlah = $asset->jumlah - $this->jumlah;
+            $asset->update([
+                'jumlah' => $hitungJumlah
+            ]);
+
+            Pengaduan::create([
+                'asset_id' => $this->asset_id,
+                'user_id' => Auth::user()->id,
+                'nama_pengaduan' => $this->nama_pengaduan,
+                'jumlah' => $this->jumlah,
+                'status' => 'diajukan',
+                'status_barang' => 'rusak',
+                'bukti_fisik' => $bukti_fisik,
+                'deskripsi' => $this->deskripsi,
+                'tanggal_rusak' => $this->tanggal_rusak,
+            ]);
+
+            DB::commit();
+            session()->flash('message', 'Pengaduan berhasil ditambahkan.');
+
+            $this->resetForm();
+            $this->dispatch('closeModal');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+        }
+
+
+
+
     }
 
     private function uploadBuktiFisik()
@@ -112,9 +140,10 @@ class IndexPengaduan extends Component
         $this->pengaduan_id = $pengaduan->id;
         $this->asset_id = $pengaduan->asset_id;
         $this->user_id = $pengaduan->user_id;
-        $this->pengaduan = $pengaduan->pengaduan;
+        $this->nama_pengaduan = $pengaduan->nama_pengaduan;
         $this->jumlah = $pengaduan->jumlah;
         $this->status = $pengaduan->status;
+        $this->status_barang = $pengaduan->status_barang;
         $this->bukti_fisik = $pengaduan->bukti_fisik;
         $this->deskripsi = $pengaduan->deskripsi;
         $this->tanggal_rusak = $pengaduan->tanggal_rusak;
@@ -127,7 +156,7 @@ class IndexPengaduan extends Component
         $this->pengaduan_id = $pengaduan->id;
         $this->asset_id = $pengaduan->asset_id;
         $this->user_id = $pengaduan->user_id;
-        $this->pengaduan = $pengaduan->pengaduan;
+        $this->nama_pengaduan = $pengaduan->nama_pengaduan;
         $this->jumlah = $pengaduan->jumlah;
         $this->status = $pengaduan->status;
         $this->bukti_fisik = $pengaduan->bukti_fisik;
@@ -140,14 +169,14 @@ class IndexPengaduan extends Component
 
         $this->validate([
             'asset_id' => 'required',
-            'pengaduan' => 'required',
+            'nama_pengaduan' => 'required',
             'jumlah' => 'required',
             'deskripsi' => 'required',
             'tanggal_rusak' => 'required',
         ],
         [
             'asset_id.required' => 'Asset harus diisi.',
-            'pengaduan.required' => 'Pengaduan harus diisi.',
+            'nama_pengaduan.required' => 'Pengaduan harus diisi.',
             'jumlah.required' => 'Jumlah harus diisi.',
             'deskripsi.required' => 'Deskripsi harus diisi.',
             'tanggal_rusak.required' => 'Tanggal rusak harus diisi.',
@@ -157,7 +186,7 @@ class IndexPengaduan extends Component
         Pengaduan::find($this->pengaduan_id)->update([
             'asset_id' => $this->asset_id,
             'user_id' => $this->user_id,
-            'pengaduan' => $this->pengaduan,
+            'nama_pengaduan' => $this->nama_pengaduan,
             'jumlah' => $this->jumlah,
             'status' => $this->status,
             'bukti_fisik' => $filePath,
@@ -190,7 +219,7 @@ class IndexPengaduan extends Component
         $this->pengaduan_id = null;
         $this->asset_id = null;
         $this->user_id = null;
-        $this->pengaduan = '';
+        $this->nama_pengaduan = '';
         $this->jumlah = '';
         $this->status = '';
         $this->bukti_fisik = '';

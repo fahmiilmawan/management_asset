@@ -17,7 +17,7 @@ class DashboardController extends Controller
     {
         // Total Asset
         $totalAssets = Asset::select('jumlah')->sum('jumlah');
-        $assetsBaik = Asset::where('status', 'baik')->count();
+        $assetsBaik = Asset::where('status', 'baik')->sum('jumlah');
         $assetsRusak = Asset::where('status', 'rusak')->count();
 
         // Total Pengaduan
@@ -28,7 +28,9 @@ class DashboardController extends Controller
         // Total Pengadaan
         $totalPengadaan = Pengadaan::count();
         $pengadaanDiproses = Pengadaan::where('status_pengadaan', 'diproses')->count();
-        $pengadaanSelesai = Pengadaan::where('status_pengadaan', 'selesai')->count();
+        $pengadaanDiajukan = Pengadaan::where('status_pengadaan', 'diajukan')->count();
+        $pengadaanDitolak = Pengadaan::where('status_pengadaan', 'ditolak')->count();
+        $pengadaanBarangTiba = Pengadaan::where('status_pengadaan', 'barang tiba')->count();
 
         return view('dashboard', compact(
             'totalAssets',
@@ -39,7 +41,9 @@ class DashboardController extends Controller
             'pengaduanDitolak',
             'totalPengadaan',
             'pengadaanDiproses',
-            'pengadaanSelesai'
+            'pengadaanDiajukan',
+            'pengadaanDitolak',
+            'pengadaanBarangTiba'
         ));
     }
 

@@ -8,6 +8,7 @@ use App\Models\Asset;
 use App\Models\Barang;
 use App\Models\Ruangan;
 use App\Models\Unit;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -245,4 +246,13 @@ class IndexAsset extends Component
         $this->status = null;
         $this->jumlah = null;
     }
+
+    public function printQRCode()
+    {
+        return redirect()->route('print.qr-code',[
+            'search' => $this->search
+        ]);
+    }
+
+
 }

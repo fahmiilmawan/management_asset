@@ -38,6 +38,12 @@
                 <label for="search" class="form-label">Cari</label>
                 <input type="text" class="form-control" name="search" id="search" wire:model.live="search" placeholder="Cari No Inventaris dan Nama Asset">
             </div>
+            <div class="col-md-4">
+                <div>
+                    <label for="printQRCode" class="form-label">Print QR Code</label>
+                </div>
+                <a href="#" class="btn btn-primary" wire:click.prevent="printQRCode">Print QR Code</a>
+            </div>
         </div>
         <div class="card-body">
             <table class="table table-striped">

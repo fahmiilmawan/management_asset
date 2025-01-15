@@ -47,6 +47,7 @@ Route::get('/laporan-asset',[LaporanController::class,'indexLaporanAsset'])->nam
 Route::get('/laporan-pengadaan',[LaporanController::class,'indexLaporanPengadaan'])->name('index.laporan-pengadaan');
 Route::get('/laporan-pengaduan',[LaporanController::class,'indexLaporanPengaduan'])->name('index.laporan-pengaduan');
 
+Route::get('/print-qr-code',[AssetController::class,'generatePrintQRCode'])->name('print.qr-code');
 Route::get('/print-laporan-asset',[LaporanController::class,'generatePrintPDFAsset'])->name('print.laporan-asset');
 Route::get('/print-laporan-pengadaan',[LaporanController::class,'generatePrintPDFPengadaan'])->name('print.laporan-pengadaan');
 Route::get('/print-laporan-pengaduan',[LaporanController::class,'generatePrintPDFPengaduan'])->name('print.laporan-pengaduan');

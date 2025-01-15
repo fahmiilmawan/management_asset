@@ -178,4 +178,5 @@ class LaporanController extends Controller
 
         return Excel::download(new LaporanPengaduanExport($search, $user, $asset), 'laporan-pengaduan.xlsx');
     }
+
 }
