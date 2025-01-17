@@ -18,10 +18,14 @@ class DashboardController extends Controller
         // Total Asset
         $totalAssets = Asset::select('jumlah')->sum('jumlah');
         $assetsBaik = Asset::where('status', 'baik')->sum('jumlah');
+
+
         $assetsRusak = Asset::where('status', 'rusak')->count();
 
         // Total Pengaduan
-        $totalPengaduan = Pengaduan::count();
+        $totalPengaduan = Pengaduan::where('status_barang','rusak')->sum('jumlah');
+
+        $totalKeseluruhan = $assetsBaik + $totalPengaduan;
         $pengaduanDiproses = Pengaduan::where('status', 'diproses')->count();
         $pengaduanDitolak = Pengaduan::where('status', 'ditolak')->count();
 
@@ -43,7 +47,8 @@ class DashboardController extends Controller
             'pengadaanDiproses',
             'pengadaanDiajukan',
             'pengadaanDitolak',
-            'pengadaanBarangTiba'
+            'pengadaanBarangTiba',
+            'totalKeseluruhan'
         ));
     }
 

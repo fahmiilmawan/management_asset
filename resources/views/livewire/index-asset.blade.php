@@ -53,7 +53,6 @@
                         <th>Nama Asset</th>
                         <th>Merk</th>
                         <th>Jumlah</th>
-                        <th>Status</th>
                         <th >QR Code</th>
                         @if (Auth::user()->role == 'admin_umum')
 
@@ -71,13 +70,6 @@
                         <td>{{ $asset->barang->nama_barang }}</td>
                         <td>{{ $asset->merk }}</td>
                         <td>{{ $asset->jumlah }}</td>
-                        <td>
-                            @if ($asset->status == 'baik')
-                                <span class="badge bg-success">{{Str::upper($asset->status)  }}</span>
-                            @else
-                                <span class="badge bg-danger">{{Str::upper($asset->status)  }}</span>
-                            @endif
-                        </td>
                         <td>
 
                             <a href="" class="btn btn-info btn-sm" data-bs-target="#modalQRCode" data-bs-toggle="modal">QR Code</a>

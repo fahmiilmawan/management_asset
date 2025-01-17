@@ -55,12 +55,38 @@ class IndexPengaduan extends Component
 
     public function updateStatus($id, $status)
 {
+    // Cari pengaduan berdasarkan ID
     $pengaduan = Pengaduan::findOrFail($id);
 
-    $pengaduan->update([
-        'status' => $status
-    ]);
+    // Cari asset terkait pengaduan
+    $asset = Asset::findOrFail($pengaduan->asset_id);
 
+    // Hitung jumlah pengaduan dengan status_barang 'baik' untuk asset ini
+    // $pengaduanBaik = Pengaduan::where('asset_id', $pengaduan->asset_id)
+    //                           ->where('status_barang', 'baik')
+    //                           ->sum('jumlah');
+
+    if ($status === 'sudah diperbaiki') {
+        // Update status pengaduan menjadi 'sudah diperbaiki' dan status_barang menjadi 'baik'
+        $pengaduan->update([
+            'status' => $status,
+            'status_barang' => 'baik',
+        ]);
+
+        // Update jumlah pada model Asset
+        $totalAsset = $asset->jumlah + $pengaduan->jumlah;
+        $asset->update([
+            'jumlah' => $totalAsset,
+        ]);
+    } else {
+        // Jika status bukan 'sudah diperbaiki', update status dan status_barang
+        $pengaduan->update([
+            'status' => $status,
+            'status_barang' => 'rusak',
+        ]);
+    }
+
+    // Menampilkan pesan sukses
     session()->flash('message', 'Status pengaduan berhasil diubah menjadi ' . $status . '.');
 }
 

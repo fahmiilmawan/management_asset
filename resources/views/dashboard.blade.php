@@ -22,7 +22,7 @@
                         </div>
                         <div class="ps-3">
                             <h6 class="card-title mb-0 text-uppercase text-secondary">Total Asset</h6>
-                            <h3 class="mb-0 fw-bold text-dark">{{ $totalAssets }}</h3>
+                            <h3 class="mb-0 fw-bold text-dark">{{ $totalKeseluruhan }}</h3>
                         </div>
                     </div>
                     <hr>
