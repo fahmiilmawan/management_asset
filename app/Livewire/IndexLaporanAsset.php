@@ -23,7 +23,7 @@ class IndexLaporanAsset extends Component
 
         // Search functionality
         if ($this->search) {
-            $query->where(function($q) {
+            $query->where(function ($q) {
                 $q->where('no_inventaris', 'like', '%' . $this->search . '%')
                     ->orWhereHas('barang', function ($q) {
                         $q->where('nama_barang', 'like', '%' . $this->search . '%');
@@ -38,7 +38,7 @@ class IndexLaporanAsset extends Component
         }
 
         //Filter by date range
-        if($this->start_date && $this->end_date){
+        if ($this->start_date && $this->end_date) {
             $query->whereBetween('created_at', [$this->start_date, $this->end_date]);
         }
 

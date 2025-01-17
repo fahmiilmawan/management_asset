@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('pengaduans', function (Blueprint $table) {
-            $table->enum('status', ['diajukan', 'diproses', 'sudah diperbaiki', 'ditolak'])->change();
+        Schema::table('assets', function (Blueprint $table) {
+            $table->date('tgl_input')->after('jumlah')->nullable();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('pengaduans', function (Blueprint $table) {
-            $table->enum('status', ['diajukan', 'diproses', 'sudah diperbaiki'])->change();
+        Schema::table('assets', function (Blueprint $table) {
+            $table->dropColumn('tgl_input');
         });
     }
 };

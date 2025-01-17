@@ -20,7 +20,7 @@ class IndexAsset extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $asset_id, $barang_id,$merk, $ruangan_id, $unit_id,$no_urut, $no_inventaris, $bulan, $tahun, $satuan, $jumlah, $search;
+    public $asset_id, $barang_id, $merk, $ruangan_id, $unit_id, $no_urut, $no_inventaris, $bulan, $tahun, $satuan, $jumlah, $search;
     public $status = 'baik';
     public $file;
 
@@ -47,19 +47,19 @@ class IndexAsset extends Component
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('no_inventaris', 'like', '%' . $this->search . '%')
-                  ->orWhereHas('barang', function ($q) {
-                      $q->where('nama_barang', 'like', '%' . $this->search . '%');
-                  })
-                  ->orWhereHas('unit', function ($q) {
-                      $q->where('nama_unit', 'like', '%' . $this->search . '%');
-                  })
-                  ->orWhereHas('ruangan', function ($q) {
-                      $q->where('nama_ruangan', 'like', '%' . $this->search . '%');
-                  });
+                    ->orWhereHas('barang', function ($q) {
+                        $q->where('nama_barang', 'like', '%' . $this->search . '%');
+                    })
+                    ->orWhereHas('unit', function ($q) {
+                        $q->where('nama_unit', 'like', '%' . $this->search . '%');
+                    })
+                    ->orWhereHas('ruangan', function ($q) {
+                        $q->where('nama_ruangan', 'like', '%' . $this->search . '%');
+                    });
             });
         }
 
-        return view('livewire.index-asset',[
+        return view('livewire.index-asset', [
             'assets' => $query->paginate(5),
             'barangs' => Barang::all(),
             'ruangans' => Ruangan::all(),
@@ -70,28 +70,30 @@ class IndexAsset extends Component
 
     public function store()
     {
-        $this->validate([
-            'barang_id' => 'required',
-            'merk' => 'required',
-            'ruangan_id' => 'required',
-            'unit_id' => 'required',
-            'bulan' => 'required',
-            'tahun' => 'required',
-            'satuan' => 'required',
-            'status' => 'required',
-            'jumlah' => 'required'
-        ],
-        [
-            'barang_id.required' => 'Barang harus diisi.',
-            'merk.required' => 'Merk harus diisi.',
-            'ruangan_id.required' => 'Ruangan harus diisi.',
-            'unit_id.required' => 'Unit harus diisi.',
-            'bulan.required' => 'Bulan harus diisi.',
-            'tahun.required' => 'Tahun harus diisi.',
-            'satuan.required' => 'Satuan harus diisi.',
-            'status.required' => 'Status harus diisi.',
-            'jumlah.required' => 'Jumlah harus diisi.'
-        ]);
+        $this->validate(
+            [
+                'barang_id' => 'required',
+                'merk' => 'required',
+                'ruangan_id' => 'required',
+                'unit_id' => 'required',
+                'bulan' => 'required',
+                'tahun' => 'required',
+                'satuan' => 'required',
+                'status' => 'required',
+                'jumlah' => 'required'
+            ],
+            [
+                'barang_id.required' => 'Barang harus diisi.',
+                'merk.required' => 'Merk harus diisi.',
+                'ruangan_id.required' => 'Ruangan harus diisi.',
+                'unit_id.required' => 'Unit harus diisi.',
+                'bulan.required' => 'Bulan harus diisi.',
+                'tahun.required' => 'Tahun harus diisi.',
+                'satuan.required' => 'Satuan harus diisi.',
+                'status.required' => 'Status harus diisi.',
+                'jumlah.required' => 'Jumlah harus diisi.'
+            ]
+        );
 
 
         $noUrut = Asset::max('no_urut') ?? 0;
@@ -119,7 +121,7 @@ class IndexAsset extends Component
 
     private function generateNoInventaris()
     {
-        if ( $this->bulan && $this->tahun) {
+        if ($this->bulan && $this->tahun) {
 
             $barang = Barang::find($this->barang_id);
             $kodeBarang = $barang ? $barang->kode_barang : 'N/A';
@@ -140,7 +142,6 @@ class IndexAsset extends Component
     {
         $QRcode = new QRCode($no_inventaris);
         return $QRcode->generate();
-
     }
 
     public function edit($id)
@@ -157,33 +158,34 @@ class IndexAsset extends Component
         $this->satuan = $asset->satuan;
         $this->status = $asset->status;
         $this->jumlah = $asset->jumlah;
-
     }
 
     public function update()
     {
-        $this->validate([
-            'barang_id' => 'required',
-            'merk' => 'required',
-            'ruangan_id' => 'required',
-            'unit_id' => 'required',
-            'bulan' => 'required',
-            'tahun' => 'required',
-            'satuan' => 'required',
-            'status' => 'required',
-            'jumlah' => 'required'
-        ],
-        [
-            'barang_id.required' => 'Barang harus diisi.',
-            'merk.required' => 'Merk harus diisi.',
-            'ruangan_id.required' => 'Ruangan harus diisi.',
-            'unit_id.required' => 'Unit harus diisi.',
-            'bulan.required' => 'Bulan harus diisi.',
-            'tahun.required' => 'Tahun harus diisi.',
-            'satuan.required' => 'Satuan harus diisi.',
-            'status.required' => 'Status harus diisi.',
-            'jumlah.required' => 'Jumlah harus diisi.'
-        ]);
+        $this->validate(
+            [
+                'barang_id' => 'required',
+                'merk' => 'required',
+                'ruangan_id' => 'required',
+                'unit_id' => 'required',
+                'bulan' => 'required',
+                'tahun' => 'required',
+                'satuan' => 'required',
+                'status' => 'required',
+                'jumlah' => 'required'
+            ],
+            [
+                'barang_id.required' => 'Barang harus diisi.',
+                'merk.required' => 'Merk harus diisi.',
+                'ruangan_id.required' => 'Ruangan harus diisi.',
+                'unit_id.required' => 'Unit harus diisi.',
+                'bulan.required' => 'Bulan harus diisi.',
+                'tahun.required' => 'Tahun harus diisi.',
+                'satuan.required' => 'Satuan harus diisi.',
+                'status.required' => 'Status harus diisi.',
+                'jumlah.required' => 'Jumlah harus diisi.'
+            ]
+        );
 
         Asset::find($this->asset_id)->update([
             'barang_id' => $this->barang_id,
@@ -243,7 +245,4 @@ class IndexAsset extends Component
         $this->status = null;
         $this->jumlah = null;
     }
-
-
-
 }

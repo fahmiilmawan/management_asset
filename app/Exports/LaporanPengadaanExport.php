@@ -43,12 +43,11 @@ class LaporanPengadaanExport implements FromCollection, WithHeadings
                 'nama_barang_pengadaan' => $item->nama_barang_pengadaan ?? 'N/A',
                 'nama_lengkap'   => $item->user->nama_lengkap ?? 'N/A',
                 'nama_ruangan'  => $item->ruangan->nama_ruangan ?? 'N/A',
-                'harga_satuan'        => $item->harga_satuan ??'0',
-                'jumlah'        => $item->jumlah_pengadaan ??'0',
+                'harga_satuan'        => $item->harga_satuan ?? '0',
+                'jumlah'        => $item->jumlah_pengadaan ?? '0',
                 'total_harga'       => $item->total_harga ?? 'N/A',
             ];
         });
-
     }
     public function headings(): array
     {
@@ -61,5 +60,4 @@ class LaporanPengadaanExport implements FromCollection, WithHeadings
             'Total Harga',
         ];
     }
-
 }

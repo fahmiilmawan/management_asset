@@ -32,7 +32,7 @@ class IndexBarang extends Component
             ->when($this->search, function ($query) {
                 // Jika ada nilai pencarian, filter data
                 $query->where('kode_barang', 'like', '%' . $this->search . '%')
-                      ->orWhere('nama_barang', 'like', '%' . $this->search . '%');
+                    ->orWhere('nama_barang', 'like', '%' . $this->search . '%');
             });
 
         // Mengembalikan view dengan data paginated
@@ -128,31 +128,31 @@ class IndexBarang extends Component
     }
 
     public function import()
-{
-    $this->validate([
-        'file' => 'required|mimes:csv,xls,xlsx',
-    ], [
-        'file.required' => 'File harus diisi.',
-        'file.mimes' => 'Format file harus CSV, XLS, atau XLSX.',
-    ]);
+    {
+        $this->validate([
+            'file' => 'required|mimes:csv,xls,xlsx',
+        ], [
+            'file.required' => 'File harus diisi.',
+            'file.mimes' => 'Format file harus CSV, XLS, atau XLSX.',
+        ]);
 
 
-    $file = $this->file;
-    $filename = $file->getClientOriginalName();
-    $path = $file->storeAs('excel/', $filename);
+        $file = $this->file;
+        $filename = $file->getClientOriginalName();
+        $path = $file->storeAs('excel/', $filename);
 
 
-    $filePath = public_path('storage/excel/' . $filename);
+        $filePath = public_path('storage/excel/' . $filename);
 
-    try {
-        FacadesExcel::import(new BarangImport, $filePath);
-        if (file_exists($filePath)) {
-            unlink($filePath);
+        try {
+            FacadesExcel::import(new BarangImport, $filePath);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            session()->flash('message', 'Barang berhasil diimport.');
+        } catch (\Exception $e) {
+            session()->flash('message', 'Barang gagal diimport. Error: ' . $e->getMessage());
         }
-
-        session()->flash('message', 'Barang berhasil diimport.');
-    } catch (\Exception $e) {
-        session()->flash('message', 'Barang gagal diimport. Error: ' . $e->getMessage());
     }
-}
 }

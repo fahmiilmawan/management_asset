@@ -22,7 +22,7 @@ class IndexLaporanPengaduan extends Component
 
         // Search functionality
         if ($this->search) {
-            $query->where(function($q) {
+            $query->where(function ($q) {
                 $q->where('pengaduan', 'like', '%' . $this->search . '%')
                     ->orWhereHas('user', function ($q) {
                         $q->where('nama_lengkap', 'like', '%' . $this->search . '%');
@@ -34,7 +34,7 @@ class IndexLaporanPengaduan extends Component
         }
 
         // Filter by range date
-        if($this->start_date && $this->end_date){
+        if ($this->start_date && $this->end_date) {
             $query->whereBetween('tanggal_rusak', [$this->start_date, $this->end_date]);
         }
 
@@ -52,12 +52,11 @@ class IndexLaporanPengaduan extends Component
         ]);
     }
     public function exportExcel()
-{
-    return redirect()->route('export.laporan-pengaduan', [
-        'search' => $this->search,
-        'asset' => $this->asset,
-        'user' => $this->user,
-    ]);
-}
-
+    {
+        return redirect()->route('export.laporan-pengaduan', [
+            'search' => $this->search,
+            'asset' => $this->asset,
+            'user' => $this->user,
+        ]);
+    }
 }

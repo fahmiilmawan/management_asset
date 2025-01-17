@@ -34,15 +34,15 @@ class LaporanController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('no_inventaris', 'like', '%' . $search . '%')
-                  ->orWhereHas('barang', function ($q) use ($search) {
-                      $q->where('nama_barang', 'like', '%' . $search . '%');
-                  })
-                  ->orWhereHas('unit', function ($q) use ($search) {
-                      $q->where('nama_unit', 'like', '%' . $search . '%');
-                  })
-                  ->orWhereHas('ruangan', function ($q) use ($search) {
-                      $q->where('nama_ruangan', 'like', '%' . $search . '%');
-                  });
+                    ->orWhereHas('barang', function ($q) use ($search) {
+                        $q->where('nama_barang', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('unit', function ($q) use ($search) {
+                        $q->where('nama_unit', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('ruangan', function ($q) use ($search) {
+                        $q->where('nama_ruangan', 'like', '%' . $search . '%');
+                    });
             });
         }
 
@@ -67,17 +67,17 @@ class LaporanController extends Controller
         return $pdf->download('laporan_asset.pdf');
     }
 
-     public function exportExcelAsset(Request $request)
-     {
-         $search = $request->input('search');
-         $periode = $request->input('periode');
-         $lokasi = $request->input('lokasi');
+    public function exportExcelAsset(Request $request)
+    {
+        $search = $request->input('search');
+        $periode = $request->input('periode');
+        $lokasi = $request->input('lokasi');
 
 
-         return Excel::download(new LaporanAssetExport( $search, $periode, $lokasi), 'laporan-asset.xlsx');
-        }
+        return Excel::download(new LaporanAssetExport($search, $periode, $lokasi), 'laporan-asset.xlsx');
+    }
 
-        public function indexLaporanPengadaan()
+    public function indexLaporanPengadaan()
     {
         return view('laporan.laporan-pengadaan');
     }
@@ -93,12 +93,12 @@ class LaporanController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('nama_barang_pengadaan', 'like', '%' . $search . '%')
-                  ->orWhereHas('ruangan', function ($q) use ($search) {
-                      $q->where('nama_ruangan', 'like', '%' . $search . '%');
-                  })
-                  ->orWhereHas('user', function ($q) use ($search) {
-                      $q->where('nama_lengkap', 'like', '%' . $search . '%');
-                  });
+                    ->orWhereHas('ruangan', function ($q) use ($search) {
+                        $q->where('nama_ruangan', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('user', function ($q) use ($search) {
+                        $q->where('nama_lengkap', 'like', '%' . $search . '%');
+                    });
             });
         }
 
@@ -145,12 +145,12 @@ class LaporanController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('pengaduan', 'like', '%' . $search . '%')
-                  ->orWhereHas('user', function ($q) use ($search) {
-                      $q->where('nama_lengkap', 'like', '%' . $search . '%');
-                  })
-                  ->orWhereHas('asset.barang', function ($q) use ($search) {
-                      $q->where('nama_barang', 'like', '%' . $search . '%');
-                  });
+                    ->orWhereHas('user', function ($q) use ($search) {
+                        $q->where('nama_lengkap', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('asset.barang', function ($q) use ($search) {
+                        $q->where('nama_barang', 'like', '%' . $search . '%');
+                    });
             });
         }
 
