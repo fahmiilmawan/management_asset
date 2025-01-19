@@ -46,8 +46,7 @@ class IndexLaporanPengadaan extends Component
     {
         return redirect()->route('print.laporan-pengadaan', [
             'search' => $this->search,
-            'ruangan' => $this->ruangan,
-            'user' => $this->user,
+            
         ]);
     }
 
@@ -55,8 +54,7 @@ class IndexLaporanPengadaan extends Component
     {
         return redirect()->route('export.laporan-pengadaan', [
             'search' => $this->search,
-            'ruangan' => $this->ruangan,
-            'user' => $this->user,
+            
         ]);
     }
 }

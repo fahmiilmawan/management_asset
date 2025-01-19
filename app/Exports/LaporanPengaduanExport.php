@@ -9,14 +9,12 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 class LaporanPengaduanExport implements FromCollection, WithHeadings
 {
     protected $search;
-    protected $user;
-    protected $asset;
 
-    public function __construct($search = null, $user = null, $asset = null)
+
+    public function __construct($search = null)
     {
         $this->search = $search;
-        $this->user = $user;
-        $this->asset = $asset;
+
     }
 
     public function collection()
@@ -26,16 +24,6 @@ class LaporanPengaduanExport implements FromCollection, WithHeadings
         // Filter berdasarkan search
         if (!empty($this->search)) {
             $query->where('pengaduan', 'like', '%' . $this->search . '%');
-        }
-
-        // Filter berdasarkan user
-        if (!empty($this->user)) {
-            $query->where('user_id', $this->user);
-        }
-
-        // Filter berdasarkan asset
-        if (!empty($this->asset)) {
-            $query->where('asset_id', $this->asset);
         }
 
         // Ambil data dan transformasi untuk export

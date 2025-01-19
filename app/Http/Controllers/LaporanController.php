@@ -46,14 +46,6 @@ class LaporanController extends Controller
             });
         }
 
-        if ($periode) {
-            $query->where('tahun', $periode);
-        }
-
-        if ($lokasi) {
-            $query->where('ruangan_id', $lokasi);
-        }
-
         $assets = $query->get();
 
         // Generate QR Code for each asset
@@ -70,11 +62,9 @@ class LaporanController extends Controller
     public function exportExcelAsset(Request $request)
     {
         $search = $request->input('search');
-        $periode = $request->input('periode');
-        $lokasi = $request->input('lokasi');
 
 
-        return Excel::download(new LaporanAssetExport($search, $periode, $lokasi), 'laporan-asset.xlsx');
+        return Excel::download(new LaporanAssetExport($search), 'laporan-asset.xlsx');
     }
 
     public function indexLaporanPengadaan()
@@ -85,8 +75,6 @@ class LaporanController extends Controller
     public function generatePrintPDFPengadaan(Request $request)
     {
         $search = $request->input('search');
-        $user = $request->input('user');
-        $ruangan = $request->input('ruangan');
 
         $query = Pengadaan::with('ruangan', 'user');
 
@@ -102,14 +90,6 @@ class LaporanController extends Controller
             });
         }
 
-        if ($user) {
-            $query->where('user_id', $user);
-        }
-
-        if ($ruangan) {
-            $query->where('ruangan_id', $ruangan);
-        }
-
         $pengadaans = $query->get();
 
         $pdf = Pdf::loadView('laporan.print-laporan-pengadaan', compact('pengadaans'));
@@ -120,10 +100,9 @@ class LaporanController extends Controller
     public function exportExcelPengadaan(Request $request)
     {
         $search = $request->input('search');
-        $user = $request->input('user');
-        $ruangan = $request->input('ruangan');
 
-        return Excel::download(new LaporanPengadaanExport($search, $user, $ruangan), 'laporan-pengadaan.xlsx');
+
+        return Excel::download(new LaporanPengadaanExport($search), 'laporan-pengadaan.xlsx');
     }
     /**
      * Show the form for creating a new resource.
@@ -136,8 +115,6 @@ class LaporanController extends Controller
     public function generatePrintPDFPengaduan(Request $request)
     {
         $search = $request->input('search');
-        $asset = $request->input('asset');
-        $user = $request->input('user');
 
         $query = Pengaduan::with('asset', 'user');
 
@@ -154,13 +131,6 @@ class LaporanController extends Controller
             });
         }
 
-        if ($user) {
-            $query->where('user_id', $user);
-        }
-
-        if ($asset) {
-            $query->where('asset_id', $asset);
-        }
 
         $pengaduans = $query->get();
 
@@ -173,10 +143,8 @@ class LaporanController extends Controller
     public function exportExcelPengaduan(Request $request)
     {
         $search = $request->input('search');
-        $asset = $request->input('asset');
-        $user = $request->input('user');
 
-        return Excel::download(new LaporanPengaduanExport($search, $user, $asset), 'laporan-pengaduan.xlsx');
+        return Excel::download(new LaporanPengaduanExport($search), 'laporan-pengaduan.xlsx');
     }
 
 }

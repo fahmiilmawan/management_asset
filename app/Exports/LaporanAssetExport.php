@@ -9,15 +9,13 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 class LaporanAssetExport implements FromCollection, WithHeadings
 {
     protected $search;
-    protected $periode;
-    protected $lokasi;
+
 
     // Constructor untuk menerima parameter filter
-    public function __construct($search = null, $periode = null, $lokasi = null)
+    public function __construct($search = null)
     {
         $this->search = $search;
-        $this->periode = $periode;
-        $this->lokasi = $lokasi;
+
     }
 
     public function collection()
@@ -30,17 +28,6 @@ class LaporanAssetExport implements FromCollection, WithHeadings
             });
         }
 
-        // Filter berdasarkan periode (tahun)
-        if (!empty($this->periode)) {
-            $query->where('tahun', $this->periode);
-        }
-
-        // Filter berdasarkan lokasi (ruangan)
-        if (!empty($this->lokasi)) {
-            $query->whereHas('ruangan', function ($q) {
-                $q->where('id', $this->lokasi);
-            });
-        }
 
 
         // Ambil data dan transformasi untuk export

@@ -13,7 +13,7 @@
             <h5 class="mb-0">Daftar Laporan Keseluruhan Pengadaan</h5>
         </div>
         <div class="row m-3">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <label for="filter_unit" class="form-label">Cari</label>
                 <input type="text" class="form-control" wire:model.live="search" placeholder="Cari Nama Barang, Ruangan">
             </div>
@@ -25,7 +25,7 @@
                 <label class="form-label">Sampai</label>
                 <input type="date" class="form-control" wire:model.live="end_date">
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label for="filter_unit" class="form-label">Export</label>
                 <div>
                     <button wire:click="printPDF" class="btn btn-primary"> Print PDF</button>

@@ -52,8 +52,7 @@ class IndexLaporanAsset extends Component
     {
         return redirect()->route('print.laporan-asset', [
             'search' => $this->search,
-            'periode' => $this->periode,
-            'lokasi' => $this->lokasi,
+            
         ]);
     }
 
@@ -61,8 +60,7 @@ class IndexLaporanAsset extends Component
     {
         return redirect()->route('export.laporan-asset', [
             'search' => $this->search,
-            'periode' => $this->periode,
-            'lokasi' => $this->lokasi,
+            
         ]);
     }
 }

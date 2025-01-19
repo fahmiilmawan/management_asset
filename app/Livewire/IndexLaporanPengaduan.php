@@ -47,16 +47,12 @@ class IndexLaporanPengaduan extends Component
     {
         return redirect()->route('print.laporan-pengaduan', [
             'search' => $this->search,
-            'asset' => $this->asset,
-            'user' => $this->user,
         ]);
     }
     public function exportExcel()
     {
         return redirect()->route('export.laporan-pengaduan', [
             'search' => $this->search,
-            'asset' => $this->asset,
-            'user' => $this->user,
         ]);
     }
 }
