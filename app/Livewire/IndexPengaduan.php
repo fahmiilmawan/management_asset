@@ -61,10 +61,6 @@ class IndexPengaduan extends Component
     // Cari asset terkait pengaduan
     $asset = Asset::findOrFail($pengaduan->asset_id);
 
-    // Hitung jumlah pengaduan dengan status_barang 'baik' untuk asset ini
-    // $pengaduanBaik = Pengaduan::where('asset_id', $pengaduan->asset_id)
-    //                           ->where('status_barang', 'baik')
-    //                           ->sum('jumlah');
 
     if ($status === 'sudah diperbaiki') {
         // Update status pengaduan menjadi 'sudah diperbaiki' dan status_barang menjadi 'baik'
