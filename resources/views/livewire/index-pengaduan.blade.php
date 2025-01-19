@@ -57,10 +57,8 @@
                         <tr>
                             <td>{{ $pengaduan->tanggal_rusak }}</td>
                             <td>
-                                <a href="{{ \Illuminate\Support\Facades\Storage::url($pengaduan->bukti_fisik) }}"
-                                    class="popup-link">
-                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($pengaduan->bukti_fisik) }}"
-                                        width="50px" height="50px" alt="Bukti Fisik">
+                                <a href="{{ asset('storage/' . $pengaduan->bukti_fisik) }}" class="popup-link">
+                                    <img src="{{ asset('storage/' . $pengaduan->bukti_fisik) }}" width="50px" height="50px" alt="Bukti Fisik">
                                 </a>
                             </td>
                             <td>{{ $pengaduan->asset->barang->nama_barang }}</td>
