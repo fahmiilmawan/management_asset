@@ -193,6 +193,14 @@
         @yield('main-content')
     </main><!-- End Main Content -->
 
+    <footer id="footer" class="footer">
+        <div class="copyright">
+          © Copyright <strong><span>{{ date('Y') }}</span></strong>. All Rights Reserved
+        </div>
+        <div class="credits">
+          Created by <a href="">IT</a>
+        </div>
+      </footer>
     @livewireScripts
 
     <!-- Vendor JS Files -->
