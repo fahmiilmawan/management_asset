@@ -18,13 +18,13 @@ class IndexPengaduan extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
-    public $pengaduan_id, $asset_id, $user_id, $nama_pengaduan, $jumlah, $status,$status_barang, $bukti_fisik, $deskripsi, $tanggal_rusak, $search;
+    public $pengaduan_id, $asset_id, $user_id, $nama_pengaduan, $jumlah, $status, $status_barang, $bukti_fisik, $deskripsi, $tanggal_rusak, $search;
 
 
 
     public function render()
     {
-        $pengaduans = Pengaduan::with('user', 'asset')->when(!Auth::user()->isAdmin(),function ($query){
+        $pengaduans = Pengaduan::with('user', 'asset')->when(!Auth::user()->isAdmin(), function ($query) {
             return $query->where('user_id', Auth::user()->id);
         })->paginate(5);
 
@@ -43,10 +43,10 @@ class IndexPengaduan extends Component
                     $q->where('nama_barang', 'like', '%' . $this->search . '%')
                         ->orWhere('tanggal_rusak', 'like', '%' . $this->search . '%');
                 })->paginate(5);
-    };
+        };
 
 
-        return view('livewire.index-pengaduan',[
+        return view('livewire.index-pengaduan', [
             'pengaduans' => $pengaduans,
             'assets' => Asset::with('barang', 'ruangan', 'unit')->get(),
             'barangs' => Barang::all(),
@@ -54,55 +54,57 @@ class IndexPengaduan extends Component
     }
 
     public function updateStatus($id, $status)
-{
-    // Cari pengaduan berdasarkan ID
-    $pengaduan = Pengaduan::findOrFail($id);
+    {
+        // Cari pengaduan berdasarkan ID
+        $pengaduan = Pengaduan::findOrFail($id);
 
-    // Cari asset terkait pengaduan
-    $asset = Asset::findOrFail($pengaduan->asset_id);
+        // Cari asset terkait pengaduan
+        $asset = Asset::findOrFail($pengaduan->asset_id);
 
 
-    if ($status === 'sudah diperbaiki') {
-        // Update status pengaduan menjadi 'sudah diperbaiki' dan status_barang menjadi 'baik'
-        $pengaduan->update([
-            'status' => $status,
-            'status_barang' => 'baik',
-        ]);
+        if ($status === 'sudah diperbaiki') {
+            // Update status pengaduan menjadi 'sudah diperbaiki' dan status_barang menjadi 'baik'
+            $pengaduan->update([
+                'status' => $status,
+                'status_barang' => 'baik',
+            ]);
 
-        // Update jumlah pada model Asset
-        $totalAsset = $asset->jumlah + $pengaduan->jumlah;
-        $asset->update([
-            'jumlah' => $totalAsset,
-        ]);
-    } else {
-        // Jika status bukan 'sudah diperbaiki', update status dan status_barang
-        $pengaduan->update([
-            'status' => $status,
-            'status_barang' => 'rusak',
-        ]);
+            // Update jumlah pada model Asset
+            $totalAsset = $asset->jumlah + $pengaduan->jumlah;
+            $asset->update([
+                'jumlah' => $totalAsset,
+            ]);
+        } else {
+            // Jika status bukan 'sudah diperbaiki', update status dan status_barang
+            $pengaduan->update([
+                'status' => $status,
+                'status_barang' => 'rusak',
+            ]);
+        }
+
+        // Menampilkan pesan sukses
+        session()->flash('message', 'Status pengaduan berhasil diubah menjadi ' . $status . '.');
     }
-
-    // Menampilkan pesan sukses
-    session()->flash('message', 'Status pengaduan berhasil diubah menjadi ' . $status . '.');
-}
 
     public function store()
     {
         try {
-            $this->validate([
-                'asset_id' => 'required',
-                'nama_pengaduan' => 'required',
-                'jumlah' => 'required',
-                'deskripsi' => 'required',
-                'tanggal_rusak' => 'required',
-            ],
-            [
-                'asset_id.required' => 'Asset harus diisi.',
-                'nama_pengaduan.required' => 'Pengaduan harus diisi.',
-                'jumlah.required' => 'Jumlah harus diisi.',
-                'deskripsi.required' => 'Deskripsi harus diisi.',
-                'tanggal_rusak.required' => 'Tanggal rusak harus diisi.',
-            ]);
+            $this->validate(
+                [
+                    'asset_id' => 'required',
+                    'nama_pengaduan' => 'required',
+                    'jumlah' => 'required',
+                    'deskripsi' => 'required',
+                    'tanggal_rusak' => 'required',
+                ],
+                [
+                    'asset_id.required' => 'Asset harus diisi.',
+                    'nama_pengaduan.required' => 'Pengaduan harus diisi.',
+                    'jumlah.required' => 'Jumlah harus diisi.',
+                    'deskripsi.required' => 'Deskripsi harus diisi.',
+                    'tanggal_rusak.required' => 'Tanggal rusak harus diisi.',
+                ]
+            );
 
             $bukti_fisik = $this->uploadBuktiFisik();
             DB::beginTransaction();
@@ -111,7 +113,7 @@ class IndexPengaduan extends Component
             $jumlahAsset = $asset->jumlah;
             $jumlahPengaduan = $this->jumlah;
 
-            if ($jumlahPengaduan > $jumlahAsset ) {
+            if ($jumlahPengaduan > $jumlahAsset) {
                 $this->addError('jumlah', 'Jumlah pengaduan melebihi jumlah asset');
                 throw new Exception('Jumlah pengaduan melebihi jumlah asset');
             }
@@ -138,20 +140,15 @@ class IndexPengaduan extends Component
 
             $this->resetForm();
             $this->dispatch('closeModal');
-
         } catch (\Exception $e) {
             DB::rollBack();
         }
-
-
-
-
     }
 
     private function uploadBuktiFisik()
     {
         if ($this->bukti_fisik) {
-            return $this->bukti_fisik->storeAs('bukti-fisik', $this->bukti_fisik->getClientOriginalName(),'public');
+            return $this->bukti_fisik->storeAs('bukti-fisik', $this->bukti_fisik->getClientOriginalName(), 'public');
         }
         return null;
     }
@@ -169,7 +166,6 @@ class IndexPengaduan extends Component
         $this->bukti_fisik = $pengaduan->bukti_fisik;
         $this->deskripsi = $pengaduan->deskripsi;
         $this->tanggal_rusak = $pengaduan->tanggal_rusak;
-
     }
 
     public function edit($id)
@@ -189,20 +185,22 @@ class IndexPengaduan extends Component
     public function update()
     {
 
-        $this->validate([
-            'asset_id' => 'required',
-            'nama_pengaduan' => 'required',
-            'jumlah' => 'required',
-            'deskripsi' => 'required',
-            'tanggal_rusak' => 'required',
-        ],
-        [
-            'asset_id.required' => 'Asset harus diisi.',
-            'nama_pengaduan.required' => 'Pengaduan harus diisi.',
-            'jumlah.required' => 'Jumlah harus diisi.',
-            'deskripsi.required' => 'Deskripsi harus diisi.',
-            'tanggal_rusak.required' => 'Tanggal rusak harus diisi.',
-        ]);
+        $this->validate(
+            [
+                'asset_id' => 'required',
+                'nama_pengaduan' => 'required',
+                'jumlah' => 'required',
+                'deskripsi' => 'required',
+                'tanggal_rusak' => 'required',
+            ],
+            [
+                'asset_id.required' => 'Asset harus diisi.',
+                'nama_pengaduan.required' => 'Pengaduan harus diisi.',
+                'jumlah.required' => 'Jumlah harus diisi.',
+                'deskripsi.required' => 'Deskripsi harus diisi.',
+                'tanggal_rusak.required' => 'Tanggal rusak harus diisi.',
+            ]
+        );
 
         $filePath = $this->uploadBuktiFisik();
         Pengaduan::find($this->pengaduan_id)->update([
@@ -225,7 +223,6 @@ class IndexPengaduan extends Component
     public function confirmDelete($id)
     {
         $this->pengaduan_id = $id;
-
     }
 
     public function delete()
