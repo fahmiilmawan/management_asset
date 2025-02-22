@@ -12,7 +12,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $userId = Auth::id(); 
+        $userId = Auth::id();
 
         // Total Asset - Tidak perlu difilter karena ini data umum
         $totalAssets = Asset::sum('jumlah');
@@ -22,7 +22,9 @@ class DashboardController extends Controller
 
         // Total Pengaduan untuk user yang login
         $totalPengaduan = Pengaduan::where('user_id', $userId)->sum('jumlah');
+        $pengaduanDiajukan = Pengaduan::where('user_id', $userId)->where('status', 'diajukan')->count();
         $pengaduanDiproses = Pengaduan::where('user_id', $userId)->where('status', 'diproses')->count();
+        $pengaduanSelesai = Pengaduan::where('user_id', $userId)->where('status', 'sudah diperbaiki')->count();
         $pengaduanDitolak = Pengaduan::where('user_id', $userId)->where('status', 'ditolak')->count();
 
         // Total Pengadaan untuk user yang login
@@ -38,11 +40,13 @@ class DashboardController extends Controller
             'assetsRusak',
             'totalKeseluruhan',
             'totalPengaduan',
+            'pengaduanDiajukan', // Status tambahan
             'pengaduanDiproses',
+            'pengaduanSelesai', // Status tambahan
             'pengaduanDitolak',
             'totalPengadaan',
-            'pengadaanDiproses',
             'pengadaanDiajukan',
+            'pengadaanDiproses',
             'pengadaanDitolak',
             'pengadaanBarangTiba'
         ));
