@@ -5,13 +5,13 @@
             <h3 class="font-weight-bold mb-0">Data Pengadaan</h3>
             <p class="text-muted">{{ now()->format('d F Y') }}</p>
         </div>
-        @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'staff_unit')
+
             <div class="col-md-6 text-end">
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                     <i class="fas fa-plus"></i> Tambah Pengadaan
                 </button>
             </div>
-        @endif
+
     </div>
 
     <!-- Alert -->
