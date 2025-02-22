@@ -11,7 +11,6 @@ use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
@@ -33,18 +32,20 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Setup rate limiter untuk login
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())) . '|' . $request->ip());
-
             return Limit::perMinute(5)->by($throttleKey);
         });
 
-        RateLimiter::for('two-factor', function (Request $request) {
-            return Limit::perMinute(5)->by($request->session()->get('login.id'));
+        // Customisasi tampilan login
+        Fortify::loginView(function () {
+            return view('auth.login');
         });
 
+        // Customisasi proses autentikasi
         Fortify::authenticateUsing(function (Request $request) {
-            // Validasi input secara manual
+            // Validasi manual
             $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email',
                 'password' => 'required|string',
@@ -60,18 +61,13 @@ class FortifyServiceProvider extends ServiceProvider
 
             $user = User::where('email', $request->email)->first();
 
-            if ($user && Hash::check($request->password, $user->password)) {
-                return $user;
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                throw ValidationException::withMessages([
+                    'email' => 'Email atau password salah',
+                ]);
             }
 
-            throw ValidationException::withMessages([
-                'email' => 'Email atau password salah',
-            ]);
-        });
-
-
-        Fortify::loginView(function () {
-            return view('auth.login');
+            return $user;
         });
     }
 }

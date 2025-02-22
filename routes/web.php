@@ -19,12 +19,17 @@ use App\Exports\BarangTemplateExport;
 use App\Exports\RuanganTemplateExport;
 use App\Exports\UnitTemplateExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\AuthController;
 
 
 // Route Login
 Route::get('/', function () {
-    return redirect('/login');
+    return redirect()->route('login');
 });
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 
 Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
 Route::get('/barang',[BarangController::class,'index'])->name('index.barang');
