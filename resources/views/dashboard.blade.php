@@ -12,6 +12,8 @@
 
     <!-- Dashboard Cards -->
     <div class="row">
+        @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'administrator')
+
         <!-- Data Asset Card -->
         <div class="col-xl-4 col-md-6 mb-4">
             <div class="card info-card shadow-sm border-0">
@@ -43,6 +45,7 @@
             </div>
         </div>
 
+        @endif
         <!-- Data Pengadaan Card -->
         <div class="col-xl-4 col-md-6 mb-4">
             <div class="card info-card shadow-sm border-0">
