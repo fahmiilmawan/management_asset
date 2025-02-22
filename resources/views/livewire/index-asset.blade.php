@@ -438,9 +438,12 @@
                 </div>
                 <div class="modal-body">
                     <img src="{{ $this->generate($asset->no_inventaris) }}">
-                    <span>{{ $asset->no_urut.'/'.$asset->no_inventaris }}</span>
+                    <span>
+                        {{ $asset->no_urut.'/'.$asset->no_inventaris }}
+                    </span>
                 </div>
                 <div class="modal-footer">
+                    <a href="{{ $this->generate($asset->no_inventaris) }}" download="{{ $asset->no_inventaris }}" class="btn btn-primary">Download</a>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>

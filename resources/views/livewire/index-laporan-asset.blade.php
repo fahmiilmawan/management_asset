@@ -13,17 +13,9 @@
             <h5 class="mb-0">Daftar Laporan Keseluruhan Asset</h5>
         </div>
         <div class="row m-3">
-            <div class="col-md-2">
+            <div class="col-md-6">
                 <label for="filter_unit" class="form-label">Cari</label>
                 <input type="text" class="form-control" wire:model.live="search" placeholder="Cari Nama Asset, Unit, Ruangan">
-            </div>
-            <div class="col-md-3">
-                <label for="" class="form-label">Dari</label>
-                <input type="date" class="form-control" wire:model.live="start_date">
-            </div>
-            <div class="col-md-3">
-                <label for="" class="form-label">Sampai</label>
-                <input type="date" class="form-control" wire:model.live ="end_date">
             </div>
 
             <div class="col-md-4">

@@ -25,9 +25,7 @@ use Maatwebsite\Excel\Facades\Excel;
 Route::get('/', function () {
     return redirect('/login');
 });
-Route::middleware(['auth'])->group(function () {
 
-});
 Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
 Route::get('/barang',[BarangController::class,'index'])->name('index.barang');
 Route::get('/ruangan',[RuanganController::class,'index'])->name('index.ruangan');

@@ -79,7 +79,6 @@
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
 
-            @if (Auth::user()->role == 'administrator' || Auth::user()->role == 'admin_umum')
             <!-- Dashboard -->
             <li class="nav-item">
                 <a class="nav-link {{ Request::is('dashboard') ? '' : 'collapsed' }}" href="{{ route('dashboard') }}">
@@ -87,6 +86,7 @@
                     <span>Dashboard</span>
                 </a>
             </li>
+            @if (Auth::user()->role == 'administrator' || Auth::user()->role == 'admin_umum')
             <!-- Master Data -->
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#master-data-nav" data-bs-toggle="collapse" href="#">
@@ -161,6 +161,8 @@
                     </li>
                 </ul>
             </li>
+            @if (Auth::user()->role == 'administrator' || Auth::user()->role == 'admin_umum')
+
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#data-laporan-asset" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-journal-text"></i><span>Data Laporan</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -184,6 +186,7 @@
                 </ul>
             </li>
 
+            @endif
         </ul>
     </aside><!-- End Sidebar -->
 
