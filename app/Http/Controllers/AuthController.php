@@ -37,7 +37,7 @@ class AuthController extends Controller
             ])->withInput();
         }
 
-        return redirect()->route('dashboard'); // Ganti dengan route dashboard Anda
+        return redirect()->route('dashboard');
     }
 
     public function logout(Request $request)

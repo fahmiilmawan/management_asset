@@ -36,7 +36,7 @@ class SettingProfile extends Component
         $user->password = Hash::make($this->password);
         $user->plain_password = Crypt::encryptString($this->password);
 
-        $user->save();
+        $user->save();  
         session()->flash('message', 'Profil berhasil diperbarui.');
     }
 
