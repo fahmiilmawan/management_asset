@@ -35,6 +35,7 @@
             </div>
         </div>
         <div class="card-body">
+            <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -151,6 +152,7 @@
         @endforelse
         </tbody>
         </table>
+    </div>
     </div>
     <div class="card-footer">
         {{ $pengadaans->links() }}

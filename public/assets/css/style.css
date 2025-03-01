@@ -18,6 +18,65 @@ body {
   background: #f6f9ff;
   color: #444444;
 }
+.card-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px; /* Sesuaikan ukuran */
+  height: 60px;
+}
+
+.circle-bg {
+  background-color: #007bff; /* Warna lingkaran */
+  border-radius: 50%;
+  width: 50px; /* Ukuran lingkaran */
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-style {
+  color: white;
+  font-size: 24px; /* Ukuran ikon */
+}
+
+.d-flex {
+  gap: 20px; /* Sesuaikan jarak */
+}
+
+
+
+.logo img {
+  width: 30px; /* Sesuaikan ukuran */
+  height: auto; /* Menjaga aspek rasio */
+}
+
+
+/* html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 50vh; 
+}
+
+.footer {
+  margin-top: auto; 
+} */
+
+/* .card.info-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.card .card-body {
+  flex-grow: 1;
+} */
+
 
 a {
   color: #4154f1;

@@ -26,13 +26,16 @@
     <!-- Header -->
     <header id="header" class="header fixed-top d-flex align-items-center">
 
-        <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
             <a href="index.html" class="logo d-flex align-items-center">
-                <img src="{{ asset('assets/img/logo.png') }}" alt="">
-                <span class="d-none d-lg-block" style="font-size: 20px">Management Asset</span>
+                <img src="{{ asset('assets/img/logop.png') }}" alt="">
+                <span class="d-none d-lg-block" style="font-size: 30px">SIMAP</span>
             </a>
-            <i class="bi bi-list toggle-sidebar-btn"></i>
-        </div><!-- End Logo -->
+            <div class="ms-auto">
+                <i class="bi bi-list toggle-sidebar-btn"></i>
+            </div>
+        </div>
+        <!-- End Logo -->
 
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">
@@ -146,17 +149,17 @@
             <!-- Pengaduan & Pengadaan -->
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#complaint-procurement-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-menu-button-wide"></i><span>Pengaduan & Pengadaan</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-menu-button-wide"></i><span> Pengadaan & Pengaduan</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="complaint-procurement-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{{ route('index.pengaduan') }}">
-                            <i class="bi bi-circle"></i><span>Pengaduan</span>
+                        <a href="{{ route('index.pengadaan') }}">
+                            <i class="bi bi-circle"></i><span>Pengadaan</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('index.pengadaan') }}">
-                            <i class="bi bi-circle"></i><span>Pengadaan</span>
+                        <a href="{{ route('index.pengaduan') }}">
+                            <i class="bi bi-circle"></i><span>Pengaduan</span>
                         </a>
                     </li>
                 </ul>
@@ -205,6 +208,31 @@
         </div>
       </footer>
     @livewireScripts
+
+    <script>
+        function updateClock() {
+            let now = new Date();
+            
+            let day = now.getDate().toString().padStart(2, '0');
+            let month = now.toLocaleString('id-ID', { month: 'long' });
+            let year = now.getFullYear();
+            let hours = now.getHours().toString().padStart(2, '0');
+            let minutes = now.getMinutes().toString().padStart(2, '0');
+            let seconds = now.getSeconds().toString().padStart(2, '0');
+            
+            let formattedTime = `${day} ${month} ${year} ${hours}:${minutes}:${seconds}`;
+            
+            document.getElementById("real-time-clock").innerText = formattedTime;
+        }
+    
+        // Perbarui jam setiap detik
+        setInterval(updateClock, 1000);
+        
+        // Panggil sekali saat pertama kali halaman dimuat
+        updateClock();
+    </script>
+    
+        
 
     <!-- Vendor JS Files -->
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

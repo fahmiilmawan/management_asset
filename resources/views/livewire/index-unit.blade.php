@@ -116,13 +116,6 @@
                             <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>
-                        <div class="mb-3">
-                            <label for="deskripsi" class="form-label">Deskripsi</label>
-                            <input type="text" class="form-control border p-2" id="deskripsi" wire:model="deskripsi">
-                            @error('deskripsi')
-                            <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -148,13 +141,6 @@
                             <label for="nama_unit" class="form-label">Nama Unit</label>
                             <input type="text" class="form-control border p-2" id="nama_unit" wire:model="nama_unit">
                             @error('nama_unit')
-                            <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="deskripsi" class="form-label">Deskripsi</label>
-                            <input type="text" class="form-control border p-2" id="deskripsi" wire:model="deskripsi">
-                            @error('deskripsi')
                             <small class="text-danger">{{ $message }}</small>
                             @enderror
                         </div>

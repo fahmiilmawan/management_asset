@@ -104,7 +104,7 @@ class IndexBarang extends Component
 
         Barang::find($this->barang_id)->update([
             'kode_barang' => $this->kode_barang,
-            'nama_barang' => $this->nama_barang
+            'nama_barang' => $this->nama_barang,
         ]);
 
         session()->flash('message', 'Barang berhasil diperbarui.');

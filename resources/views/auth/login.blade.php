@@ -13,7 +13,7 @@
     <div class="flex items-center justify-center min-h-screen">
         <div class="bg-white p-8 rounded-lg shadow-lg w-96">
             <div class="flex justify-center mb-6">
-                <img src="https://placehold.co/100x100" alt="Logo" class="w-24">
+                <img src="{{ asset('assets/img/logoppp.png') }}" alt="" width="100" height="100">
             </div>
             <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
             <form action="{{ route('login') }}" method="POST">

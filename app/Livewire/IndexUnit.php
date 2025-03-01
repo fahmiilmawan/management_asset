@@ -43,13 +43,15 @@ class IndexUnit extends Component
     // Function Store Unit
     public function store()
     {
-        $this->validate([
-            'nama_unit' => 'required',
+        $this->validate(
+            [
+                'nama_unit' => 'required',
 
-        ],
-        [
-            'nama_unit.required' => 'Nama unit harus diisi.',
-        ]);
+            ],
+            [
+                'nama_unit.required' => 'Nama unit harus diisi.',
+            ]
+        );
 
         $unit = new Unit();
         $unit->nama_unit = $this->nama_unit;
@@ -71,14 +73,14 @@ class IndexUnit extends Component
     // Function Update Unit
     public function update()
     {
-        $this->validate([
-            'nama_unit' => 'required',
-            'deskripsi' => 'required'
-        ],
-        [
-            'nama_unit.required' => 'Nama unit harus diisi.',
-            'deskripsi.required' => 'Deskripsi harus diisi.'
-        ]);
+        $this->validate(
+            [
+                'nama_unit' => 'required',
+            ],
+            [
+                'nama_unit.required' => 'Nama unit harus diisi.',
+            ]
+        );
 
         $unit = Unit::findOrFail($this->unit_id);
         $unit->update([
@@ -103,7 +105,6 @@ class IndexUnit extends Component
         $unit->delete();
 
         session()->flash('message', 'Unit berhasil dihapus.');
-
     }
 
 
