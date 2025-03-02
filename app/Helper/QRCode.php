@@ -7,10 +7,12 @@ use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Writer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 
-class QRCode {
+class QRCode
+{
 
     public $content;
-    public function __construct(string $content) {
+    public function __construct(string $content)
+    {
         $this->content = $content;
     }
 
@@ -24,5 +26,4 @@ class QRCode {
         $base64 = base64_encode($qrCodeImage);
         return "data:image/svg+xml;base64," . $base64;
     }
-
 }

@@ -194,7 +194,6 @@
                                 <option value="unit">Box</option>
                                 <option value="unit">Pcs</option>
                                 <option value="unit">Meter</option>
-                                <option value="unit">Kg</option>
                                 <option value="unit">Lusin</option>
                                 <option value="unit">Roll</option>
                                 <option value="unit">Set</option>
@@ -312,7 +311,6 @@
                                 <option value="unit">Box</option>
                                 <option value="unit">Pcs</option>
                                 <option value="unit">Meter</option>
-                                <option value="unit">Kg</option>
                                 <option value="unit">Lusin</option>
                                 <option value="unit">Roll</option>
                                 <option value="unit">Set</option>
