@@ -45,7 +45,7 @@
                         <th>Harga Satuan</th>
                         <th>Total Harga</th>
                         <th>Status</th>
-                        @if (Auth::user()->role == 'admin_umum')
+                        @if (Auth::user()->role == 'staff_unit'|| Auth::user()->role == 'admin_umum')
                             <th>Aksi</th>
                         @endif
                     </tr>
@@ -71,7 +71,7 @@
                                 <span class="badge bg-{{ $badge }}">
                                     {{ ucfirst($pengadaan->status_pengadaan) }}
                                 </span>
-                                @if (Auth::user()->role == 'admin_umum')
+                                @if (Auth::user()->role == 'staff_unit'|| Auth::user()->role == 'admin_umum')
                                     @if (Auth::user()->role == 'admin_umum')
                                         <br>
                                         <span class="small">Status Aksi</span>

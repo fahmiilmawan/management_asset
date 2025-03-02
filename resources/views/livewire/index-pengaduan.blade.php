@@ -46,7 +46,7 @@
                         <th>Pengaduan</th>
                         <th>Jumlah</th>
                         <th class="text-center">Status</th>
-                        @if (Auth::user()->role == 'admin_umum')
+                        @if (Auth::user()->role == 'admin_umum'|| Auth::user()->role == 'staff_unit')
                             <th>Aksi</th>
                         @endif
                     </tr>
@@ -78,7 +78,7 @@
                                     {{ ucfirst($pengaduan->status) }}
                                 </span>
                                 <br>
-                                @if (Auth::user()->role == 'admin_umum')
+                                @if (Auth::user()->role == 'admin_umum'|| Auth::user()->role == 'staff_unit' )
 
                                     <span class="small">Status Aksi</span>
                                     <br @if (Auth::user()->role == 'admin_umum') @if ($pengaduan->status == 'diajukan')
@@ -387,7 +387,7 @@
                                                     <li class="list-group-item">
                                                         <strong>Bukti Fisik:</strong>
                                                         @if ($pengaduan->bukti_fisik)
-                                                            <img src="{{ \Illuminate\Support\Facades\Storage::url($pengaduan->bukti_fisik) }}"
+                                                            <img src="{{ asset('storage/' . $pengaduan->bukti_fisik) }}"
                                                                 width="50px" height="50px" alt="">
                                                         @else
                                                             <span class="text-muted">Tidak ada</span>
