@@ -33,7 +33,7 @@
                   <td>{{ $pengaduan->asset->barang->nama_barang }}</td>
                   <td>{{ $pengaduan->user->nama_lengkap }}</td>
                   <td>{{ $pengaduan->asset->ruangan->nama_ruangan }}</td>
-                  <td>{{ $pengaduan->pengaduan }}</td>
+                  <td>{{ $pengaduan->nama_pengaduan }}</td>
                   <td>{{ $pengaduan->status }}</td>
                   <td>{{ $pengaduan->deskripsi }}</td>
                 </tr>
