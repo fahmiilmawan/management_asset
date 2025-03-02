@@ -21,6 +21,11 @@ class DashboardController extends Controller
         $totalKeseluruhan = $assetsBaik + $assetsRusak;
 
         // Total Pengaduan untuk user yang login
+        $totalKeseluruhanPengaduan = Pengaduan::count();
+        $totalPengaduanAdmin = Pengaduan::where('status', 'diajukan')->count();
+        $totalPengaduanAdminDiproses = Pengaduan::where('status', 'diproses')->count();
+        $totalPengaduanAdminSelesai = Pengaduan::where('status', 'sudah diperbaiki')->count();
+        $totalPengaduanAdminDitolak = Pengaduan::where('status', 'ditolak')->count();
         $totalPengaduan = Pengaduan::where('user_id', $userId)->sum('jumlah');
         $pengaduanDiajukan = Pengaduan::where('user_id', $userId)->where('status', 'diajukan')->count();
         $pengaduanDiproses = Pengaduan::where('user_id', $userId)->where('status', 'diproses')->count();
@@ -28,6 +33,11 @@ class DashboardController extends Controller
         $pengaduanDitolak = Pengaduan::where('user_id', $userId)->where('status', 'ditolak')->count();
 
         // Total Pengadaan untuk user yang login
+        $totalKeseluruhanPengadaan = Pengadaan::count();
+        $totalPengadaanAdmin = Pengadaan::where('status_pengadaan', 'diajukan')->count();
+        $totalPengadaanAdminDiproses = Pengadaan::where('status_pengadaan', 'diproses')->count();
+        $totalPengadaanAdminBarangTiba = Pengadaan::where('status_pengadaan', 'barang tiba')->count();
+        $totalPengadaanAdminDitolak = Pengadaan::where('status_pengadaan', 'ditolak')->count();
         $totalPengadaan = Pengadaan::where('user_id', $userId)->count();
         $pengadaanDiajukan = Pengadaan::where('user_id', $userId)->where('status_pengadaan', 'diajukan')->count();
         $pengadaanDiproses = Pengadaan::where('user_id', $userId)->where('status_pengadaan', 'diproses')->count();
@@ -40,15 +50,25 @@ class DashboardController extends Controller
             'assetsRusak',
             'totalKeseluruhan',
             'totalPengaduan',
-            'pengaduanDiajukan', // Status tambahan
+            'pengaduanDiajukan',
             'pengaduanDiproses',
-            'pengaduanSelesai', // Status tambahan
+            'pengaduanSelesai',
             'pengaduanDitolak',
             'totalPengadaan',
             'pengadaanDiajukan',
             'pengadaanDiproses',
             'pengadaanDitolak',
-            'pengadaanBarangTiba'
+            'pengadaanBarangTiba',
+            'totalPengaduanAdmin',
+            'totalPengaduanAdminDiproses',
+            'totalPengaduanAdminSelesai',
+            'totalPengaduanAdminDitolak',
+            'totalPengadaanAdmin',
+            'totalPengadaanAdminDiproses',
+            'totalPengadaanAdminBarangTiba',
+            'totalPengadaanAdminDitolak',
+            'totalKeseluruhanPengaduan',
+            'totalKeseluruhanPengadaan'
         ));
     }
 }

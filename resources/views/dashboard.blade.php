@@ -23,7 +23,7 @@
                             <div class="circle-bg">
                                 <i class="bi bi-box-seam icon-style"></i>
                             </div>
-                        </div>                        
+                        </div>
                         <div class="ps-3">
                             <h6 class="card-title mb-0 text-uppercase text-secondary">Total Asset</h6>
                             <h3 class="mb-0 fw-bold text-dark">{{ $totalKeseluruhan }}</h3>
@@ -57,28 +57,48 @@
                             <div class="circle-bg">
                                 <i class="bi bi-cart icon-style"></i>
                             </div>
-                        </div>                        
+                        </div>
                         <div class="ps-3">
                             <h6 class="card-title mb-0 text-uppercase text-secondary">Total Pengadaan</h6>
+                            @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'administrator')
+                            <h3 class="mb-0 fw-bold text-dark">{{ $totalKeseluruhanPengadaan }}</h3>
+                            @else
                             <h3 class="mb-0 fw-bold text-dark">{{ $totalPengadaan }}</h3>
+                            @endif
                         </div>
                     </div>
                     <hr>
                     <div class="row text-center">
                         <div class="col-6">
+                            @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'administrator')
+                            <h4 class="fw-bold mt-1 text-dark">{{ $totalPengadaanAdmin }}</h4>
+                            @else
                             <h4 class="fw-bold mt-1 text-dark">{{ $pengadaanDiajukan }}</h4>
+                            @endif
                             <span class="badge bg-secondary p-2 text-white">Diajukan</span>
                         </div>
                         <div class="col-6">
+                            @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'administrator')
+                            <h4 class="fw-bold mt-1 text-dark">{{ $totalPengadaanAdminDiproses }}</h4>
+                            @else
                             <h4 class="fw-bold mt-1 text-dark">{{ $pengadaanDiproses }}</h4>
+                            @endif
                             <span class="badge bg-warning p-2 text-white">Diproses</span>
                         </div>
                         <div class="col-6">
+                            @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'administrator')
+                            <h4 class="fw-bold mt-1 text-dark">{{ $totalPengadaanAdminBarangTiba }}</h4>
+                            @else
                             <h4 class="fw-bold mt-1 text-dark">{{ $pengadaanBarangTiba }}</h4>
+                            @endif
                             <span class="badge bg-success p-2 text-white">Barang Tiba</span>
                         </div>
                         <div class="col-6">
+                            @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'administrator')
+                            <h4 class="fw-bold mt-1 text-dark">{{ $totalPengadaanAdminDitolak }}</h4>
+                            @else
                             <h4 class="fw-bold mt-1 text-dark">{{ $pengadaanDitolak }}</h4>
+                            @endif
                             <span class="badge bg-danger p-2 text-white">Ditolak</span>
                         </div>
                     </div>
@@ -98,26 +118,47 @@
                             <i class="bi bi-exclamation-circle text-white fs-4"></i>
                         </div>
                         <div class="ps-3">
-                            <h6 class="card-title mb-0 text-uppercase text-secondary">Total Pengaduan Saya</h6>
+                            <h6 class="card-title mb-0 text-uppercase text-secondary">Total Pengaduan</h6>
+                            @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'administrator')
+                            <h3 class="mb-0 fw-bold text-dark">{{ $totalKeseluruhanPengaduan }}</h3>
+                            @else
                             <h3 class="mb-0 fw-bold text-dark">{{ $totalPengaduan }}</h3>
+                            @endif
                         </div>
                     </div>
                     <hr>
                     <div class="row text-center">
                         <div class="col-6">
+                            @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'administrator')
+                            <h4 class="fw-bold mt-1 text-dark">{{ $totalPengaduanAdmin }}</h4>
+                            @else
                             <h4 class="fw-bold mt-1 text-dark">{{ $pengaduanDiajukan }}</h4>
+                            @endif
                             <span class="badge bg-secondary p-2 text-white">Diajukan</span>
                         </div>
                         <div class="col-6">
+                            @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'administrator')
+                            <h4 class="fw-bold mt-1 text-dark">{{ $totalPengaduanAdminDiproses }}</h4>
+
+                            @else
                             <h4 class="fw-bold mt-1 text-dark">{{ $pengaduanDiproses }}</h4>
+                            @endif
                             <span class="badge bg-warning p-2 text-white">Diproses</span>
                         </div>
                         <div class="col-6 mt-2">
+                            @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'administrator')
+                            <h4 class="fw-bold mt-1 text-dark">{{ $totalPengaduanAdminSelesai }}</h4>
+                            @else
                             <h4 class="fw-bold mt-1 text-dark">{{ $pengaduanSelesai }}</h4>
+                            @endif
                             <span class="badge bg-success p-2 text-white">Sudah Diperbaiki</span>
                         </div>
                         <div class="col-6 mt-2">
+                            @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'administrator')
+                            <h4 class="fw-bold mt-1 text-dark">{{ $totalPengaduanAdminDitolak }}</h4>
+                            @else
                             <h4 class="fw-bold mt-1 text-dark">{{ $pengaduanDitolak }}</h4>
+                            @endif
                             <span class="badge bg-danger p-2 text-white">Ditolak</span>
                         </div>
                     </div>
