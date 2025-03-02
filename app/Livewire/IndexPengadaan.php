@@ -21,31 +21,33 @@ class IndexPengadaan extends Component
 
     public function render()
 {
-    $pengadaans = Pengadaan::with('ruangan')
-        ->when(!Auth::user()->isAdmin(), function ($query) {
-            $query->where('user_id', Auth::id());
-        })
-        ->paginate(5);
+    $user = Auth::user();
 
-    if (empty($this->search)) {
-        $pengadaans = Pengadaan::with('ruangan')->paginate(5);
-    } elseif (trim($this->search) == '') {
-        $pengadaans = Pengadaan::with('ruangan')->paginate(5);
+    // Jika user adalah admin_umum atau administrator, tampilkan semua data
+    if (in_array($user->role, ['admin_umum', 'administrator'])) {
+        $query = Pengadaan::with('ruangan');
     } else {
-        $pengadaans = Pengadaan::with('ruangan')
-            ->where('nama_barang_pengadaan', 'like', '%' . $this->search . '%')
-            ->orWhere('status_pengadaan', 'like', '%' . $this->search . '%')
-            ->orWhereHas('ruangan', function ($q) {
-                $q->where('nama_ruangan', 'like', '%' . $this->search . '%');
-            })->paginate(5);
+        // Jika bukan admin, filter berdasarkan user_id
+        $query = Pengadaan::with('ruangan')->where('user_id', $user->id);
     }
 
+    if (!empty(trim($this->search))) {
+        $query->where(function ($q) {
+            $q->where('nama_barang_pengadaan', 'like', '%' . $this->search . '%')
+              ->orWhere('status_pengadaan', 'like', '%' . $this->search . '%')
+              ->orWhereHas('ruangan', function ($q) {
+                  $q->where('nama_ruangan', 'like', '%' . $this->search . '%');
+              });
+        });
+    }
 
     return view('livewire.index-pengadaan', [
-        'pengadaans' => $pengadaans,
+        'pengadaans' => $query->paginate(5),
         'ruangans' => Ruangan::all(),
     ]);
 }
+
+
 
 public function updateStatus($id, $status_pengadaan)
 {

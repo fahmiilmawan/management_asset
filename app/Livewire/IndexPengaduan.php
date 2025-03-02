@@ -24,34 +24,36 @@ class IndexPengaduan extends Component
 
     public function render()
     {
-        $pengaduans = Pengaduan::with('user', 'asset')->when(!Auth::user()->isAdmin(), function ($query) {
-            return $query->where('user_id', Auth::user()->id);
-        })->paginate(5);
+        $user = Auth::user();
 
-        if (empty($this->search)) {
-            $pengaduans = Pengaduan::with('user', 'asset')->paginate(5);
-        } elseif (trim($this->search) == '') {
-            $pengaduans = Pengaduan::with('user', 'asset')->paginate(5);
-        } else {
-            $pengaduans = Pengaduan::with('user', 'asset')
-                ->where('pengaduan', 'like', '%' . $this->search . '%')
-                ->orWhere('status', 'like', '%' . $this->search . '%')
-                ->orWhereHas('user', function ($q) {
-                    $q->where('nama_lengkap', 'like', '%' . $this->search . '%');
-                })
-                ->orWhereHas('asset.barang', function ($q) {
-                    $q->where('nama_barang', 'like', '%' . $this->search . '%')
+        // Jika admin, ambil semua data, jika bukan hanya berdasarkan user_id
+        $query = Pengaduan::with('user', 'asset');
+        if (!$user->isAdmin()) {
+            $query->where('user_id', $user->id);
+        }
+
+        // Filter pencarian jika ada
+        if (!empty(trim($this->search))) {
+            $query->where(function ($q) {
+                $q->where('pengaduan', 'like', '%' . $this->search . '%')
+                  ->orWhere('status', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('user', function ($q) {
+                      $q->where('nama_lengkap', 'like', '%' . $this->search . '%');
+                  })
+                  ->orWhereHas('asset.barang', function ($q) {
+                      $q->where('nama_barang', 'like', '%' . $this->search . '%')
                         ->orWhere('tanggal_rusak', 'like', '%' . $this->search . '%');
-                })->paginate(5);
-        };
-
+                  });
+            });
+        }
 
         return view('livewire.index-pengaduan', [
-            'pengaduans' => $pengaduans,
+            'pengaduans' => $query->paginate(5),
             'assets' => Asset::with('barang', 'ruangan', 'unit')->get(),
             'barangs' => Barang::all(),
         ]);
     }
+
 
     public function updateStatus($id, $status)
     {
