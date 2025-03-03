@@ -3,7 +3,7 @@
     <div class="row mb-4 align-items-center">
         <div class="col-md-6">
             <h3 class="font-weight-bold mb-0">Data Unit</h3>
-            <p class="text-muted">{{ now()->format('d F Y') }}</p>
+            <p class="text-muted" id="real-time-clock">{{ Carbon\Carbon::now()->translatedFormat('d F Y H:i') }}</p>
         </div>
         @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'staff_unit')
         <div class="col-md-6 text-end">

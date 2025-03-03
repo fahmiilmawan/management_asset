@@ -3,7 +3,7 @@
     <div class="row mb-4 align-items-center">
         <div class="col-md-6">
             <h3 class="font-weight-bold mb-0">Data Laporan Pengaduan</h3>
-            <p class="text-muted">{{ now()->format('d F Y') }}</p>
+            <p class="text-muted" id="real-time-clock">{{ Carbon\Carbon::now()->translatedFormat('d F Y H:i') }}</p>
         </div>
     </div>
 

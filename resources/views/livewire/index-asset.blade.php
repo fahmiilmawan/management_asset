@@ -2,14 +2,14 @@
     <!-- Header -->
     <div class="row mb-4 align-items-center">
         <div class="col-md-6">
-            <h3 class="font-weight-bold mb-0">Data Asset</h3>
-            <p class="text-muted">{{ now()->format('d F Y') }}</p>
+            <h3 class="font-weight-bold mb-0">Data Aset</h3>
+            <p class="text-muted" id="real-time-clock">{{ Carbon\Carbon::now()->translatedFormat('d F Y H:i') }}</p>
         </div>
         @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'staff_unit')
 
         <div class="col-md-6 text-end">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                <i class="fas fa-plus"></i> Tambah Asset
+                <i class="fas fa-plus"></i> Tambah Aset
             </button>
         </div>
         @endif
@@ -30,13 +30,13 @@
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
             <div class="d-flex justify-content-between">
-                <h5 class="mb-0">Daftar Asset</h5>
+                <h5 class="mb-0">Daftar Aset</h5>
             </div>
         </div>
         <div class="row m-3">
             <div class="col-md-4">
                 <label for="search" class="form-label">Cari</label>
-                <input type="text" class="form-control" name="search" id="search" wire:model.live="search" placeholder="Cari No Inventaris dan Nama Asset">
+                <input type="text" class="form-control" name="search" id="search" wire:model.live="search" placeholder="Cari No Inventaris dan Nama Aset">
             </div>
             <div class="col-md-4">
                 <div>
@@ -50,7 +50,7 @@
                 <thead>
                     <tr>
                         <th>No Inventaris</th>
-                        <th>Nama Asset</th>
+                        <th>Nama Aset</th>
                         <th>Merk</th>
                         <th>Jumlah</th>
                         <th >QR Code</th>
@@ -110,14 +110,14 @@
                 <form wire:submit.prevent="store">
                     <div class="modal-header">
                         <h5 class="modal-title">
-                            Tambah Asset
+                            Tambah Aset
                         </h5>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="barang_id" class="form-label">Nama asset</label>
+                            <label for="barang_id" class="form-label">Nama aset</label>
                             <select class="form-select border p-2" wire:model="barang_id" id="barang_id">
-                                <option class="form-control" value=""> Pilih Asset </option>
+                                <option class="form-control" value=""> Pilih Aset </option>
                                 @foreach ( $barangs as $barang )
                                     <option class="form-control" value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
                                 @endforeach
@@ -232,9 +232,9 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="barang_id" class="form-label">Nama asset</label>
+                            <label for="barang_id" class="form-label">Nama aset</label>
                             <select class="form-select border p-2" wire:model="barang_id" id="barang_id">
-                                <option class="form-control" value=""> Pilih Asset </option>
+                                <option class="form-control" value=""> Pilih Aset </option>
                                 @foreach ( $barangs as $barang )
                                     <option class="form-control" value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
                                 @endforeach
@@ -356,7 +356,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalDetailLabel">Detail Asset</h5>
+                    <h5 class="modal-title" id="modalDetailLabel">Detail Aset</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -364,7 +364,7 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">
-                                    <h6 class="mb-0">Informasi Asset</h6>
+                                    <h6 class="mb-0">Informasi Aset</h6>
                                 </div>
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
@@ -396,7 +396,7 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">
-                                    <h6 class="mb-0">Lokasi Asset</h6>
+                                    <h6 class="mb-0">Lokasi Aset</h6>
                                 </div>
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">

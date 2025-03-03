@@ -128,12 +128,12 @@
             <!-- Data Asset -->
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#data-asset-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-journal-text"></i><span>Data Asset</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-journal-text"></i><span>Data Aset</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="data-asset-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('index.asset') }}">
-                            <i class="bi bi-circle"></i><span>Data Asset</span>
+                            <i class="bi bi-circle"></i><span>Data Aset</span>
                         </a>
                     </li>
                     <li>
@@ -149,7 +149,7 @@
             <!-- Pengaduan & Pengadaan -->
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#complaint-procurement-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-menu-button-wide"></i><span> Pengadaan & Pengaduan</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-menu-button-wide"></i><span> Pengadaan & Pelaporan</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="complaint-procurement-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
@@ -159,7 +159,7 @@
                     </li>
                     <li>
                         <a href="{{ route('index.pengaduan') }}">
-                            <i class="bi bi-circle"></i><span>Pengaduan</span>
+                            <i class="bi bi-circle"></i><span>Pelaporan</span>
                         </a>
                     </li>
                 </ul>

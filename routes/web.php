@@ -70,3 +70,7 @@ Route::get('/export-template-ruangan', function () {
 Route::get('/export-template-unit', function () {
     return Excel::download(new UnitTemplateExport, 'template-import-unit.xlsx');
 })->name('export.template-unit');
+
+Route::get('/get-current-time', function () {
+    return response()->json(['current_time' => Carbon\Carbon::now()->translatedFormat('d F Y H:i')]);
+});

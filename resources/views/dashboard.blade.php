@@ -5,8 +5,8 @@
     <!-- Header Section -->
     <div class="row mb-4">
         <div class="col-md-8">
-            <h3 class="mb-0 font-weight-bolder">Dashboard - {{ Auth::user()->name }}</h3>
-            <p class="text-muted">{{ Carbon\Carbon::now()->translatedFormat('d F Y H:i') }}</p>
+            <h3 class="mb-0 font-weight-bolder">Dashboard  {{ Auth::user()->name }}</h3>
+            <p class="text-muted" id="real-time-clock">{{ Carbon\Carbon::now()->translatedFormat('d F Y H:i') }}</p>
         </div>
     </div>
 
@@ -109,16 +109,18 @@
             </div>
         </div>
 
-        <!-- Data Pengaduan Card -->
+        <!-- Data Pelaporan Card -->
         <div class="col-xl-4 col-md-6 mb-4">
             <div class="card info-card shadow-sm border-0">
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-danger">
+                        <div class="card-icon-container">
+                        <div class=" circle-bg">
                             <i class="bi bi-exclamation-circle text-white fs-4"></i>
                         </div>
+                        </div>
                         <div class="ps-3">
-                            <h6 class="card-title mb-0 text-uppercase text-secondary">Total Pengaduan</h6>
+                            <h6 class="card-title mb-0 text-uppercase text-secondary">Total Pelaporan</h6>
                             @if (Auth::user()->role == 'admin_umum' || Auth::user()->role == 'administrator')
                             <h3 class="mb-0 fw-bold text-dark">{{ $totalKeseluruhanPengaduan }}</h3>
                             @else
@@ -164,7 +166,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-light d-flex justify-content-center">
-                    <a href="{{ route('index.pengaduan') }}" class="btn btn-sm btn-danger px-4">Lihat Selengkapnya</a>
+                    <a href="{{ route('index.pengaduan') }}" class="btn btn-sm btn-primary px-4">Lihat Selengkapnya</a>
                 </div>
             </div>
         </div>

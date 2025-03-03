@@ -116,7 +116,7 @@ class IndexAsset extends Component
 
         $this->resetForm();
 
-        session()->flash('message', 'Asset berhasil ditambahkan.');
+        session()->flash('message', 'Aset berhasil ditambahkan.');
         $this->dispatch('closeModal');
     }
 
@@ -202,7 +202,7 @@ class IndexAsset extends Component
         ]);
 
         $this->resetForm();
-        session()->flash('message', 'Asset berhasil diubah.');
+        session()->flash('message', 'Aset berhasil diubah.');
         $this->dispatch('closeModal');
     }
 
@@ -214,7 +214,7 @@ class IndexAsset extends Component
     public function delete()
     {
         Asset::find($this->asset_id)->delete();
-        session()->flash('message', 'Asset berhasil dihapus.');
+        session()->flash('message', 'Aset berhasil dihapus.');
     }
 
     public function detail($id)
@@ -249,10 +249,8 @@ class IndexAsset extends Component
 
     public function printQRCode()
     {
-        return redirect()->route('print.qr-code',[
+        return redirect()->route('print.qr-code', [
             'search' => $this->search
         ]);
     }
-
-
 }
