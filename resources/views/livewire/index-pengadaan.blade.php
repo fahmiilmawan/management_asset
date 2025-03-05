@@ -45,7 +45,7 @@
                         <th>Harga Satuan</th>
                         <th>Total Harga</th>
                         <th>Status</th>
-                        @if (Auth::user()->role == 'staff_unit'|| Auth::user()->role == 'admin_umum')
+                        @if (Auth::user()->role == 'staff_unit'|| Auth::user()->role == 'admin_umum'|| Auth::user()->role == 'administrator')
                             <th>Aksi</th>
                         @endif
                     </tr>
@@ -71,7 +71,7 @@
                                 <span class="badge bg-{{ $badge }}">
                                     {{ ucfirst($pengadaan->status_pengadaan) }}
                                 </span>
-                                @if (Auth::user()->role == 'staff_unit'|| Auth::user()->role == 'admin_umum')
+                                @if (Auth::user()->role == 'staff_unit'|| Auth::user()->role == 'admin_umum'|| Auth::user()->role == 'administrator')
                                     @if (Auth::user()->role == 'admin_umum')
                                         <br>
                                         <span class="small">Status Aksi</span>
@@ -113,7 +113,7 @@
                                             </a>
                                         </li>
                                         <!-- Jika role adalah admin_umum -->
-                                        @if (Auth::user()->role == 'admin_umum')
+                                        @if (Auth::user()->role == 'admin_umum'|| Auth::user()->role == 'administrator')
                                             <li>
                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal"
                                                     data-bs-target="#editModal"
@@ -139,7 +139,7 @@
                                             </li>
                                         @endif
                     @endif
-                    </ul>
+                                    </ul>
         </div>
         </td>
 
@@ -388,7 +388,7 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">
-                                    <h6 class="mb-0">Informasi Pengadaan</h6>
+                                    <h6 class="mb-0">Informasi Pengadaan</h6> 
                                 </div>
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
@@ -398,7 +398,7 @@
                                         </li>
                                         <li class="list-group-item">
                                             <strong>Diajukan Oleh:</strong>
-                                            <span>{{ $pengadaan->user->nama_lengkap ?? '-' }}</span>
+                                            <span>{{ $user_id->nama_lengkap ?? '-' }}</span>
                                         </li>
                                         <li class="list-group-item">
                                             <strong>Ruangan:</strong>

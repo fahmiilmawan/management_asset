@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Asset;
 use App\Models\Barang;
 use App\Models\Pengaduan;
+use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,26 +27,32 @@ class IndexPengaduan extends Component
     {
         $user = Auth::user();
 
-        // Jika admin, ambil semua data, jika bukan hanya berdasarkan user_id
-        $query = Pengaduan::with('user', 'asset');
-        if (!$user->isAdmin()) {
-            $query->where('user_id', $user->id);
+
+
+        // Jika user adalah admin_umum atau administrator, tampilkan semua data
+        if (in_array($user->role, ['admin_umum', 'administrator'])) {
+            $query = Pengaduan::with('user', 'asset');
+        } else {
+            // Jika bukan admin, filter berdasarkan user_id
+            $query = Pengaduan::with('user', 'asset')->where('user_id', $user->id);
         }
 
         // Filter pencarian jika ada
         if (!empty(trim($this->search))) {
             $query->where(function ($q) {
                 $q->where('pengaduan', 'like', '%' . $this->search . '%')
-                  ->orWhere('status', 'like', '%' . $this->search . '%')
-                  ->orWhereHas('user', function ($q) {
-                      $q->where('nama_lengkap', 'like', '%' . $this->search . '%');
-                  })
-                  ->orWhereHas('asset.barang', function ($q) {
-                      $q->where('nama_barang', 'like', '%' . $this->search . '%')
-                        ->orWhere('tanggal_rusak', 'like', '%' . $this->search . '%');
-                  });
+                    ->orWhere('status', 'like', '%' . $this->search . '%')
+                    ->orWhereHas('user', function ($q) {
+                        $q->where('nama_lengkap', 'like', '%' . $this->search . '%');
+                    })
+                    ->orWhereHas('asset.barang', function ($q) {
+                        $q->where('nama_barang', 'like', '%' . $this->search . '%')
+                            ->orWhere('tanggal_rusak', 'like', '%' . $this->search . '%');
+                    });
             });
         }
+
+        // dd($query);
 
         return view('livewire.index-pengaduan', [
             'pengaduans' => $query->paginate(5),
@@ -60,7 +67,7 @@ class IndexPengaduan extends Component
         // Cari pengaduan berdasarkan ID
         $pengaduan = Pengaduan::findOrFail($id);
 
-        // Cari asset terkait pengaduan
+        // Cari aset terkait pengaduan
         $asset = Asset::findOrFail($pengaduan->asset_id);
 
 
@@ -100,7 +107,7 @@ class IndexPengaduan extends Component
                     'tanggal_rusak' => 'required',
                 ],
                 [
-                    'asset_id.required' => 'Asset harus diisi.',
+                    'asset_id.required' => 'Aset harus diisi.',
                     'nama_pengaduan.required' => 'Pengaduan harus diisi.',
                     'jumlah.required' => 'Jumlah harus diisi.',
                     'deskripsi.required' => 'Deskripsi harus diisi.',
@@ -116,8 +123,8 @@ class IndexPengaduan extends Component
             $jumlahPengaduan = $this->jumlah;
 
             if ($jumlahPengaduan > $jumlahAsset) {
-                $this->addError('jumlah', 'Jumlah pengaduan melebihi jumlah asset');
-                throw new Exception('Jumlah pengaduan melebihi jumlah asset');
+                $this->addError('jumlah', 'Jumlah pengaduan melebihi jumlah aset');
+                throw new Exception('Jumlah pengaduan melebihi jumlah aset');
             }
 
             $hitungJumlah = $asset->jumlah - $this->jumlah;
@@ -157,10 +164,12 @@ class IndexPengaduan extends Component
 
     public function detail($id)
     {
-        $pengaduan = Pengaduan::findOrFail($id);
+        $pengaduan = Pengaduan::find($id);
+        $userdata = User::find($pengaduan->user_id);
+        // dd($userdata);
         $this->pengaduan_id = $pengaduan->id;
         $this->asset_id = $pengaduan->asset_id;
-        $this->user_id = $pengaduan->user_id;
+        $this->user_id = $userdata;
         $this->nama_pengaduan = $pengaduan->nama_pengaduan;
         $this->jumlah = $pengaduan->jumlah;
         $this->status = $pengaduan->status;
@@ -196,7 +205,7 @@ class IndexPengaduan extends Component
                 'tanggal_rusak' => 'required',
             ],
             [
-                'asset_id.required' => 'Asset harus diisi.',
+                'asset_id.required' => 'Aset harus diisi.',
                 'nama_pengaduan.required' => 'Pengaduan harus diisi.',
                 'jumlah.required' => 'Jumlah harus diisi.',
                 'deskripsi.required' => 'Deskripsi harus diisi.',

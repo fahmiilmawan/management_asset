@@ -26,7 +26,7 @@ class DashboardController extends Controller
         $totalPengaduanAdminDiproses = Pengaduan::where('status', 'diproses')->count();
         $totalPengaduanAdminSelesai = Pengaduan::where('status', 'sudah diperbaiki')->count();
         $totalPengaduanAdminDitolak = Pengaduan::where('status', 'ditolak')->count();
-        $totalPengaduan = Pengaduan::where('user_id', $userId)->sum('jumlah');
+        $totalPengaduan = Pengaduan::where('user_id', $userId)->count();
         $pengaduanDiajukan = Pengaduan::where('user_id', $userId)->where('status', 'diajukan')->count();
         $pengaduanDiproses = Pengaduan::where('user_id', $userId)->where('status', 'diproses')->count();
         $pengaduanSelesai = Pengaduan::where('user_id', $userId)->where('status', 'sudah diperbaiki')->count();

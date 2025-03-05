@@ -2,7 +2,7 @@
     <!-- Header -->
     <div class="row mb-4 align-items-center">
         <div class="col-md-6">
-            <h3 class="font-weight-bold mb-0">Data Laporan Keseluruhan Asset</h3>
+            <h3 class="font-weight-bold mb-0">Data Laporan Keseluruhan Aset</h3>
             <p class="text-muted" id="real-time-clock">{{ Carbon\Carbon::now()->translatedFormat('d F Y H:i') }}</p>
         </div>
     </div>
@@ -10,7 +10,7 @@
     <!-- Tabel -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Daftar Laporan Keseluruhan Asset</h5>
+            <h5 class="mb-0">Daftar Laporan Keseluruhan Aset</h5>
         </div>
         <div class="row m-3">
             <div class="col-md-6">
@@ -31,7 +31,7 @@
                 <thead>
                     <tr>
                         <th>No Inventaris</th>
-                        <th>Nama Asset</th>
+                        <th>Nama Aset</th>
                         <th>Untuk Unit</th>
                         <th>Jumlah</th>
                         <th>Berada di</th>

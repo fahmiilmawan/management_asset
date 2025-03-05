@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Asset</title>
+    <title>Laporan Aset</title>
     <style>
         table {
             width: 100%;
@@ -15,13 +15,13 @@
     </style>
 </head>
 <body>
-    <h1>Laporan Asset</h1>
+    <h1>Laporan Aset</h1>
     <table>
         <thead>
             <tr>
                 <th>QR Code</th>
                 <th>No Inventaris</th>
-                <th>Nama Asset</th>
+                <th>Nama Aset</th>
                 <th>Untuk Unit</th>
                 <th>Jumlah</th>
                 <th>Berada di</th>

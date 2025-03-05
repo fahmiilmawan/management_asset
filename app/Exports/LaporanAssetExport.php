@@ -15,7 +15,6 @@ class LaporanAssetExport implements FromCollection, WithHeadings
     public function __construct($search = null)
     {
         $this->search = $search;
-
     }
 
     public function collection()
@@ -27,8 +26,6 @@ class LaporanAssetExport implements FromCollection, WithHeadings
                 $q->where('nama_barang', 'like', '%' . $this->search . '%');
             });
         }
-
-
 
         // Ambil data dan transformasi untuk export
         return $query->get()->map(function ($item) {

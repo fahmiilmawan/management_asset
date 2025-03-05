@@ -20,74 +20,76 @@ class IndexPengadaan extends Component
     public $pengadaan_id, $user_id, $ruangan_id, $nama_barang_pengadaan, $satuan_pengadaan, $jumlah_pengadaan, $harga_satuan, $total_harga, $tahun_pengadaan, $tanggal_pengadaan, $status_pengadaan, $deskripsi, $search;
 
     public function render()
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    // Jika user adalah admin_umum atau administrator, tampilkan semua data
-    if (in_array($user->role, ['admin_umum', 'administrator'])) {
-        $query = Pengadaan::with('ruangan');
-    } else {
-        // Jika bukan admin, filter berdasarkan user_id
-        $query = Pengadaan::with('ruangan')->where('user_id', $user->id);
+        // Jika user adalah admin_umum atau administrator, tampilkan semua data
+        if (in_array($user->role, ['admin_umum', 'administrator'])) {
+            $query = Pengadaan::with('ruangan');
+        } else {
+            // Jika bukan admin, filter berdasarkan user_id
+            $query = Pengadaan::with('ruangan')->where('user_id', $user->id);
+        }
+
+        if (!empty(trim($this->search))) {
+            $query->where(function ($q) {
+                $q->where('nama_barang_pengadaan', 'like', '%' . $this->search . '%')
+                    ->orWhere('status_pengadaan', 'like', '%' . $this->search . '%')
+                    ->orWhereHas('ruangan', function ($q) {
+                        $q->where('nama_ruangan', 'like', '%' . $this->search . '%');
+                    });
+            });
+        }
+
+        return view('livewire.index-pengadaan', [
+            'pengadaans' => $query->paginate(5),
+            'ruangans' => Ruangan::all(),
+        ]);
     }
 
-    if (!empty(trim($this->search))) {
-        $query->where(function ($q) {
-            $q->where('nama_barang_pengadaan', 'like', '%' . $this->search . '%')
-              ->orWhere('status_pengadaan', 'like', '%' . $this->search . '%')
-              ->orWhereHas('ruangan', function ($q) {
-                  $q->where('nama_ruangan', 'like', '%' . $this->search . '%');
-              });
-        });
+
+
+    public function updateStatus($id, $status_pengadaan)
+    {
+        $pengadaan = Pengadaan::findOrFail($id);
+
+        $pengadaan->update([
+            'status_pengadaan' => $status_pengadaan,
+        ]);
+        session()->flash('message', 'Status pengadaan berhasil diperbarui menjadi ' . $status_pengadaan . '.');
     }
-
-    return view('livewire.index-pengadaan', [
-        'pengadaans' => $query->paginate(5),
-        'ruangans' => Ruangan::all(),
-    ]);
-}
-
-
-
-public function updateStatus($id, $status_pengadaan)
-{
-    $pengadaan = Pengadaan::findOrFail($id);
-
-    $pengadaan->update([
-        'status_pengadaan' => $status_pengadaan,
-    ]);
-    session()->flash('message', 'Status pengadaan berhasil diperbarui menjadi ' . $status_pengadaan . '.');
-}
 
 
 
     public function store()
     {
-        $this->validate([
-        'ruangan_id' => 'required|exists:ruangans,id',
-        'nama_barang_pengadaan' => 'required|string|max:255',
-        'satuan_pengadaan' => 'required|string|max:50',
-        'jumlah_pengadaan' => 'required|integer|min:1',
-        'harga_satuan' => 'required|numeric|min:0',
-        'tahun_pengadaan' => 'required|digits:4',
-        'tanggal_pengadaan' => 'required|date',
-        ],
-    [
-        'ruangan_id.required' => 'Ruangan harus dipilih.',
-        'ruangan_id.exists' => 'Ruangan tidak ditemukan.',
-        'nama_barang_pengadaan.required' => 'Nama barang pengadaan harus diisi.',
-        'satuan_pengadaan.required' => 'Satuan pengadaan harus diisi.',
-        'jumlah_pengadaan.required' => 'Jumlah pengadaan harus diisi.',
-        'jumlah_pengadaan.integer' => 'Jumlah pengadaan harus berupa angka.',
-        'jumlah_pengadaan.min' => 'Jumlah pengadaan minimal adalah 1.',
-        'harga_satuan.required' => 'Harga satuan harus diisi.',
-        'harga_satuan.numeric' => 'Harga satuan harus berupa angka.',
-        'harga_satuan.min' => 'Harga satuan minimal adalah 0.',
-        'tahun_pengadaan.required' => 'Tahun pengadaan harus diisi.',
-        'tahun_pengadaan.digits' => 'Tahun pengadaan harus terdiri dari 4 angka.',
-        'tanggal_pengadaan.required' => 'Tanggal pengadaan harus diisi.',
-        'tanggal_pengadaan.date' => 'Tanggal pengadaan harus berupa tanggal.',
-    ]);
+        $this->validate(
+            [
+                'ruangan_id' => 'required|exists:ruangans,id',
+                'nama_barang_pengadaan' => 'required|string|max:255',
+                'satuan_pengadaan' => 'required|string|max:50',
+                'jumlah_pengadaan' => 'required|integer|min:1',
+                'harga_satuan' => 'required|numeric|min:0',
+                'tahun_pengadaan' => 'required|digits:4',
+                'tanggal_pengadaan' => 'required|date',
+            ],
+            [
+                'ruangan_id.required' => 'Ruangan harus dipilih.',
+                'ruangan_id.exists' => 'Ruangan tidak ditemukan.',
+                'nama_barang_pengadaan.required' => 'Nama barang pengadaan harus diisi.',
+                'satuan_pengadaan.required' => 'Satuan pengadaan harus diisi.',
+                'jumlah_pengadaan.required' => 'Jumlah pengadaan harus diisi.',
+                'jumlah_pengadaan.integer' => 'Jumlah pengadaan harus berupa angka.',
+                'jumlah_pengadaan.min' => 'Jumlah pengadaan minimal adalah 1.',
+                'harga_satuan.required' => 'Harga satuan harus diisi.',
+                'harga_satuan.numeric' => 'Harga satuan harus berupa angka.',
+                'harga_satuan.min' => 'Harga satuan minimal adalah 0.',
+                'tahun_pengadaan.required' => 'Tahun pengadaan harus diisi.',
+                'tahun_pengadaan.digits' => 'Tahun pengadaan harus terdiri dari 4 angka.',
+                'tanggal_pengadaan.required' => 'Tanggal pengadaan harus diisi.',
+                'tanggal_pengadaan.date' => 'Tanggal pengadaan harus berupa tanggal.',
+            ]
+        );
 
         $this->total_harga = $this->jumlah_pengadaan * $this->harga_satuan;
 
@@ -126,15 +128,15 @@ public function updateStatus($id, $status_pengadaan)
         $this->tanggal_pengadaan = $pengadaan->tanggal_pengadaan;
         $this->status_pengadaan = $pengadaan->status_pengadaan;
         $this->deskripsi = $pengadaan->deskripsi;
-
     }
 
     public function detail($id)
     {
-        $pengadaan = Pengadaan::findOrFail($id);
-
+        $pengadaan = Pengadaan::find($id);
+        $userdataa = User::find($pengadaan->user_id);
+        // dd($userdataa);
         $this->pengadaan_id = $pengadaan->id;
-        $this->user_id = $pengadaan->user_id;
+        $this->user_id = $userdataa;
         $this->ruangan_id = $pengadaan->ruangan_id;
         $this->nama_barang_pengadaan = $pengadaan->nama_barang_pengadaan;
         $this->satuan_pengadaan = $pengadaan->satuan_pengadaan;
@@ -150,40 +152,42 @@ public function updateStatus($id, $status_pengadaan)
     public function calculateTotal()
     {
         if ($this->jumlah_pengadaan && $this->harga_satuan) {
-        $this->total_harga = $this->jumlah_pengadaan * $this->harga_satuan;
-    } else {
-        $this->total_harga = 0;
+            $this->total_harga = $this->jumlah_pengadaan * $this->harga_satuan;
+        } else {
+            $this->total_harga = 0;
+        }
     }
-}
 
 
     public function update()
     {
-        $this->validate([
-            'ruangan_id' => 'required|exists:ruangans,id',
-            'nama_barang_pengadaan' => 'required|string|max:255',
-            'satuan_pengadaan' => 'required|string|max:50',
-            'jumlah_pengadaan' => 'required|integer|min:1',
-            'harga_satuan' => 'required|numeric|min:0',
-            'tahun_pengadaan' => 'required|digits:4',
-            'tanggal_pengadaan' => 'required|date',
+        $this->validate(
+            [
+                'ruangan_id' => 'required|exists:ruangans,id',
+                'nama_barang_pengadaan' => 'required|string|max:255',
+                'satuan_pengadaan' => 'required|string|max:50',
+                'jumlah_pengadaan' => 'required|integer|min:1',
+                'harga_satuan' => 'required|numeric|min:0',
+                'tahun_pengadaan' => 'required|digits:4',
+                'tanggal_pengadaan' => 'required|date',
             ],
-        [
-            'ruangan_id.required' => 'Ruangan harus dipilih.',
-            'ruangan_id.exists' => 'Ruangan tidak ditemukan.',
-            'nama_barang_pengadaan.required' => 'Nama barang pengadaan harus diisi.',
-            'satuan_pengadaan.required' => 'Satuan pengadaan harus diisi.',
-            'jumlah_pengadaan.required' => 'Jumlah pengadaan harus diisi.',
-            'jumlah_pengadaan.integer' => 'Jumlah pengadaan harus berupa angka.',
-            'jumlah_pengadaan.min' => 'Jumlah pengadaan minimal adalah 1.',
-            'harga_satuan.required' => 'Harga satuan harus diisi.',
-            'harga_satuan.numeric' => 'Harga satuan harus berupa angka.',
-            'harga_satuan.min' => 'Harga satuan minimal adalah 0.',
-            'tahun_pengadaan.required' => 'Tahun pengadaan harus diisi.',
-            'tahun_pengadaan.digits' => 'Tahun pengadaan harus terdiri dari 4 angka.',
-            'tanggal_pengadaan.required' => 'Tanggal pengadaan harus diisi.',
-            'tanggal_pengadaan.date' => 'Tanggal pengadaan harus berupa tanggal.',
-        ]);
+            [
+                'ruangan_id.required' => 'Ruangan harus dipilih.',
+                'ruangan_id.exists' => 'Ruangan tidak ditemukan.',
+                'nama_barang_pengadaan.required' => 'Nama barang pengadaan harus diisi.',
+                'satuan_pengadaan.required' => 'Satuan pengadaan harus diisi.',
+                'jumlah_pengadaan.required' => 'Jumlah pengadaan harus diisi.',
+                'jumlah_pengadaan.integer' => 'Jumlah pengadaan harus berupa angka.',
+                'jumlah_pengadaan.min' => 'Jumlah pengadaan minimal adalah 1.',
+                'harga_satuan.required' => 'Harga satuan harus diisi.',
+                'harga_satuan.numeric' => 'Harga satuan harus berupa angka.',
+                'harga_satuan.min' => 'Harga satuan minimal adalah 0.',
+                'tahun_pengadaan.required' => 'Tahun pengadaan harus diisi.',
+                'tahun_pengadaan.digits' => 'Tahun pengadaan harus terdiri dari 4 angka.',
+                'tanggal_pengadaan.required' => 'Tanggal pengadaan harus diisi.',
+                'tanggal_pengadaan.date' => 'Tanggal pengadaan harus berupa tanggal.',
+            ]
+        );
 
         $pengadaan = Pengadaan::findOrFail($this->pengadaan_id);
         $pengadaan->update([
@@ -208,7 +212,6 @@ public function updateStatus($id, $status_pengadaan)
     public function confirmDelete($id)
     {
         $this->pengadaan_id = $id;
-
     }
 
     public function delete()
@@ -232,6 +235,6 @@ public function updateStatus($id, $status_pengadaan)
         $this->tahun_pengadaan = null;
         $this->tanggal_pengadaan = null;
         $this->status_pengadaan = '';
-        $this->deskripsi ='' ;
+        $this->deskripsi = '';
     }
 }

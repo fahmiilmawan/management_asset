@@ -2,7 +2,7 @@
 @section('main-content')
 <div class="card">
     <div class="card-header">
-        <h6 class="mb-0">Informasi Asset</h6>
+        <h6 class="mb-0">Informasi Aset</h6>
     </div>
     <div class="card-body">
         <ul class="list-group list-group-flush">

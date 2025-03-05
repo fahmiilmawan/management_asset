@@ -33,7 +33,7 @@
             <div class="col-md-4">
                 <label for="" class="form-label">Cari</label>
                 <input type="text" class="form-control" name="search" id="search" wire:model.live="search"
-                    placeholder="Cari Nama Asset, Pengaduan, Tanggal Rusak dan Status">
+                    placeholder="Cari Nama Aset, Pengaduan, Tanggal Rusak dan Status">
             </div>
         </div>
         <div class="card-body">
@@ -42,11 +42,11 @@
                     <tr>
                         <th>Tanggal Rusak</th>
                         <th>Bukti Fisik</th>
-                        <th>Nama Asset</th>
+                        <th>Nama Aset</th>
                         <th>Pengaduan</th>
                         <th>Jumlah</th>
                         <th class="text-center">Status</th>
-                        @if (Auth::user()->role == 'admin_umum'|| Auth::user()->role == 'staff_unit')
+                        @if (Auth::user()->role == 'admin_umum'|| Auth::user()->role == 'staff_unit'|| Auth::user()->role == 'administrator')
                             <th>Aksi</th>
                         @endif
                     </tr>
@@ -78,7 +78,7 @@
                                     {{ ucfirst($pengaduan->status) }}
                                 </span>
                                 <br>
-                                @if (Auth::user()->role == 'admin_umum'|| Auth::user()->role == 'staff_unit' )
+                                @if (Auth::user()->role == 'admin_umum'|| Auth::user()->role == 'staff_unit' || Auth::user()->role == 'administrator' )
 
                                     <span class="small">Status Aksi</span>
                                     <br @if (Auth::user()->role == 'admin_umum') @if ($pengaduan->status == 'diajukan')
@@ -109,7 +109,7 @@
                                             </a>
                                         </li>
                                         <!-- Jika role adalah admin_umum -->
-                                        @if (Auth::user()->role == 'admin_umum')
+                                        @if (Auth::user()->role == 'admin_umum'|| Auth::user()->role == 'administrator')
                                             <li>
                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal"
                                                     data-bs-target="#editModal"
@@ -179,9 +179,9 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="asset_id" class="form-label">Asset</label>
+                                <label for="asset_id" class="form-label">Aset</label>
                                 <select class="form-select border p-2" wire:model="asset_id" id="">
-                                    <option class="form-control" value=""> Pilih Asset </option>
+                                    <option class="form-control" value=""> Pilih Aset </option>
                                     @foreach ($assets as $asset)
                                         <option class="form-control" value="{{ $asset->id }}">
                                             {{ $asset->barang->nama_barang }}</option>
@@ -253,9 +253,9 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="asset_id" class="form-label">Asset</label>
+                                <label for="asset_id" class="form-label">Aset</label>
                                 <select class="form-select border p-2" wire:model="asset_id" id="">
-                                    <option class="form-control" value=""> Pilih Asset </option>
+                                    <option class="form-control" value=""> Pilih Aset </option>
                                     @foreach ($assets as $asset)
                                         <option class="form-control" value="{{ $asset->id }}">
                                             {{ $asset->barang->nama_barang }}</option>
@@ -326,14 +326,15 @@
                                         </div>
                                         <div class="card-body">
                                             <ul class="list-group list-group-flush">
+                                                
                                                 @if ($pengaduan)
                                                     <li class="list-group-item">
-                                                        <strong>Asset:</strong>
+                                                        <strong>Aset:</strong>
                                                         <span>{{ $pengaduan->asset->barang->nama_barang ?? '-' }}</span>
                                                     </li>
                                                     <li class="list-group-item">
                                                         <strong>Pengadu:</strong>
-                                                        <span>{{ $pengaduan->user->nama_lengkap ?? '-' }}</span>
+                                                        <span>{{ $user_id->nama_lengkap ?? '-' }}</span>
                                                     </li>
                                                     <li class="list-group-item">
                                                         <strong>Tanggal Rusak:</strong>
@@ -349,7 +350,7 @@
                                                     </li>
                                                 @else
                                                     <li class="list-group-item">
-                                                        <strong>Asset:</strong> <span>-</span>
+                                                        <strong>Aset:</strong> <span>-</span>
                                                     </li>
                                                     <li class="list-group-item">
                                                         <strong>Pengadu:</strong> <span>-</span>

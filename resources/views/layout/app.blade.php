@@ -149,7 +149,7 @@
             <!-- Pengaduan & Pengadaan -->
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#complaint-procurement-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-menu-button-wide"></i><span> Pengadaan & Pelaporan</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-menu-button-wide"></i><span> Pengadaan & Pengaduan</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="complaint-procurement-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
@@ -159,7 +159,7 @@
                     </li>
                     <li>
                         <a href="{{ route('index.pengaduan') }}">
-                            <i class="bi bi-circle"></i><span>Pelaporan</span>
+                            <i class="bi bi-circle"></i><span>Pengaduan</span>
                         </a>
                     </li>
                 </ul>
@@ -173,7 +173,7 @@
                 <ul id="data-laporan-asset" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('index.laporan-asset') }}">
-                            <i class="bi bi-circle"></i><span>Laporan Keseluruhan Asset</span>
+                            <i class="bi bi-circle"></i><span>Laporan Keseluruhan Aset</span>
                         </a>
                     </li>
                     <li>
